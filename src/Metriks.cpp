@@ -1027,12 +1027,12 @@ struct MetriksModule : Module {
 					bPeakCounterIsPlaying = false;
 					if (f_InVoltage != _f_InVoltage) {
 						// Display voltage, but if it was changed only! Also, if number of decimal(s) option was changed.
-						_f_InVoltage = f_InVoltage;
 						float vFloor;
 						float vCeiling;
 						std::string vSign = "+";
 						std::string vMask = "";
 						float currentVoltage = roundp((double)f_InVoltage, vltmDecimals);
+						_f_InVoltage = f_InVoltage;
 						if (f_InVoltage < 0.0f)
 							vSign = "-";
 						currentVoltage = abs(currentVoltage);
@@ -1071,6 +1071,8 @@ struct MetriksModule : Module {
 							dmdOffsetTextMain2 = 2.583;
 							strcpy(dmdTextMain2, "!Out.Rang.!");
 						}
+						// Restore backuped voltage...
+						f_InVoltage = _f_InVoltage;
 					}
 					break;
 				case METRIKS_CVTUNER:
@@ -1217,7 +1219,7 @@ struct MetriksDMD : TransparentWidget {
 			nvgFontSize(args.vg, 20);
 			nvgTextLetterSpacing(args.vg, -1);
 			textPos = Vec(12, box.size.y - 152);
-			nvgText(args.vg, textPos.x + 38, textPos.y, "3.14V", NULL); // Default message on second line (display fictious voltage).
+			nvgText(args.vg, textPos.x + 26, textPos.y, "+3.14V", NULL); // Default message on second line (display fictious voltage).
 			return; // Exit method immediatly (code below will be ignored).
 		}
 		nvgFillColor(args.vg, nvgTransRGBA(module->DMDtextColor, 0xff)); // Using current color for DMD.
@@ -1227,17 +1229,17 @@ struct MetriksDMD : TransparentWidget {
 		nvgTextLetterSpacing(args.vg, -1);
 		textPos = Vec(12, box.size.y - 152);
 		nvgText(args.vg, textPos.x + module->dmdOffsetTextMain2, textPos.y, module->dmdTextMain2, NULL); // Displaying module->dmdTextMain2 string (second line). The second line may have an horizontal offset.
-		if (!module->b_tunrMarkerVisible)
-			return; // Flag "module->b_tunrMarkerVisible" is false, exit method immediatly (code below will be ignored).
 		// CV Tuner (Mode = 1) only from this point.
 		if (module->Mode != 1)
-			return; // Exit immediatly (code below will be ignored) for other modes than CV Tuner!
+			return; // Exit immediatly (code below will be ignored) if current mode isn't "CV Tuner".
 		if (module->bChangingMode || module->bChangingOption)
-			return; // Code below will be ignored if currently changing mode or option).
+			return; // Exit immediatly if currently changing mode or changing option.
+		if (!module->b_tunrMarkerVisible)
+			return; // Flag "module->b_tunrMarkerVisible" is false, don't display marker(s): exit method immediatly.
 		// Display marker(s) on the DMD.
 		nvgFontSize(args.vg, 14);
 		nvgTextLetterSpacing(args.vg, -1);
-		textPos = Vec(12, box.size.y - 154);
+		textPos = Vec(12.0f, box.size.y - 154);
 		nvgText(args.vg, textPos.x + module->dmdTunerMarkerPos, textPos.y, module->dmdTunerMarker, NULL);
 	}
 
