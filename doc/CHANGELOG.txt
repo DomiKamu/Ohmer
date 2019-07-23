@@ -2,6 +2,10 @@
 CHANGELOG
 ==============================================================================================================================
 
+Release v1.1.3 (WIP):
+
+- Metriks: bug tracking concerning "CV Tuner" mode, in particular crashes on Linux (reported by Norbert Denninger).
+
 Release v1.1.2 (July 21st, 2019):
 
 - Metriks: C++ code entirely rewritten (but still in progress) from scratch, more user-frienly...
@@ -144,9 +148,11 @@ Release v0.6.0.3-beta (February 28th, 2018):
 TODO LIST / PLANNED:
 ------------------------------------------------------------------------------------------------------------------------------
 
-- Metriks: implementation of optional 432Hz (A4 Pitch) for CV Tuner.
-- Metriks: other modes (Frequency counter, BPM meter and Peak counter).
-- RKD modules: LED are off on small duration pulses (TBC).
+- Metriks: other modes (BPM Meter, Peak Counter, Frequency Counter).
+- Metriks: added "Max.", "Min." and "Avg." metering options, for voltmeter.
+- Metriks: implementation of optional 432Hz (A4 Pitch) for CV Tuner? (is it necessary?)
+- RKD modules: LED are off on small duration pulses (but TBC).
 - RKD modules: PDF manual still under construction, YouTube video under consideration.
 - RKD, when jumpers (PCB) are visible, move fly-over jumper display a kind of SVG manual about current jumper...
 - KlokSpid: PDF manual (under consideration), and/or YouTube tutorial video (redo a separate dedicated video).
+- Metriks: PDF manual (under consideration), and/or YouTube tutorial video (redo a separate dedicated video).
