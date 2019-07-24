@@ -4,7 +4,7 @@ CHANGELOG
 
 Release v1.1.3 (WIP):
 
-- Metriks: bug tracking concerning "CV Tuner" mode, in particular crashes on Linux (reported by Norbert Denninger).
+- Metriks: fixed potential crash (Linux) concerning "CV Tuner" mode.
 
 Release v1.1.2 (July 21st, 2019):
 
@@ -148,6 +148,7 @@ Release v0.6.0.3-beta (February 28th, 2018):
 TODO LIST / PLANNED:
 ------------------------------------------------------------------------------------------------------------------------------
 
+- RKD with "Break": consider Break module as expander.
 - Metriks: other modes (BPM Meter, Peak Counter, Frequency Counter).
 - Metriks: added "Max.", "Min." and "Avg." metering options, for voltmeter.
 - Metriks: implementation of optional 432Hz (A4 Pitch) for CV Tuner? (is it necessary?)
