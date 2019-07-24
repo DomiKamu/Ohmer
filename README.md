@@ -83,17 +83,19 @@ Obviously, all settings you've defined via SETUP are automatically saved along y
 
 **RKD with "Break"** is mainly a (4 HP) RKD module, and an additional panel (4 HP too, alongside RKD) providing six deported switches. By this way, it's more comfortable to change module's settings "on-the-fly", without need to access PCB to change jumpers. ***Both modules provide exactly the same features!***
 
-Please take a look on [PDF user's manual](res/Manuals/RKD%20User's%20Manual.pdf) _(under construction)_.
+IMPORTANT: the 4 HP "Break" part will be changed as expander of RKD module.
 
-**Metriks**, a 8 HP measurement/visual module: **voltmeter** and **CV tuner** (frequency counter, BPM meter, and "Peak Counter" features are, for now, temporary disabled). Usage is more easy: use continuous encoder to change mode. From current mode, the ***OPT.*** button permits to change possible option(s) for current mode (blinking red LED alongside button is meaning you're changing displayed option). Use continuous encoder to select next/previous parameter, for option you're changing (e.g. to select how many decimals the voltmeter will display). By pressing **OPT.** button again, you'll can change next option (if available), or exit (return to production mode, LED is off)... Finally, the **OUT** jack is a daisy-chain (internal patched **IN.** - it's a mirror of IN. jack), useful to insert *Metriks* module between two modules.
+Please take a look on [PDF user's manual](res/Manuals/RKD%20User's%20Manual.pdf) _(under construction, a bit outdated)_.
 
-Quick usage about CV Tuner mode (Metriks module): the **CV Tuner** mode uses 440 Hz as reference pitch for A4 (La4) - often named A440 (can be displayed - from 3rd option, but can't be changed). This mode picks a constant voltage from **IN.** jack, then display its note equivalent. For example, by applying +1V on IN. jack, the tuner displays **C5** (or **Do5** - notation can be changed by using OPT. options button, 1st option). When voltage isn't precise, symbol **<** or **<<** (left side of note's name) means the note is located below (in this case, you'll must reduce the voltage). On the same way, symbol **>** or **>>** (right side of note's name) means the note is located above (you'll must increase the voltage in this case). Only one (**<** or **>**) displayed symbol indicates the note is near (need a fine voltage adjustment), two symbols (**<<** or **>>**) indicate the note is a bit far (need a coarse voltage adjustment). When these symbols aren't displayed, of course, this are meaning the applied voltage is very precise! **This CV Tuner mode can help you to tune a CV sequencer!**
+
+
+**Metriks**, a 8 HP measurement/visual module: **voltmeter** and **CV tuner** (other modes such Frequency Counter, BPM Meter and Peak Counter, are temporary disabled, like a scrolling message say on DMD). 
+
+[Metriks - Quick Guide](doc/Metriks.md) here! please notice **this module still in development**, thanks for patience. next mode will be implemented is BPM Meter).
 
 ![Metriks module](doc/images/Metriks.png)
 
-**Splitter 1x9**, a simple "multi" 1-input to 9-outputs. Like KlokSpid and Metriks, this module is also available... all six models (from context-menu)!
-
-This module supports both monophonic and polyphonic cables.
+**Splitter 1x9**, a simple "multi" 1-input to 9-outputs. Like KlokSpid and Metriks, this module is also available... all six models (from context-menu). This module supports both monophonic or polyphonic cables.
 
 ![Splitter 1x9 module](doc/images/Splitter.png)
 
