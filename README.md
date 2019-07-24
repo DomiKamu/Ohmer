@@ -89,9 +89,9 @@ Please take a look on [PDF user's manual](res/Manuals/RKD%20User's%20Manual.pdf)
 
 
 
-**Metriks**, a 8 HP measurement/visual module: **voltmeter** and **CV tuner** (other modes such Frequency Counter, BPM Meter and Peak Counter, are temporary disabled, like a "scrolling message" says on the dot-matrix display, as long as they remain in development). 
+**Metriks**, a 8 HP metering/visual module, for now providing **voltmeter** and **CV tuner** modes only (please notice other modes, such *BPM Meter*, *Frequency Counter* and *Peak Counter*, are temporary disabled, like a "scrolling message" says on the dot-matrix display when you select one of these unavailable modes). 
 
-[Metriks - Quick Guide](doc/Metriks.md) here! please notice **this module still in development**, thanks for patience. Next mode will be implemented is... BPM Meter.
+[Metriks - Quick Guide **is here!**](doc/Metriks.md) please notice **this Metriks module still in development**, thank you very much for patience! Next mode will be implemented is... BPM Meter.
 
 ![Metriks module](doc/images/Metriks.png)
 
