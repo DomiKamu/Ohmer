@@ -4,6 +4,8 @@
 
 [RKD / RKD with "Break" User's Guide (PDF)](res/Manuals/RKD%20User's%20Manual.pdf) (still under construction).
 
+[Metriks - Quick Guide](doc/Metriks.md) (module still in development)
+
 ------
 
 Flagship of *Ohmer Modules* plugin is **KlokSpid** (pronunciation of "clock speed"), a modern "CPU-controlled"-style clocking module, designed for any rack requiring BPM-based clock sources and/or clock modulators (clock multipliers and dividers).
