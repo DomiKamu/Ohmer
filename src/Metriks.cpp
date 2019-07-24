@@ -181,8 +181,8 @@ struct MetriksModule : Module {
 	float f_InVoltage = 0.0f;
 	float _f_InVoltage = -1.0f; // Old/previous voltage on IN jack.
 	// Used for mix, max, and median.
-	float f_VoltageMin = 0.0f;
-	float f_VoltageMax = 0.0f;
+	float f_VoltageMin = 99999.0f;
+	float f_VoltageMax = -99999.0f;
 	float f_VoltageMed = 0.0f;
 
 	// PLAY/STOP button and related (trigger) port (PLAY/STOP is used for "Pulse Counter" mode only).
@@ -406,6 +406,10 @@ struct MetriksModule : Module {
 		lights[LED_OPTIONS].setBrightness(0.0f);
 		// Peak Counter isn't running.
 		bPeakCounterIsPlaying = false;
+		// Reset minimum, maximum and median voltages (voltmeter mode).
+		f_VoltageMin = f_InVoltage;
+		f_VoltageMax = f_InVoltage;
+		f_VoltageMed = f_InVoltage;
 		// By doing this, the second line of DMD will be refreshed.
 		_f_InVoltage = f_InVoltage + 1.0f;
 	}
@@ -945,6 +949,26 @@ struct MetriksModule : Module {
 			}
 		}
 
+		// RESET button and/or input jack:
+		// - Voltmeter mode: reset Min, Max and Med voltages.
+		// - Peak Counter: reset the counter. 
+		if (resetButton.process(params[BUTTON_RESET].getValue()) || resetPort.process(rescale(inputs[INPUT_RESET].getVoltage(), 0.2f, 1.7f, 0.0f, 1.0f))) {
+			resetButton.reset();
+			switch (Mode) {
+				case METRIKS_VOLTMETER:
+					// Reset Min, Max and median registered voltages.
+					f_VoltageMin = f_InVoltage;
+					f_VoltageMax = f_InVoltage;
+					f_VoltageMed = f_InVoltage;
+					_f_InVoltage = f_InVoltage + 1.0f; // By doing this, the second line of DMD will be refreshed.
+//					break;
+//				case METRIKS_PEAKCOUNTER:
+					// ToDo...
+//					break;
+			}
+		}
+
+
 		if (bChangingOption) {
 			if (ct_OptionTimeout > 0) {
 				int kBlinkSpeedFactor = 1;
@@ -1044,8 +1068,8 @@ struct MetriksModule : Module {
 			// Input jack isn't connected...
 			f_InVoltage = 0.0f;
 			_f_InVoltage = 1.0f;
-			f_VoltageMin = 0.0f;
-			f_VoltageMax = 0.0f;
+			f_VoltageMin = 99999.0f;
+			f_VoltageMax = -99999.0f;
 			f_VoltageMed = 0.0f;
 			// Be sure Peak Counter is stopped. Unlit PLAY/PAUSE bi-colored LED.
 			lights[LED_PLAY_GREEN].setBrightness(0.0f);
@@ -1192,6 +1216,8 @@ struct MetriksModule : Module {
 		json_t *rootJ = json_object();
 		json_object_set_new(rootJ, "Theme", json_integer(Theme)); // Save selected module theme (GUI).
 		json_object_set_new(rootJ, "Mode", json_integer(Mode)); // Save current mode.
+		json_object_set_new(rootJ, "lastVMin", json_real(f_VoltageMin)); // Save lastest min. voltage.
+		json_object_set_new(rootJ, "lastVMax", json_real(f_VoltageMax)); // Save lastest max. voltage.
 		// Preset management: check if mode have suddently changed (without encoder usage).
 		if (b_dspIsRunning)
 			if (Mode != _Mode) {
@@ -1231,6 +1257,20 @@ struct MetriksModule : Module {
 				Mode = 0; // Set mode to Voltmeter if not compliant.
 		}
 		else Mode = 0; // Default voltmeter.
+		// Retrieving registered last minimum voltage.
+		json_t *lastVMinJ = json_object_get(rootJ, "lastVMin");
+		if (lastVMinJ) {
+			f_VoltageMin = json_real_value(lastVMinJ);
+		}
+		else f_VoltageMin = 99999.0f;
+		// Retrieving registered last maximum voltage.
+		json_t *lastVMaxJ = json_object_get(rootJ, "lastVMax");
+		if (lastVMaxJ) {
+			f_VoltageMax = json_real_value(lastVMaxJ);
+		}
+		else f_VoltageMax = -99999.0f;
+		// Now we can define last median voltage (never stored, always computed).
+		f_VoltageMed = (f_VoltageMax + f_VoltageMin) / 2.0f;
 		// Retrieving all saved options/parameters (per mode) (two-dimension array of integers).
 		json_t *optionsJ = json_object_get(rootJ, "MtrxOptions");
 		if (optionsJ) {
@@ -1241,7 +1281,7 @@ struct MetriksModule : Module {
 						currentParameter[i][j] = json_integer_value(optionJ);
 						else {
 							if ((i == METRIKS_PEAKCOUNTER) && (j == 0))
-								currentParameter[i][j] = 17; // Default treshold voltage (Peak Counter mode) set to 1.7V.
+								currentParameter[i][j] = 17; // Default treshold voltage (Peak Counter mode) set to 1.7V, stored as integer 17 (value x 10).
 								else currentParameter[i][j] = 0; // Default 0 for others.
 						}
 				}
