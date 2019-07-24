@@ -2,7 +2,7 @@
 
 ### ***MANUALS:***
 
-[RKD / RKD with "Break" User's Guide (PDF)](res/Manuals/RKD%20User's%20Manual.pdf) (still under construction, delayed sorry!).
+[RKD / RKD with "Break" User's Guide (PDF)](res/Manuals/RKD%20User's%20Manual.pdf) (still under construction and... delayed sorry!).
 
 [Metriks - Quick User's Guide](doc/Metriks.md) (module still in development, thanks for your patience!)
 
@@ -83,15 +83,15 @@ Obviously, all settings you've defined via SETUP are automatically saved along y
 
 **RKD with "Break"** is mainly a (4 HP) RKD module, and an additional panel (4 HP too, alongside RKD) providing six deported switches. By this way, it's more comfortable to change module's settings "on-the-fly", without need to access PCB to change jumpers. ***Both modules provide exactly the same features!***
 
-IMPORTANT: the 4 HP "Break" part will be changed as expander of RKD module.
+IMPORTANT: replacing this complete module by a 4 HP **BRK expander** (left or right side) of RKD module, is under consideration (but not confirmed). Unfortunately, expanders are new Rack 1 feature, but still undocumented for developers. Also, this fact may cause additional delays concerning... the PDF manual!
 
-Please take a look on [PDF user's manual](res/Manuals/RKD%20User's%20Manual.pdf) _(under construction, a bit outdated)_.
+Please take a look on [PDF user's manual](res/Manuals/RKD%20User's%20Manual.pdf) _(still under construction, but useful to start however)_.
 
 
 
-**Metriks**, a 8 HP measurement/visual module: **voltmeter** and **CV tuner** (other modes such Frequency Counter, BPM Meter and Peak Counter, are temporary disabled, like a scrolling message say on DMD). 
+**Metriks**, a 8 HP measurement/visual module: **voltmeter** and **CV tuner** (other modes such Frequency Counter, BPM Meter and Peak Counter, are temporary disabled, like a "scrolling message" says on the dot-matrix display, as long as they remain in development). 
 
-[Metriks - Quick Guide](doc/Metriks.md) here! please notice **this module still in development**, thanks for patience. next mode will be implemented is BPM Meter).
+[Metriks - Quick Guide](doc/Metriks.md) here! please notice **this module still in development**, thanks for patience. Next mode will be implemented is... BPM Meter.
 
 ![Metriks module](doc/images/Metriks.png)
 
