@@ -2,9 +2,9 @@
 
 ### ***MANUALS:***
 
-[RKD / RKD with "Break" User's Guide (PDF)](res/Manuals/RKD%20User's%20Manual.pdf) (still under construction).
+[RKD / RKD with "Break" User's Guide (PDF)](res/Manuals/RKD%20User's%20Manual.pdf) (still under construction, delayed sorry!).
 
-[Metriks - Quick Guide](doc/Metriks.md) (module still in development)
+[Metriks - Quick User's Guide](doc/Metriks.md) (module still in development, thanks for your patience!)
 
 ------
 
