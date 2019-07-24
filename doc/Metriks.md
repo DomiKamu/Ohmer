@@ -50,18 +50,38 @@ As soon as you connect a voltage source, voltage is displayed, like this:
 
 Now it's time to change some options (for current mode, in this case for... voltmeter).
 
-In fact, **"Voltmeter" mode have only one option**: the number of displayed decimals. To change this option, simply press the **OPT.** button: now its (red) LED blinks, and the option you'll can change also blinks at the bottom of DMD... For Decimals, you'll can choose 0 to 3 (default is 2):
+Voltmeter mode have two options:
+
+- the metering behavior (realtime, minimum, maximum and median).
+- the number of displayed decimals.
+
+
+In order to change options, simply press the **OPT.** button: now its (red) LED blinks, and the first option you'll can edit also blinks at the bottom of DMD... for voltmeter, the first option is "Metering":
+
+![](images/Metriks_UG_6.png)
+
+While red **OPT.** LED (and bottom line on DMD) are blinking, just turn the continuous encoder...
+
+- Clockwise, to select next possible choice (or to increase the display value) for option.
+- Counter-clockwise to select previous possible choice (or to decrease the displayed value).
+
+Now, by pressing OPT. button, the second option, number of decimal, can be changed.
+
+For *Decimals*, you'll can choose 0 to 3 (default is 2) by using the encoder:
 
 ![](images/Metriks_UG_3.png)
 
-While blinking, just turn the continuous encoder...
+When done, press the OPT. button to exit options and return to production (because it was the last option).
 
-- Clockwise, to select next possible parameter (or to increase the display value).
-- Counter-clockwise to select previous possible parameter (or to decrease the displayed value).
+Also, when blinking, if you don't touch either the continuous encoder / button, a 10-seconds timeout will automatically return to production.
 
-When done, press the OPT. button again to reach next option (if available), or to return to production (LED is turned off). Also, when blinking, if you don't touch either the continuous encoder / button, a 10-seconds timeout will automatically return to production.
 
-Of course, voltmeter mode provides only one option (the number of displayed decimals), however some other modes may have more options (for example, the **CV Tuner** mode have two options: the notation, and sharps/flats). Future **BPM Meter** mode doesn't have option, in this case, using the OPT. button doesn't have any effect.
+
+![](images/Metriks_UG_5.png)
+
+When voltmeter is set for **Min.**, **Max.** or **Medn.** (median), the **RESET** button (and/or its trigger jack) will clear (return to 0) all minimum, maximum (and median) registered voltages.
+
+Some modes provides only one option (the future Peak Counter, to choose threshold voltage only), some other modes have two options (for example, the **Voltmeter** and the **CV Tuner** mode have two options). Future **BPM Meter** mode doesn't provide option: in this case, the OPT. button is ignored.
 
 
 
