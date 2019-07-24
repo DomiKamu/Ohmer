@@ -37,8 +37,11 @@ struct MetriksModule : Module {
 		NUM_LIGHTS
 	};
 
-	//// SAMPLE RATE / SAMPLE TIME.
+	// SAMPLE RATE / SAMPLE TIME.
 	float sampleRate = 44100.0f;
+
+	//
+	bool b_dspIsRunning = false; // Will be set true as soon as DSP is running.
 
 	// Current selected Metriks model (GUI theme).
 	int Theme = 0;
@@ -77,8 +80,8 @@ struct MetriksModule : Module {
 	int tb_ParamNumPerOpt[METRIKS_NUM_MODES][4]; // Will be initialized later (from module constructor).
 	std::string tb_OptParameter[METRIKS_NUM_MODES][4][4]; // Will be initialized later (from module constructor).
 	float tb_OptParameterXPos[METRIKS_NUM_MODES][4][4]; // Message positions (on line 2 of DMD). Will be initialized later (from module constructor).
-	int currentParameter[METRIKS_NUM_MODES][4] = {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}; // Must be initialized here, to avoid potential crash on instanciate!
-	int _currentParameter[METRIKS_NUM_MODES][4] = {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}; // Must be initialized here, to avoid potential crash on instanciate!
+	int currentParameter[METRIKS_NUM_MODES][4] = {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {17, 0, 0, 0}}; // Must be initialized here, to avoid potential crash on instanciate!
+	int _currentParameter[METRIKS_NUM_MODES][4] = {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {17, 0, 0, 0}}; // Must be initialized here, to avoid potential crash on instanciate!
 
 	// Frequencies tables used by CV Tuner feature. Will are initialized later (from module constructor).
 	double tb_FreqNote_Center[132] = {0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 
@@ -154,7 +157,6 @@ struct MetriksModule : Module {
 	// CV Tuner variables.
 	std::string tunerBaseNoteName[12] = {"", "", "", "", "", "", "", "", "", "", "", ""}; // Base note names, for now empty, filled later...
 	bool bUpdateNotesTable = true;
-	int _tunrNotation = -1; // Old/previous used notation.
 	std::string tunerNote[132];
 	char dmdTunerMarker[3] = "  "; // CV Tuner only, to display the below/above marker(s).
 	float dmdTunerMarkerPos = 0.0f;
@@ -195,10 +197,9 @@ struct MetriksModule : Module {
 	// Schmitt trigger used to determine frequency. Also used for peak counter mode.
 	dsp::SchmittTrigger inputPort;
 
-	// Trigger voltage (peak detection during Peak Counter mode).
-	int triggerVoltage = 17;
-	int _triggerVoltage = 17; // Its old/previous state (required for Preset management).
-	float f_triggerVoltage = 1.7f;
+	// Used by Peak Counter mode, for peak detection at treshold voltage.
+	int pcntTresholdVoltage = 17;
+	float f_pcntTresholdVoltage = 1.7f;
 
 	// Dummy string (used for std::string to char * conversions).
 	std::string _tmpString; // Dummy string.
@@ -209,6 +210,7 @@ struct MetriksModule : Module {
 	int i_InopMsgCycling = 0;
 
 	MetriksModule() {
+		b_dspIsRunning = false; // Will be set true as soon as DSP is running.
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 		configParam(PARAM_ENCODER, -INFINITY, INFINITY, 0.0f, "Encoder");
 		configParam(BUTTON_OPTIONS, 0.0f, 1.0f, 0.0f, "Options");
@@ -225,8 +227,8 @@ struct MetriksModule : Module {
 		for (int i = 0; i < METRIKS_NUM_MODES; i++)
 			for (int j = 0; j < 4; j++)
 				for (int k = 0; k < 4; k++)
-					tb_OptParameterXPos[i][j][k] = 0.0f;
-		// Tables for voltmeter.
+					tb_OptParameterXPos[i][j][k] = 0.0f; // Horizontal positions (display on line 2 of DMD). Default 0.0f, used will are set just below.
+		// Tables used by Voltmeter mode.
 		tb_OptionID[METRIKS_VOLTMETER][0] = "Decimals";
 		tb_ParamNumPerOpt[METRIKS_VOLTMETER][0] = 4;
 		tb_OptParameter[METRIKS_VOLTMETER][0][0] = "2";
@@ -255,7 +257,7 @@ struct MetriksModule : Module {
 		tb_OptParameter[METRIKS_VOLTMETER][3][1] = ""; // Not used.
 		tb_OptParameter[METRIKS_VOLTMETER][3][2] = ""; // Not used.
 		tb_OptParameter[METRIKS_VOLTMETER][3][3] = ""; // Not used.
-		// Tables for CV tuner.
+		// Tables used by CV Tuner mode.
 		tb_OptionID[METRIKS_CVTUNER][0] = "Notation";
 		tb_ParamNumPerOpt[METRIKS_CVTUNER][0] = 2;
 		tb_OptParameter[METRIKS_CVTUNER][0][0] = "C-D-E...B";
@@ -284,7 +286,7 @@ struct MetriksModule : Module {
 		tb_OptParameter[METRIKS_CVTUNER][3][1] = ""; // Not used.
 		tb_OptParameter[METRIKS_CVTUNER][3][2] = ""; // Not used.
 		tb_OptParameter[METRIKS_CVTUNER][3][3] = ""; // Not used.
-		// Tables for frequency counter.
+		// Tables used by Frequency Counter mode.
 		tb_OptionID[METRIKS_FREQCOUNTER][0] = "Analys. Mode";
 		tb_ParamNumPerOpt[METRIKS_FREQCOUNTER][0] = 4;
 		tb_OptParameter[METRIKS_FREQCOUNTER][0][0] = "V > Freq.";
@@ -313,7 +315,7 @@ struct MetriksModule : Module {
 		tb_OptParameter[METRIKS_FREQCOUNTER][3][1] = ""; // Not used.
 		tb_OptParameter[METRIKS_FREQCOUNTER][3][2] = ""; // Not used.
 		tb_OptParameter[METRIKS_FREQCOUNTER][3][3] = ""; // Not used.
-		// Tables for BPM meter (BPM meter mode doesn't have options).
+		// Tables used by BPM Meter mode (for now, BPM Meter mode doesn't have options).
 		tb_OptionID[METRIKS_BPMMETER][0] = ""; // Not used.
 		tb_ParamNumPerOpt[METRIKS_BPMMETER][0] = 0;
 		tb_OptParameter[METRIKS_BPMMETER][0][0] = ""; // Not used.
@@ -338,7 +340,7 @@ struct MetriksModule : Module {
 		tb_OptParameter[METRIKS_BPMMETER][3][1] = ""; // Not used.
 		tb_OptParameter[METRIKS_BPMMETER][3][2] = ""; // Not used.
 		tb_OptParameter[METRIKS_BPMMETER][3][3] = ""; // Not used.
-		// Tables for peak/pulse counter.
+		// Tables used by Peak Counter mode.
 		tb_OptionID[METRIKS_PEAKCOUNTER][0] = "Threshold";
 		tb_ParamNumPerOpt[METRIKS_PEAKCOUNTER][0] = 1; // NOTE: threshold voltage is set directly via continuous encoder (by +/- 0.1V steps).
 		tb_OptParameter[METRIKS_PEAKCOUNTER][0][0] = ""; // Not used.
@@ -365,35 +367,37 @@ struct MetriksModule : Module {
 		tb_OptParameter[METRIKS_PEAKCOUNTER][3][3] = ""; // Not used.
 		// Get current engine sample rate.
 		onSampleRateChange();
-		// By doing this, the second line of DMD will be refreshed.
-		_f_InVoltage = f_InVoltage + 1.0f;
-		// Be sure we're using right notes table (for CV Tuner).
-		bUpdateNotesTable = true;
-		// Ensure all parameters are set.
-		setMetriksParameters(false);
+		// Set up frequencies tables for CV Tuner mode.
+		setTunerFreqTables();
 	}
 
 	// Invoked (as event) from Initialize command via module's context menu (also Ctrl+I, Command+I on Macinthosh) to reset the module.
 	// Model (Theme) isn't affected by module reset, however.
 	void onReset() override {
-		Mode = METRIKS_VOLTMETER; // Default mode: 0 = voltmeter.
-		_Mode = METRIKS_VOLTMETER; // Its old/previous state (required for Preset management).
-		triggerVoltage = 17; // Default threshold used by "Peak Counter" mode. Must be 17 as default (= 1.7V).
-		_triggerVoltage = 17; // Its old/previous state (required for Preset management).
-		f_triggerVoltage = 1.7f;
 		// Current parameters (and their old/previous states) reset to default values (0).
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < METRIKS_NUM_MODES; i++)
 			for (int j = 0; j < 4; j++) {
-				currentParameter[i][j] = 0; // All options to default.
-				_currentParameter[i][j] = 0; // Same for old/previous states.
+				if ((i == METRIKS_PEAKCOUNTER) && (j == 0)) {
+					_currentParameter[METRIKS_PEAKCOUNTER][0] = 17; // Set treshold voltage to default 1.7V (for Peak Counter mode).
+					currentParameter[METRIKS_PEAKCOUNTER][0] = 17; // Set treshold voltage to default 1.7V (for Peak Counter mode).
+				}
+				else {
+					_currentParameter[i][j] = 0; // All options to default.
+					currentParameter[i][j] = 0; // All options to default.
+				}
+				setMetriksParameters(i, j);
 			}
+		_Mode = Mode;
 		b_InopMode = false; // TEMPORARY - false means the mode is operational (totally or partially) - MUST BE REMOVED WHEN ALL MODES WORK.
+		bChangingMode = false;
+		ct_SwitchedMode = 0;
+		bChangingOption = false;
+		currentOptionID = -1; // Option ID (-1 while not option edit).
+		ct_OptionTimeout = 0; // Used as timer for current option (as time out).
+		ct_OptionBlinkTimer = 0;
+		lights[LED_OPTIONS].setBrightness(0.0f);
 		// Peak Counter isn't running.
 		bPeakCounterIsPlaying = false;
-		// Be sure we're using right notes table (for CV Tuner).
-		bUpdateNotesTable = true;
-		// Ensure all parameters are set.
-		setMetriksParameters(true);
 		// By doing this, the second line of DMD will be refreshed.
 		_f_InVoltage = f_InVoltage + 1.0f;
 	}
@@ -408,8 +412,11 @@ struct MetriksModule : Module {
 		return round(f * (double)(pow(10, prec))) / (double)(pow(10, prec));
 	}
 
-	void setMetriksParameters(bool b_ForceExitChangeModes) {
-		if (b_ForceExitChangeModes) {
+	void setMetriksParameters(int i_Mode, int i_Opt) {
+		if (currentParameter[i_Mode][i_Opt] != _currentParameter[i_Mode][i_Opt]) {
+			// Suddently (uncontroled) changed parameter, for example via Preset load or copy/paste accross Metriks modules.
+			_Mode = Mode;
+			b_InopMode = false; // TEMPORARY - false means the mode is operational (totally or partially) - MUST BE REMOVED WHEN ALL MODES WORK.
 			bChangingMode = false;
 			ct_SwitchedMode = 0;
 			bChangingOption = false;
@@ -417,46 +424,55 @@ struct MetriksModule : Module {
 			ct_OptionTimeout = 0; // Used as timer for current option (as time out).
 			ct_OptionBlinkTimer = 0;
 			lights[LED_OPTIONS].setBrightness(0.0f);
+			// Peak Counter isn't running.
+			bPeakCounterIsPlaying = false;
+			// By doing this, the second line of DMD will be refreshed.
 			_f_InVoltage = f_InVoltage + 1.0f;
+			// Mirror current parameter to its backup.
+			_currentParameter[i_Mode][i_Opt] = currentParameter[i_Mode][i_Opt];
 		}
-		// Voltmeter: checking "Decimals".
-		if (Mode == METRIKS_VOLTMETER) {
-			// Decimals.
-			switch (currentParameter[METRIKS_VOLTMETER][0]) {
-				case 0:
-					 // 2 decimals (default).
-					 vltmDecimals = 2;
+		switch (i_Mode) {
+			case METRIKS_VOLTMETER:
+				// Voltmeter mode.
+				if (i_Opt == 0) {
+					// Decimals...
+					switch (currentParameter[METRIKS_VOLTMETER][0]) {
+						case 0:
+							 // 2 decimals (default).
+							 vltmDecimals = 2;
+						break;
+						case 1:
+							 // 3 decimals.
+							 vltmDecimals = 3;
+						break;
+						case 2:
+							 // 0 decimal.
+							 vltmDecimals = 0;
+						break;
+						case 3:
+							 // 1 decimal.
+							 vltmDecimals = 1;
+					}
+				}
 				break;
-				case 1:
-					 // 3 decimals.
-					 vltmDecimals = 3;
+			case METRIKS_CVTUNER:
+				// CV Tuner mode.
+				// Notation or sharps/flats: update notes tables.
+				makeNotesTables();
 				break;
-				case 2:
-					 // 0 decimal.
-					 vltmDecimals = 0;
+			case METRIKS_FREQCOUNTER:
 				break;
-				case 3:
-					 // 1 decimal.
-					 vltmDecimals = 1;
+			case METRIKS_BPMMETER:
 				break;
-			}
-			if (vltmDecimals != _vltmDecimals) {
-				// Number of decimal(s) has changed.
-				_vltmDecimals = vltmDecimals;
-				_f_InVoltage = f_InVoltage + 1.0f; // By doing this, the second line of DMD will be refreshed.
-			}
+			case METRIKS_PEAKCOUNTER:
+				// Peak Counter mode.
+				pcntTresholdVoltage = currentParameter[METRIKS_PEAKCOUNTER][0];
+				if (pcntTresholdVoltage < 2)
+					pcntTresholdVoltage = 2; // Set to minimum treshold voltage (0.2V) if below compliant.
+					else if (pcntTresholdVoltage > 117)
+						pcntTresholdVoltage = 117; // Set to maximum allowed treshold voltage (11.7V) if above compliant.
+				f_pcntTresholdVoltage = (float)(pcntTresholdVoltage) / 10.0f;
 		}
-		// CV Tuner: if "Notation" or/and "Sharps/Flats" was changed, the notes table must be updated.
-		if (Mode == METRIKS_CVTUNER) {
-			if (((currentParameter[METRIKS_CVTUNER][0] * 10) + currentParameter[METRIKS_CVTUNER][1]) != _tunrNotation) {
-				// Either "Notation" or "Sharps/Flats" have been changed, so notes table must be updated.
-				bUpdateNotesTable = true;
-				_f_InVoltage = f_InVoltage + 1.0f; // By doing this, the second line of DMD will be refreshed.
-			}
-		}
-		if (bUpdateNotesTable)
-			makeNotesTables();
-		setTunerFreqTables();
 	}
 
 	// Custom method to make current notes table, depending "Notation" and "Sharps/Flats" parameters (CV Tuner mode).
@@ -532,9 +548,6 @@ struct MetriksModule : Module {
 		// Final table construction, including octave.
 		for (int i = 0; i < 132; i++)
 			tunerNote[i] = tunerBaseNoteName[i % 12] + std::to_string((i / 12) - 1);
-		// Update previous to current, and flag, to avoid undesired table constructions.
-		_tunrNotation = (currentParameter[METRIKS_CVTUNER][0] * 10) + currentParameter[METRIKS_CVTUNER][1];
-		bUpdateNotesTable = false;
 	}
 
 	// This method prepares frequencies tables, used by CV Tuner mode.
@@ -556,11 +569,11 @@ struct MetriksModule : Module {
 
 	// Custom method to prepare threshold voltage for display (2nd line).
 	void setDisplayThresholdVoltage() {
-		f_triggerVoltage = (float)(triggerVoltage / 10.0f);
-		if (triggerVoltage < 100)
+		f_pcntTresholdVoltage = (float)(pcntTresholdVoltage / 10.0f);
+		if (pcntTresholdVoltage < 100)
 			dmdOffsetTextMain2 = 36;
 			else dmdOffsetTextMain2 = 24;
-		snprintf(dmdTextMain2, sizeof(dmdTextMain2), "%2.1fV", f_triggerVoltage);
+		snprintf(dmdTextMain2, sizeof(dmdTextMain2), "%2.1fV", f_pcntTresholdVoltage);
 	}
 
 	// This function will search accurate note, from given frequency, from precomputed tables (best for CPU save, tables are computed on Ref. A4/La4 tuning change only).
@@ -719,25 +732,20 @@ struct MetriksModule : Module {
 	void process(const ProcessArgs &args) override {
 		// DSP processing...
 
+		if (!b_dspIsRunning) {
+			for (int i = 0; i < METRIKS_NUM_MODES; i++)
+				for (int j = 0; j < 4; j++) {
+					// Set up relevant mode/option.
+					setMetriksParameters(i, j);
+					_currentParameter[i][j] = currentParameter[i][j];
+				}
+			// By doing this, the second line of DMD will be refreshed.
+			_f_InVoltage = f_InVoltage + 1.0f;
+			b_dspIsRunning = true; // Yes, DSP is running...
+		}
+
 		// Depending current Metriks model (theme), set the relevant DMD-text color.
 		DMDtextColor = tblDMDtextColor[Theme];
-
-		// Preset management: check if mode have suddently changed.
-		if (Mode != _Mode) {
-			setMetriksParameters(true); // Force changing mode to exit immediately.
-			_Mode = Mode;
-		}
-
-		// Preset management: check if mode have suddently changed.
-		if (triggerVoltage != _triggerVoltage) {
-			setMetriksParameters(true); // Force changing mode to exit immediately.
-			if (triggerVoltage < 2)
-				triggerVoltage = 2; // Set to minimum voltage (0.2V) if below compliant.
-			if (triggerVoltage > 120)
-				triggerVoltage = 120; // Set tp maximum voltage (12.0V) if above compliant.
-			f_triggerVoltage = (float)(triggerVoltage) / 10.0f;
-			_triggerVoltage = triggerVoltage;
-		}
 
 		// TEMPORARY - used for inoperative mode(s) - MUST BE REMOVED WHEN ALL MODES WORK.
 		if (b_InopMode)
@@ -770,11 +778,12 @@ struct MetriksModule : Module {
 					else {
 						ct_OptionTimeout = (int)(10.0f * sampleRate); // Restart timeout for another 5 seconds when encoder is moved.
 						if (Mode == METRIKS_PEAKCOUNTER) {
-							// Incrementing thresold voltage by 0.1...
-							triggerVoltage++;
-							if (triggerVoltage > 120)
-								triggerVoltage = 120; // Maximum voltage: 12.0V.
-							_triggerVoltage = triggerVoltage; // Done by encoder: backup to old/previous state variable.
+							// Incrementing treshold voltage by 0.1...
+							pcntTresholdVoltage++;
+							if (pcntTresholdVoltage > 117)
+								pcntTresholdVoltage = 117; // Maximum treshold voltage: 11.7V.
+							_currentParameter[METRIKS_PEAKCOUNTER][0] = pcntTresholdVoltage; // Done by encoder: to backup first...
+							currentParameter[METRIKS_PEAKCOUNTER][0] = pcntTresholdVoltage; // ...then regular.
 							// Threshold voltage (Peak Counter mode only).
 							setDisplayThresholdVoltage();
 						}
@@ -783,11 +792,12 @@ struct MetriksModule : Module {
 							currentParameter[Mode][currentOptionID]++;
 							if (currentParameter[Mode][currentOptionID] > (tb_ParamNumPerOpt[Mode][currentOptionID] - 1))
 								currentParameter[Mode][currentOptionID] = 0; // Return to first parameter.
+							_currentParameter[Mode][currentOptionID] = currentParameter[Mode][currentOptionID];
 							_tmpString = tb_OptParameter[Mode][currentOptionID][currentParameter[Mode][currentOptionID]];
 							dmdOffsetTextMain2 = tb_OptParameterXPos[Mode][currentOptionID][currentParameter[Mode][currentOptionID]]; // Centered display on second line of DMD.
 							strcpy(dmdTextMain2, _tmpString.c_str());
 						}
-						setMetriksParameters(false);
+						setMetriksParameters(Mode, currentOptionID);
 					}
 				}
 				else {
@@ -804,11 +814,12 @@ struct MetriksModule : Module {
 					else {
 						ct_OptionTimeout = (int)(10.0f * sampleRate); // Restart timeout for another 5 seconds when encoder is moved.
 						if (Mode == METRIKS_PEAKCOUNTER) {
-							// Decrementing thresold voltage by 0.1...
-							triggerVoltage--;
-							if (triggerVoltage < 2)
-								triggerVoltage = 2; // Minimum voltage: 0.2V.
-							_triggerVoltage = triggerVoltage; // Done by encoder: backup to old/previous state variable.
+							// Decrementing treshold voltage by 0.1...
+							pcntTresholdVoltage--;
+							if (pcntTresholdVoltage < 2)
+								pcntTresholdVoltage = 2; // Minimum treshold voltage: 0.2V.
+							_currentParameter[METRIKS_PEAKCOUNTER][0] = pcntTresholdVoltage; // Done by encoder: to backup first...
+							currentParameter[METRIKS_PEAKCOUNTER][0] = pcntTresholdVoltage; // ...then regular.
 							// Threshold voltage (Peak Counter mode only).
 							setDisplayThresholdVoltage();
 						}
@@ -817,11 +828,12 @@ struct MetriksModule : Module {
 							currentParameter[Mode][currentOptionID]--;
 							if (currentParameter[Mode][currentOptionID] < 0)
 								currentParameter[Mode][currentOptionID] = tb_ParamNumPerOpt[Mode][currentOptionID] - 1; // Return to last parameter.
+							_currentParameter[Mode][currentOptionID] = currentParameter[Mode][currentOptionID];
 							_tmpString = tb_OptParameter[Mode][currentOptionID][currentParameter[Mode][currentOptionID]];
 							dmdOffsetTextMain2 = tb_OptParameterXPos[Mode][currentOptionID][currentParameter[Mode][currentOptionID]]; // Centered display on second line of DMD.
 							strcpy(dmdTextMain2, _tmpString.c_str());
 						}
-						setMetriksParameters(false);
+						setMetriksParameters(Mode, currentOptionID);
 					}
 				}
 			}
@@ -893,8 +905,6 @@ struct MetriksModule : Module {
 						_f_InVoltage = f_InVoltage + 1.0f; // By doing this, the second line of DMD will be refreshed.
 					}
 					else {
-						if ((currentParameter[Mode][currentOptionID] < 0) || (currentParameter[Mode][currentOptionID] > (tb_ParamNumPerOpt[Mode][currentOptionID] - 1)))
-							currentParameter[Mode][currentOptionID] = 0; // in case of "currentParameter[Mode][currentOptionID]" is badly initialized.
 						_tmpString = tb_OptParameter[Mode][currentOptionID][currentParameter[Mode][currentOptionID]];
 						dmdOffsetTextMain2 = tb_OptParameterXPos[Mode][currentOptionID][currentParameter[Mode][currentOptionID]]; // Centered display on second line of DMD.
 						strcpy(dmdTextMain2, _tmpString.c_str());
@@ -912,6 +922,8 @@ struct MetriksModule : Module {
 						strcpy(dmdTextMain1, _tmpString.c_str());
 						if (Mode == METRIKS_PEAKCOUNTER) {
 							// Threshold voltage (Peak Counter mode only).
+							_currentParameter[METRIKS_PEAKCOUNTER][0] = pcntTresholdVoltage; // Done by encoder: to backup first...
+							currentParameter[METRIKS_PEAKCOUNTER][0] = pcntTresholdVoltage; // ...then regular.
 							setDisplayThresholdVoltage();
 						}
 						else {
@@ -944,6 +956,8 @@ struct MetriksModule : Module {
 					lights[LED_OPTIONS].setBrightness(1.0f);
 					if (Mode == METRIKS_PEAKCOUNTER) {
 						// Threshold voltage (Peak Counter mode only).
+						_currentParameter[METRIKS_PEAKCOUNTER][0] = pcntTresholdVoltage; // Done by encoder: to backup first...
+						currentParameter[METRIKS_PEAKCOUNTER][0] = pcntTresholdVoltage; // ...then regular.
 						setDisplayThresholdVoltage();
 					}
 					else {
@@ -1128,12 +1142,24 @@ struct MetriksModule : Module {
 		json_t *rootJ = json_object();
 		json_object_set_new(rootJ, "Theme", json_integer(Theme)); // Save selected module theme (GUI).
 		json_object_set_new(rootJ, "Mode", json_integer(Mode)); // Save current mode.
-		json_object_set_new(rootJ, "triggerVoltage", json_integer(triggerVoltage)); // Save trigger voltage for input port (stored as value x 10, integer. Default 17 means +1.7V).
+		// Preset management: check if mode have suddently changed (without encoder usage).
+		if (b_dspIsRunning)
+			if (Mode != _Mode) {
+				_Mode = Mode;
+			}
 		// All parameters per mode and, per option (two-dimension array of integers).
 		json_t *optionsJ = json_array();
-		for (int i = 0; i < 4; i++)
-			for (int j = 0; j < 4; j++)
+		for (int i = 0; i < METRIKS_NUM_MODES; i++)
+			for (int j = 0; j < 4; j++) {
 				json_array_insert_new(optionsJ, (4 * i) + j, json_integer(currentParameter[i][j]));
+				if (b_dspIsRunning) {
+					if (_currentParameter[i][j] != currentParameter[i][j]) {
+						// Set up relevant mode/option.
+						setMetriksParameters(i, j);
+					}
+				}
+				_currentParameter[i][j] = currentParameter[i][j];
+			}
 		json_object_set_new(rootJ, "MtrxOptions", optionsJ);
 		return rootJ;
 	}
@@ -1155,42 +1181,31 @@ struct MetriksModule : Module {
 				Mode = 0; // Set mode to Voltmeter if not compliant.
 		}
 		else Mode = 0; // Default voltmeter.
-		// Retrieving saved trigger voltage for peak counter mode (saved as integer, mult by 10).
-		json_t *triggerVoltageJ = json_object_get(rootJ, "triggerVoltage");
-		if (triggerVoltageJ) {
-			triggerVoltage = json_integer_value(triggerVoltageJ);
-			if (triggerVoltage < 2)
-				triggerVoltage = 2; // Set to minimum voltage (0.2V) if below compliant.
-			if (triggerVoltage > 120)
-				triggerVoltage = 120; // Set tp maximum voltage (12.0V) if above compliant.
-			f_triggerVoltage = (float)(triggerVoltage) / 10.0f;
-		}
-		else {
-			triggerVoltage = 17; // Default threshold (Peak Counter mode) is 17 (1.7V).
-			f_triggerVoltage = 1.7f;
-		}
 		// Retrieving all saved options/parameters (per mode) (two-dimension array of integers).
 		json_t *optionsJ = json_object_get(rootJ, "MtrxOptions");
 		if (optionsJ) {
-			for (int i = 0; i < 4; i++) {
+			for (int i = 0; i < METRIKS_NUM_MODES; i++) {
 				for (int j = 0; j < 4; j++) {
 					json_t *optionJ = json_array_get(optionsJ, (4 * i) + j);
 					if (optionJ)
 						currentParameter[i][j] = json_integer_value(optionJ);
-						else currentParameter[i][j] = 0; // Default 0.
+						else {
+							if ((i == METRIKS_PEAKCOUNTER) && (j == 0))
+								currentParameter[i][j] = 17; // Default treshold voltage (Peak Counter mode) set to 1.7V.
+								else currentParameter[i][j] = 0; // Default 0 for others.
+						}
 				}
 			}
 		}
 		else {
-			for (int i = 0; i < 4; i++)
-				for (int j = 0; j < 4; j++)
-					currentParameter[i][j] = 0; // Default 0.
+			for (int i = 0; i < METRIKS_NUM_MODES; i++)
+				for (int j = 0; j < 4; j++) {
+					if ((i == METRIKS_PEAKCOUNTER) && (j == 0))
+						currentParameter[i][j] = 17; // Default treshold voltage (Peak Counter mode) set to 1.7V.
+						else currentParameter[i][j] = 0; // Default 0 for others.
+					_currentParameter[i][j] = currentParameter[i][j];
+				}
 		}
-		// Initialize some non-jSon variables, also set up some Metriks behaviors.
-		setMetriksParameters(false);
-		// Reconstruct notes table, if necessary.
-		if (bUpdateNotesTable)
-			makeNotesTables();
 	}
 
 };
