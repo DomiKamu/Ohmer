@@ -75,7 +75,7 @@ struct MetriksModule : Module {
 		METRIKS_NUM_MODES
 	};
 
-	const int tb_OptionNumPerMode[METRIKS_NUM_MODES] = {1, 2, 1, 0, 1}; // For each mode, number of possible option(s). BPM meter doesn't have option.
+	const int tb_OptionNumPerMode[METRIKS_NUM_MODES] = {2, 2, 1, 0, 1}; // For each mode, number of possible option(s). BPM meter doesn't have option.
 	std::string tb_OptionID[METRIKS_NUM_MODES][4]; // Will be initialized later (from module constructor).
 	int tb_ParamNumPerOpt[METRIKS_NUM_MODES][4]; // Will be initialized later (from module constructor).
 	std::string tb_OptParameter[METRIKS_NUM_MODES][4][4]; // Will be initialized later (from module constructor).
@@ -180,6 +180,10 @@ struct MetriksModule : Module {
 	bool _bActiveINjack = false; // Old/previous IN jack state.
 	float f_InVoltage = 0.0f;
 	float _f_InVoltage = -1.0f; // Old/previous voltage on IN jack.
+	// Used for mix, max, and median.
+	float f_VoltageMin = 0.0f;
+	float f_VoltageMax = 0.0f;
+	float f_VoltageMed = 0.0f;
 
 	// PLAY/STOP button and related (trigger) port (PLAY/STOP is used for "Pulse Counter" mode only).
 	dsp::SchmittTrigger playButton;
@@ -229,22 +233,26 @@ struct MetriksModule : Module {
 				for (int k = 0; k < 4; k++)
 					tb_OptParameterXPos[i][j][k] = 0.0f; // Horizontal positions (display on line 2 of DMD). Default 0.0f, used will are set just below.
 		// Tables used by Voltmeter mode.
-		tb_OptionID[METRIKS_VOLTMETER][0] = "Decimals";
+		tb_OptionID[METRIKS_VOLTMETER][0] = "Metering";
 		tb_ParamNumPerOpt[METRIKS_VOLTMETER][0] = 4;
-		tb_OptParameter[METRIKS_VOLTMETER][0][0] = "2";
-		tb_OptParameterXPos[METRIKS_VOLTMETER][0][0] = 41.19f;
-		tb_OptParameter[METRIKS_VOLTMETER][0][1] = "3";
-		tb_OptParameterXPos[METRIKS_VOLTMETER][0][1] = 41.19f;
-		tb_OptParameter[METRIKS_VOLTMETER][0][2] = "0";
-		tb_OptParameterXPos[METRIKS_VOLTMETER][0][2] = 41.19f;
-		tb_OptParameter[METRIKS_VOLTMETER][0][3] = "1";
-		tb_OptParameterXPos[METRIKS_VOLTMETER][0][3] = 41.19f;
-		tb_OptionID[METRIKS_VOLTMETER][1] = ""; // Not used.
-		tb_ParamNumPerOpt[METRIKS_VOLTMETER][1] = 0;
-		tb_OptParameter[METRIKS_VOLTMETER][1][0] = ""; // Not used.
-		tb_OptParameter[METRIKS_VOLTMETER][1][1] = ""; // Not used.
-		tb_OptParameter[METRIKS_VOLTMETER][1][2] = ""; // Not used.
-		tb_OptParameter[METRIKS_VOLTMETER][1][3] = ""; // Not used.
+		tb_OptParameter[METRIKS_VOLTMETER][0][0] = "Realtime";
+		tb_OptParameterXPos[METRIKS_VOLTMETER][0][0] = 9.17f;
+		tb_OptParameter[METRIKS_VOLTMETER][0][1] = "Minimum";
+		tb_OptParameterXPos[METRIKS_VOLTMETER][0][1] = 12.94f;
+		tb_OptParameter[METRIKS_VOLTMETER][0][2] = "Maximum";
+		tb_OptParameterXPos[METRIKS_VOLTMETER][0][2] = 12.0f;
+		tb_OptParameter[METRIKS_VOLTMETER][0][3] = "Median";
+		tb_OptParameterXPos[METRIKS_VOLTMETER][0][3] = 18.6f;
+		tb_OptionID[METRIKS_VOLTMETER][1] = "Decimals";
+		tb_ParamNumPerOpt[METRIKS_VOLTMETER][1] = 4;
+		tb_OptParameter[METRIKS_VOLTMETER][1][0] = "2";
+		tb_OptParameterXPos[METRIKS_VOLTMETER][1][0] = 41.19f;
+		tb_OptParameter[METRIKS_VOLTMETER][1][1] = "3";
+		tb_OptParameterXPos[METRIKS_VOLTMETER][1][1] = 41.19f;
+		tb_OptParameter[METRIKS_VOLTMETER][1][2] = "0";
+		tb_OptParameterXPos[METRIKS_VOLTMETER][1][2] = 41.19f;
+		tb_OptParameter[METRIKS_VOLTMETER][1][3] = "1";
+		tb_OptParameterXPos[METRIKS_VOLTMETER][1][3] = 41.19f;
 		tb_OptionID[METRIKS_VOLTMETER][2] = ""; // Not used.
 		tb_ParamNumPerOpt[METRIKS_VOLTMETER][2] = 0;
 		tb_OptParameter[METRIKS_VOLTMETER][2][0] = ""; // Not used.
@@ -434,9 +442,9 @@ struct MetriksModule : Module {
 		switch (i_Mode) {
 			case METRIKS_VOLTMETER:
 				// Voltmeter mode.
-				if (i_Opt == 0) {
+				if (i_Opt == 1) {
 					// Decimals...
-					switch (currentParameter[METRIKS_VOLTMETER][0]) {
+					switch (currentParameter[METRIKS_VOLTMETER][1]) {
 						case 0:
 							 // 2 decimals (default).
 							 vltmDecimals = 2;
@@ -983,7 +991,24 @@ struct MetriksModule : Module {
 		// Display current mode on first line of DMD (if not currently changing an option for current mode).
 			switch (Mode) {
 				case 0:
-					strcpy(dmdTextMain1, "Voltmeter");
+					// Voltmeter mode.
+					switch (currentParameter[METRIKS_VOLTMETER][0]) {
+						case 0:
+							// Voltmeter, realtime (default metering option).
+							strcpy(dmdTextMain1, "Voltmeter");
+							break;
+						case 1:
+							// Voltmeter, minimum.
+							strcpy(dmdTextMain1, "Voltm. Min.");
+							break;
+						case 2:
+							// Voltmeter, maximum.
+							strcpy(dmdTextMain1, "Voltm. Max.");
+							break;
+						case 3:
+							// Voltmeter, median.
+							strcpy(dmdTextMain1, "Voltm. Medn.");
+					}
 					break;
 				case 1:
 					strcpy(dmdTextMain1, "CV Tuner");
@@ -1008,12 +1033,20 @@ struct MetriksModule : Module {
 
 		if (bActiveINjack) {
 			f_InVoltage = inputs[INPUT_SOURCE].getVoltage();
+			if (f_InVoltage > f_VoltageMax)
+				f_VoltageMax = f_InVoltage;
+				else if (f_InVoltage < f_VoltageMin)
+					f_VoltageMin = f_InVoltage;
+			f_VoltageMed = (f_VoltageMax + f_VoltageMin) / 2.0f;
 			ct_NoInputTimer = 0;
 		}
 		else {
 			// Input jack isn't connected...
 			f_InVoltage = 0.0f;
 			_f_InVoltage = 1.0f;
+			f_VoltageMin = 0.0f;
+			f_VoltageMax = 0.0f;
+			f_VoltageMed = 0.0f;
 			// Be sure Peak Counter is stopped. Unlit PLAY/PAUSE bi-colored LED.
 			lights[LED_PLAY_GREEN].setBrightness(0.0f);
 			lights[LED_PLAY_RED].setBrightness(0.0f);
@@ -1045,9 +1078,26 @@ struct MetriksModule : Module {
 						float vCeiling;
 						std::string vSign = "+";
 						std::string vMask = "";
-						float currentVoltage = roundp((double)f_InVoltage, vltmDecimals);
+						float currentVoltage = 0.0f;
 						_f_InVoltage = f_InVoltage;
-						if (f_InVoltage < 0.0f)
+						switch (currentParameter[METRIKS_VOLTMETER][0]) {
+							case 0:
+								// Voltmeter, realtime (default metering option).
+								currentVoltage = roundp((double)f_InVoltage, vltmDecimals);
+								break;
+							case 1:
+								// Voltmeter, minimum.
+								currentVoltage = roundp((double)f_VoltageMin, vltmDecimals);
+								break;
+							case 2:
+								// Voltmeter, maximum.
+								currentVoltage = roundp((double)f_VoltageMax, vltmDecimals);
+								break;
+							case 3:
+								// Voltmeter, median.
+								currentVoltage = roundp((double)f_VoltageMed, vltmDecimals);
+						}
+						if (currentVoltage < 0.0f)
 							vSign = "-";
 						currentVoltage = abs(currentVoltage);
 						switch (vltmDecimals) {
