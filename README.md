@@ -91,7 +91,7 @@ Please take a look on [PDF user's manual](res/Manuals/RKD%20User's%20Manual.pdf)
 
 **Metriks**, a 8 HP metering/visual module, for now providing **voltmeter** and **CV tuner** modes only (please notice other modes, such *BPM Meter*, *Frequency Counter* and *Peak Counter*, are temporary disabled, like a "scrolling message" says on the dot-matrix display when you select one of these unavailable modes). 
 
-[Metriks - Quick Guide **is here!**](doc/Metriks.md) please notice **this Metriks module still in development**, thank you very much for patience! Next mode will be implemented is... BPM Meter.
+[Metriks - Quick Guide **is here!**](doc/Metriks.md) please notice **this Metriks module still in development**, thank you very much for patience!
 
 ![Metriks module](doc/images/Metriks.png)
 
@@ -118,13 +118,13 @@ All Ohmer Modules are free, source code is provided.
 
 Source code is licensed under **BSD 3-Clause**, by Dominique Camus. Some graphic materials can't be used for derivative works without my permission.
 
-About RKD modules: the [4ms Company](https://4mscompany.com/) doesn't endorse any support or responsability about this conversion for VCV Rack, **anyway**! These modules follow guidelines given by 4ms Company, including respect of non-usage of company logo, brand name (4ms), and trademarked modules names (RCD, Rotating Clock Divider, RCDBO, and RCD Breakout). Both **RKD** and **RKD with "Break"** modules use exclusively 100% homemade C++ code (provided), have some variations regardling some graphicals and technical specifications, and provide additional features, such different panel colors, and segment-LED displays (instead of silkscreen prints) showing dividers for every output jack, in real-time.
+About RKD modules: the [4ms Company](https://4mscompany.com/) doesn't endorse any support or responsability about this conversion for VCV Rack, **anyway**! These modules follow guidelines given by 4ms Company, including respect of non-usage of company logo, brand name (4ms), and trademarked modules names (RCD, Rotating Clock Divider, RCDBO, and RCD Breakout). Both **RKD** and **RKD with "Break"** modules use exclusively 100% homemade C++ code (provided), have some variations regardling some graphicals and technical specifications, and provide additional features, such different panel colors, and segment-LED displays (instead of silkscreen prints) showing dividers for every output jack in real-time.
 
 Feature requests, suggestions, and bug reports are welcome on [GitHub repository](https://github.com/DomiKamu/Ohmer-Modules/issues).
 
 
 
-### Current release: v1.1.2 (July 21st, 2019):
+### Current release: v1.1.3 (July 26st, 2019):
 
 - Bugfixes and enhancements are described in details into [CHANGELOG.TXT](doc/CHANGELOG.txt).
 
