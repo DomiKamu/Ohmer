@@ -6,6 +6,7 @@ Release v1.1.3 (July 26th, 2019):
 
 - Metriks: fixed potential crash (Linux) when switching to "CV Tuner" mode.
 - Metriks: for Voltmeter, new option (1st) is added: Realtime (default), Minimum, Maximum, or Median.
+- Metriks: added manual (links from main README.md).
 
 ------------------------------------------------------------------------------------------------------------------------------
 
