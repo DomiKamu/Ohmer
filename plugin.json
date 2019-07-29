@@ -27,7 +27,7 @@
     {
       "slug": "BRK",
       "name": "BRK (\"Break\") expander for RKD",
-      "description": "BRK (\"Break\") expander to setup RKD jumpers (inspired from 4ms RCD hardware)",
+      "description": "BRK (\"Break\") expander to setup RKD jumpers (inspired from 4ms BO hardware)",
       "tags": ["Clock modulator", "Expander"]
     },
     {
