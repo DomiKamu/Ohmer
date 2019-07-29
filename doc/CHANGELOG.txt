@@ -2,6 +2,15 @@
 CHANGELOG
 ==============================================================================================================================
 
+Release v1.1.3.1 (July 29th, 2019):
+
+- New module BRK, as RKD "expander". This 4 HP module can be placed at right-side of RKD, or at left-side (if both, left
+  side is ignored however). When RKD jumpers set-up (via BRK) is done, BRK can be removed.
+- RKD-BRK module (8 HP) continues to exist for patch compatibility, BUT WILL BE DEPRECATED!
+  during migration (by replacing all RKD-BRK by simple RKD in your patches is highly recommended).
+
+------------------------------------------------------------------------------------------------------------------------------
+
 Release v1.1.3 (July 26th, 2019):
 
 - Metriks: fixed potential crash (Linux) when switching to "CV Tuner" mode.
