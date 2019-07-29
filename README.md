@@ -2,7 +2,7 @@
 
 ### ***MANUALS:***
 
-[RKD / RKD with "Break" User's Guide (PDF)](res/Manuals/RKD%20User's%20Manual.pdf) (still under construction and... delayed sorry!).
+[RKD / RKD with "Break" User's Guide (PDF)](res/Manuals/RKD%20User's%20Manual.pdf) (still under construction).
 
 [Metriks - Quick User's Guide](doc/Metriks.md) (module still in development, thanks for your patience!)
 
@@ -77,11 +77,11 @@ Obviously, all settings you've defined via SETUP are automatically saved along y
 
 **RKD (Rotate Klok Divider)**, inspired by [4ms Company](https://4mscompany.com/) **RCD** module (with limited permission).
 
-**BRK**, inspired by 4ms Company **RCDBO** module (with limited permission), as RKD expander.
+**BRK**, inspired by 4ms Company **RCDBO** (or **BO**) module (with limited permission), as RKD expander.
 
 ![RKD and RKD with Break modules](doc/images/RKD-RKDBRK.png)
 
-**BRK** is basically an additional panel (4 HP, must be placed alongside RKD) providing six deported switches. By this way, it's more comfortable to change module's settings "on-the-fly", without need to access PCB to change jumpers. When RKD module was set correctly, you'll can remove its BRK expander.
+**BRK** is basically an additional **expander** panel (4 HP, must be placed alongside RKD, right or left) providing six *deported* switches. By this way, it's more comfortable to change module's settings on-the-fly, without need to access PCB to change related jumpers. When RKD module was set correctly, you'll can, if you want, remove its BRK expander!
 
 **VERY IMPORTANT:** the **RKD with "Break"** 8 HP module **becomes obsolete** and now is replaced by the 4 HP **BRK** expander for RKD module (BRK can be placed at right-side or left-side, along RKD, without space between them). By this way, please consider to replace all of your existing *RKD with "Break"* modules in your patches (.vcv files) by an equivalent RKD module + BRK separate module (then, use same setting from BRK module), because **this 8 HP module will be removed in future releases** (keept now in Ohmer Modules, but temporary for compatibility).
 
