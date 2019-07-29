@@ -7,6 +7,7 @@ extern Plugin *pluginInstance;
 
 extern Model *modelKlokSpid;
 extern Model *modelRKD;
+extern Model *modelBRK;
 extern Model *modelRKDBRK;
 extern Model *modelMetriks;
 extern Model *modelSplitter;

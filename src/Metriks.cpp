@@ -158,7 +158,7 @@ struct MetriksModule : Module {
 	std::string tunerBaseNoteName[12] = {"", "", "", "", "", "", "", "", "", "", "", ""}; // Base note names, for now empty, filled later...
 	bool bUpdateNotesTable = true;
 	std::string tunerNote[132];
-	char dmdTunerMarker[3] = "  "; // CV Tuner only, to display the below/above marker(s).
+	char dmdTunerMarker[3] = ""; // CV Tuner only, to display the below/above marker(s).
 	float dmdTunerMarkerPos = 0.0f;
 	bool b_tunrMarkerVisible = false;
 
@@ -561,20 +561,20 @@ struct MetriksModule : Module {
 			tunerNote[i] = tunerBaseNoteName[i % 12] + std::to_string((i / 12) - 1);
 	}
 
-	// This method prepares frequencies tables, used by CV Tuner mode.
+	// This method prepares (precompute) frequencies tables, used by CV Tuner mode.
 	void setTunerFreqTables() {
 		for (int i = 0; i < 132; i++) {
 			// Central frequencies (frequency of each note).
 			tb_FreqNote_Center[i] = 440.0 * (double)(pow(2, ((i - 69.0) / 12)));
-			// Low precision ranges (also used first for note detection).
+			// Low precision ranges tables, also used for initial note detection.
 			tb_FreqNote_LP_LimL[i] = 440.0 * (double)(pow(2, ((i - 69.5) / 12)));
 			tb_FreqNote_LP_LimH[i] = 440.0 * (double)(pow(2, ((i - 68.5) / 12)));
-			// Medium precision ranges.
-			tb_FreqNote_MP_LimL[i] = 440.0 * (double)(pow(2, ((i - 69.25) / 12)));
-			tb_FreqNote_MP_LimH[i] = 440.0 * (double)(pow(2, ((i - 68.75) / 12)));
-			// High precision ranges.
-			tb_FreqNote_HP_LimL[i] = 440.0 * (double)(pow(2, ((i - 69.025) / 12)));
-			tb_FreqNote_HP_LimH[i] = 440.0 * (double)(pow(2, ((i - 68.975) / 12)));
+			// Medium precision ranges tables.
+			tb_FreqNote_MP_LimL[i] = 440.0 * (double)(pow(2, ((i - 69.2) / 12)));
+			tb_FreqNote_MP_LimH[i] = 440.0 * (double)(pow(2, ((i - 68.8) / 12)));
+			// High precision ranges tables.
+			tb_FreqNote_HP_LimL[i] = 440.0 * (double)(pow(2, ((i - 69.02) / 12)));
+			tb_FreqNote_HP_LimH[i] = 440.0 * (double)(pow(2, ((i - 68.98) / 12)));
 		}
 	}
 
@@ -621,14 +621,14 @@ struct MetriksModule : Module {
 						}
 					}
 					else {
- 						// Low precision: display two markers, either "<<" or ">>", because "center" frequency is a bit too far.
+ 						// Near bounds (aka bad precision): display three markers, either "<<<" or ">>>", because frequency is near bound.
 						b_tunrMarkerVisible = true;
 						if (b_IsAbove) {
 							dmdTunerMarkerPos = 2.6f;
 							strcpy(dmdTunerMarker, "<<");
 						}
 						else {
-							dmdTunerMarkerPos = 85.9998f;
+							dmdTunerMarkerPos = 84.0f;
 							strcpy(dmdTunerMarker, ">>");
 						}
 					}
@@ -639,7 +639,7 @@ struct MetriksModule : Module {
 		else if (freq < tb_FreqNote_LP_LimL[0]) {
 			// Input frequency is too low (below C-1).
 			b_tunrMarkerVisible = true;
-			dmdTunerMarkerPos = 85.9998f;
+			dmdTunerMarkerPos = 84.0f;
 			strcpy(dmdTunerMarker, ">>");
 		}
 		else {

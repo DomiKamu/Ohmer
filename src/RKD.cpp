@@ -52,6 +52,9 @@ struct RKD : Module {
 		NUM_LIGHTS
 	};
 
+	// Used for BRK expander (states of six switches).
+	bool rightMessages[2][NUM_PARAMS] = {}; // Messages from right-side BRK expander (default).
+	bool leftMessages[2][NUM_PARAMS] = {}; // Messages from left-side BRK expander (default).
 	// Sample rate.
 	float sampleRate = 44100.0f; // Default 44100 Hz for sample rate.
 	// This flag indicates if jumpers (PCB) is visible, or not (only RKD module).
@@ -74,15 +77,15 @@ struct RKD : Module {
 	bool bCLKTimeOut = true;
 	// Default jumpers/switches setting (false = Off, true = On).
 	bool jmprCountingDown = false; // Factory is Off: Counting Up.
-	bool jmprCountingDownPrevious = false;
+	bool _jmprCountingDown = false;
 	bool jmprGate = false; // Factory is Off: Trig.
-	bool jmprGatePrevious = false;
+	bool _jmprGate = false;
 	bool jmprMaxDivRange16 = true; // Factory is On (combined with Max-Div-Range 32, also On by default): Max Div amount = 8.
-	bool jmprMaxDivRange16Previous = true;
+	bool _jmprMaxDivRange16 = true;
 	bool jmprMaxDivRange32 = true; // Factory is On (combined with Max-Div-Range 16, also On by default): Max Div amount = 8.
-	bool jmprMaxDivRange32Previous = true;
+	bool _jmprMaxDivRange32 = true;
 	bool jmprSpread = false; // Factory is Off: Spread Off.
-	bool jmprSpreadPrevious = false;
+	bool _jmprSpread = false;
 	bool jmprAutoReset = false; // Factory is Off = Auto-Reset Off.
 	// Table set (0: Manufacturer, 1: Prime numbers, 2: Perfect squares, 3: Fibonacci sequence, 4: Triplet & 16ths).
 	int tableSet = 0; // This variable is persistent (json).
@@ -156,19 +159,26 @@ struct RKD : Module {
 		configParam(JUMPER_MAXDIVRANGE32, 0.0, 1.0, 1.0, "Max Div 32"); // On by default;
 		configParam(JUMPER_SPREAD, 0.0, 1.0, 0.0, "Spread"); // Off by default;
 		configParam(JUMPER_AUTORESET, 0.0, 1.0, 0.0, "Auto-Reset"); // Off by default;
+		// BRK module as expander (right-side of RKD - default and have priority aka possible left-side is ignored).
+		rightExpander.producerMessage = rightMessages[0];
+		rightExpander.consumerMessage = rightMessages[1];
+		// BRK module as expander (left-side of RKD - only if they're another BRK at right-side).
+		leftExpander.producerMessage = leftMessages[0];
+		leftExpander.consumerMessage = leftMessages[1];
+		//
 		sampleRate = (float)(APP->engine->getSampleRate());
-		this->jmprCountingDown = false;
-		jmprCountingDownPrevious = false;
-		this->jmprGate = false;
-		jmprGatePrevious = false;
-		this->jmprMaxDivRange16 = true;
-		jmprMaxDivRange16Previous = true;
-		this->jmprMaxDivRange32 = true;
-		jmprMaxDivRange32Previous = true;
-		this->jmprSpread = false;
-		jmprSpreadPrevious = false;
-		this->jmprAutoReset = false;
-		this->tableSet = 0;
+		jmprCountingDown = false;
+		_jmprCountingDown = false;
+		jmprGate = false;
+		_jmprGate = false;
+		jmprMaxDivRange16 = true;
+		_jmprMaxDivRange16 = true;
+		jmprMaxDivRange32 = true;
+		_jmprMaxDivRange32 = true;
+		jmprSpread = false;
+		_jmprSpread = false;
+		jmprAutoReset = false;
+		tableSet = 0;
 		for (int i = OUTPUT_1; i < NUM_OUTPUTS; i++)
 			tblDividersR0[i] = i + 1; // Default dividers for all output ports (manufacturer table).
 		maxDivAmount = 8; // Default factory maximum divide amount is 8.
@@ -233,25 +243,49 @@ struct RKD : Module {
 
 	void process(const ProcessArgs &args) override {
 		// DSP processing...
+
+		// BRK expander module handling (if BRK placed along right-side of RKD).
+		if ((rightExpander.module && rightExpander.module->model == modelBRK)) {
+			// BRK at right-side of RKD: receiving state of switches from BRK and update jumpers.
+			// Note right-side takes over another left-side!
+			bool *message = (bool*)rightExpander.consumerMessage;
+			params[JUMPER_COUNTINGDOWN].setValue(message[JUMPER_COUNTINGDOWN] ? 1.0 : 0.0);
+			params[JUMPER_GATE].setValue(message[JUMPER_GATE] ? 1.0 : 0.0);
+			params[JUMPER_MAXDIVRANGE16].setValue(message[JUMPER_MAXDIVRANGE16] ? 1.0 : 0.0);
+			params[JUMPER_MAXDIVRANGE32].setValue(message[JUMPER_MAXDIVRANGE32] ? 1.0 : 0.0);
+			params[JUMPER_SPREAD].setValue(message[JUMPER_SPREAD] ? 1.0 : 0.0);
+			params[JUMPER_AUTORESET].setValue(message[JUMPER_AUTORESET] ? 1.0 : 0.0);
+		}
+		else if ((leftExpander.module && leftExpander.module->model == modelBRK)) {
+			// BRK at left-side of RKD: receiving state of switches from BRK and update jumpers.
+			bool *message = (bool*)leftExpander.consumerMessage;
+			params[JUMPER_COUNTINGDOWN].setValue(message[JUMPER_COUNTINGDOWN] ? 1.0 : 0.0);
+			params[JUMPER_GATE].setValue(message[JUMPER_GATE] ? 1.0 : 0.0);
+			params[JUMPER_MAXDIVRANGE16].setValue(message[JUMPER_MAXDIVRANGE16] ? 1.0 : 0.0);
+			params[JUMPER_MAXDIVRANGE32].setValue(message[JUMPER_MAXDIVRANGE32] ? 1.0 : 0.0);
+			params[JUMPER_SPREAD].setValue(message[JUMPER_SPREAD] ? 1.0 : 0.0);
+			params[JUMPER_AUTORESET].setValue(message[JUMPER_AUTORESET] ? 1.0 : 0.0);
+		}
+
 		// Reading jumpers/switches setting.
 		jmprGate = (params[JUMPER_GATE].getValue() == 1.0);
-		jmprGatePrevious = jmprGate;
+		_jmprGate = jmprGate;
 		jmprCountingDown = (params[JUMPER_COUNTINGDOWN].getValue() == 1.0);
 		// Gate mode only: if "Counting" is changed on the fly, invert firing status for each output jack.
-		if ((jmprGate) && (jmprCountingDownPrevious != jmprCountingDown))
+		if ((jmprGate) && (_jmprCountingDown != jmprCountingDown))
 			for (int i = OUTPUT_1; i < NUM_OUTPUTS; i++)
 				bJackIsFired[i] = !bJackIsFired[i];
-		jmprCountingDownPrevious = jmprCountingDown;
+		_jmprCountingDown = jmprCountingDown;
 		jmprMaxDivRange16 = (params[JUMPER_MAXDIVRANGE16].getValue() == 1.0);
-		bTableChange = bTableChange || (jmprMaxDivRange16 != jmprMaxDivRange16Previous);
-		jmprMaxDivRange16Previous = jmprMaxDivRange16;
+		bTableChange = bTableChange || (jmprMaxDivRange16 != _jmprMaxDivRange16);
+		_jmprMaxDivRange16 = jmprMaxDivRange16;
 		jmprMaxDivRange32 = (params[JUMPER_MAXDIVRANGE32].getValue() == 1.0);
-		bTableChange = bTableChange || (jmprMaxDivRange32 != jmprMaxDivRange32Previous);
-		jmprMaxDivRange32Previous = jmprMaxDivRange32;
+		bTableChange = bTableChange || (jmprMaxDivRange32 != _jmprMaxDivRange32);
+		_jmprMaxDivRange32 = jmprMaxDivRange32;
 		jmprSpread = (params[JUMPER_SPREAD].getValue() == 1.0);
 		if (tableSet == 0)
-			bTableChange = bTableChange || (jmprSpread != jmprSpreadPrevious); // Spread concerns manufacturer table only. Have no effect on other tables.
-		jmprSpreadPrevious = jmprSpread;
+			bTableChange = bTableChange || (jmprSpread != _jmprSpread); // Spread concerns manufacturer table only. Have no effect on other tables.
+		_jmprSpread = jmprSpread;
 		jmprAutoReset = (params[JUMPER_AUTORESET].getValue() == 1.0);
 		// Checking if table set was changed via context-menu.
 		if (!bTableChange)
@@ -741,6 +775,7 @@ struct RKD : Module {
 
 		// Update current rotation index to become "previous". This will be useful to detect possible "table rotation" on next step.
 		cvRotateTblIndexPrevious = cvRotateTblIndex;
+
 	} // end of "process"...
 
 	// Persistence for extra datas via json functions (in particular setting defined via jumpers/switches, and table set).
