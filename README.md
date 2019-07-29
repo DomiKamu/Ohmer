@@ -77,13 +77,13 @@ Obviously, all settings you've defined via SETUP are automatically saved along y
 
 **RKD (Rotate Klok Divider)**, inspired by [4ms Company](https://4mscompany.com/) **RCD** module (with limited permission).
 
-**RKD with "Break"**, its _big Brother_, inspired by 4ms Company **RCDBO** module (with limited permission).
+**BRK**, inspired by 4ms Company **RCDBO** module (with limited permission), as RKD expander.
 
 ![RKD and RKD with Break modules](doc/images/RKD-RKDBRK.png)
 
-**RKD with "Break"** is mainly a (4 HP) RKD module, and an additional panel (4 HP too, alongside RKD) providing six deported switches. By this way, it's more comfortable to change module's settings "on-the-fly", without need to access PCB to change jumpers. ***Both modules provide exactly the same features!***
+**BRK** is basically an additional panel (4 HP, must be placed alongside RKD) providing six deported switches. By this way, it's more comfortable to change module's settings "on-the-fly", without need to access PCB to change jumpers. When RKD module was set correctly, you'll can remove its BRK expander.
 
-IMPORTANT: replacing this complete module by a 4 HP **BRK expander** (left or right side) of RKD module, is under consideration (but not confirmed). Unfortunately, expanders are new Rack 1 feature, but still undocumented for developers. Also, this fact may cause additional delays concerning... the PDF manual!
+**VERY IMPORTANT:** the **RKD with "Break"** 8 HP module **becomes obsolete** and now is replaced by the 4 HP **BRK** expander for RKD module (BRK can be placed at right-side or left-side, along RKD, without space between them). By this way, please consider to replace all of your existing *RKD with "Break"* modules in your patches (.vcv files) by an equivalent RKD module + BRK separate module (then, use same setting from BRK module), because **this 8 HP module will be removed in future releases** (keept now in Ohmer Modules, but temporary for compatibility).
 
 Please take a look on [PDF user's manual](res/Manuals/RKD%20User's%20Manual.pdf) _(still under construction, but useful to start however)_.
 
@@ -118,15 +118,15 @@ All Ohmer Modules are free, source code is provided.
 
 Source code is licensed under **BSD 3-Clause**, by Dominique Camus. Some graphic materials can't be used for derivative works without my permission.
 
-About RKD modules: the [4ms Company](https://4mscompany.com/) doesn't endorse any support or responsability about this conversion for VCV Rack, **anyway**! These modules follow guidelines given by 4ms Company, including respect of non-usage of company logo, brand name (4ms), and trademarked modules names (RCD, Rotating Clock Divider, RCDBO, and RCD Breakout). Both **RKD** and **RKD with "Break"** modules use exclusively 100% homemade C++ code (provided), have some variations regardling some graphicals and technical specifications, and provide additional features, such different panel colors, and segment-LED displays (instead of silkscreen prints) showing dividers for every output jack in real-time.
+About RKD modules: the [4ms Company](https://4mscompany.com/) doesn't endorse any support or responsibility about this conversion for VCV Rack, **anyway**! These modules follow guidelines given by 4ms Company, including respect of non-usage of company logo, brand name (4ms), and trademarked modules names (RCD, Rotating Clock Divider, RCDBO, and RCD Breakout). Both **RKD** and **BRK** modules use exclusively 100% homemade C++ open-source code, have many variations regarding some graphical and technical specifications, and provide additional features, such different colors on panels, and segment-LED displays (instead of silkscreen prints) showing dividers for every output jack, in real-time.
 
 Feature requests, suggestions, and bug reports are welcome on [GitHub repository](https://github.com/DomiKamu/Ohmer-Modules/issues).
 
 
 
-### Current release: v1.1.3 (July 26st, 2019):
+### Current release: v1.1.3.1 (July 29st, 2019):
 
-- Bugfixes and enhancements are described in details into [CHANGELOG.TXT](doc/CHANGELOG.txt).
+- Bug-fixes and enhancements are described in details into [CHANGELOG.TXT](doc/CHANGELOG.txt).
 
 
 ### Thanks to:
@@ -137,7 +137,7 @@ Feature requests, suggestions, and bug reports are welcome on [GitHub repository
 - **Artur Karlov** about KlokSpid source code merge tip (source maintenance is more easy, BTW).
 - **Dale Johnson** (author of Valley's *Topograph* & *Dexter* modules), for GUI-change on the fly and *framing*.
 - **Michael Struggl** , for similar suggestion (about Audible Instruments' Tidal, using similar feature).
-- **Gerhard Brandt**, about Prime numbers & Fibonacci tables for RKD / RKD+BRK modules.
+- **Gerhard Brandt**, about Prime numbers & Fibonacci tables for RKD module.
 - 4ms Company, for their (conditional) permission about their RCD / RCDBO modules conversion.
 - **Builders** for MacOS & Linux (particular mention to **Clément Foulc** for MacOS builds, and to **Zulu Echo Romeo-Oscar** for Linux builds).
 - Many enthusiast users!
