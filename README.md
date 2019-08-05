@@ -85,13 +85,13 @@ Obviously, all settings you've defined via SETUP are automatically saved along y
 
 **VERY IMPORTANT:** the **RKD with "Break"** 8 HP module **becomes obsolete** and now is replaced by the 4 HP **BRK** expander for RKD module (BRK can be placed at right-side or left-side, along RKD, without space between them). By this way, please consider to replace all of your existing *RKD with "Break"* modules in your patches (.vcv files) by an equivalent RKD module + BRK separate module (then, use same setting from BRK module), because **this 8 HP module will be removed in future releases** (keept now in Ohmer Modules, but temporary for compatibility).
 
-Please take a look on [PDF user's manual](res/Manuals/RKD%20User's%20Manual.pdf) _(still under construction, but useful to start however)_.
+Please take a look on [PDF user's manual](res/Manuals/RKD%20&%20BRK%20User's%20Manual.pdf) _(still under construction, but useful to start however)_.
 
 
 
 **Metriks**, a 8 HP metering/visual module, for now providing **voltmeter** and **CV tuner** modes only (please notice other modes, such *BPM Meter*, *Frequency Counter* and *Peak Counter*, are temporary disabled, like a "scrolling message" says on the dot-matrix display when you select one of these unavailable modes). 
 
-[Metriks - Quick Guide **is here!**](doc/Metriks.md) please notice **this Metriks module still in development**, thank you very much for patience!
+[Metriks - Quick Guide **is here!**](doc/Metriks.md) please notice the **Metriks module still in development**, thank you very much for patience!
 
 ![Metriks module](doc/images/Metriks.png)
 
