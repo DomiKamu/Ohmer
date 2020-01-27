@@ -57,8 +57,8 @@ struct BRK : Module {
 			bool *message = (bool*)leftExpander.module->rightExpander.producerMessage;
 			message[SWITCH_COUNTINGDOWN] = (params[SWITCH_COUNTINGDOWN].getValue() == 1.0);
 			message[SWITCH_GATE] = (params[SWITCH_GATE].getValue() == 1.0);
-			message[SWITCH_MAXDIVRANGE32] = (params[SWITCH_MAXDIVRANGE16].getValue() == 1.0);
 			message[SWITCH_MAXDIVRANGE16] = (params[SWITCH_MAXDIVRANGE32].getValue() == 1.0);
+			message[SWITCH_MAXDIVRANGE32] = (params[SWITCH_MAXDIVRANGE16].getValue() == 1.0);
 			message[SWITCH_SPREAD] = (params[SWITCH_SPREAD].getValue() == 1.0);
 			message[SWITCH_AUTORESET] = (params[SWITCH_AUTORESET].getValue() == 1.0);
 			// Flip messages.
@@ -69,8 +69,8 @@ struct BRK : Module {
 			bool *message = (bool*)rightExpander.module->leftExpander.producerMessage;
 			message[SWITCH_COUNTINGDOWN] = (params[SWITCH_COUNTINGDOWN].getValue() == 1.0);
 			message[SWITCH_GATE] = (params[SWITCH_GATE].getValue() == 1.0);
-			message[SWITCH_MAXDIVRANGE32] = (params[SWITCH_MAXDIVRANGE16].getValue() == 1.0);
 			message[SWITCH_MAXDIVRANGE16] = (params[SWITCH_MAXDIVRANGE32].getValue() == 1.0);
+			message[SWITCH_MAXDIVRANGE32] = (params[SWITCH_MAXDIVRANGE16].getValue() == 1.0);
 			message[SWITCH_SPREAD] = (params[SWITCH_SPREAD].getValue() == 1.0);
 			message[SWITCH_AUTORESET] = (params[SWITCH_AUTORESET].getValue() == 1.0);
 			// Flip messages.

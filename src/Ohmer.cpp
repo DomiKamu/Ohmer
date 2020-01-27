@@ -11,7 +11,6 @@ void init(rack::Plugin *p) {
 	p->addModel(modelKlokSpid); // KloSpid module.
 	p->addModel(modelRKD); // RKD (Rotate Klok Divider) module.
 	p->addModel(modelBRK); // BRK ("Break") expander module for RKD (Rotate Klok Divider).
-	p->addModel(modelRKDBRK); // RKD (Rotate Klok Divider) module with "Break" companion panel.
 	p->addModel(modelMetriks); // Metriks module.
 	p->addModel(modelSplitter); // Splitter 1x9.
 	p->addModel(modelBlankPanel1); // 1 HP blank module.

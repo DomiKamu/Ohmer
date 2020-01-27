@@ -61,6 +61,8 @@ struct RKD : Module {
 	bool bViewPCB = false;
 	// This flag is set when module is running (CLK jack is wired).
 	bool bCLKisActive = false;
+	// This flag is set when module is unwired (CLK jack is unwired).
+	bool bDisplayNoDividers = true;
 	// Schmitt trigger, for RESET input port.
 	dsp::SchmittTrigger RESET_Port;
 	// Schmitt trigger, for CLK input port.
@@ -530,29 +532,36 @@ struct RKD : Module {
 			// Module in timeout (idle) mode.
 			ModuleTimeOut();
 			// CLK isn't connected: display "--" in all segment-LED displays (using -1).
-			strcpy(dispDiv1, "--");
-			strcpy(dispDiv2, "--");
-			strcpy(dispDiv3, "--");
-			strcpy(dispDiv4, "--");
-			strcpy(dispDiv5, "--");
-			strcpy(dispDiv6, "--");
-			strcpy(dispDiv7, "--");
-			strcpy(dispDiv8, "--");
+			if (bDisplayNoDividers) {
+				strcpy(dispDiv1, "--");
+				strcpy(dispDiv2, "--");
+				strcpy(dispDiv3, "--");
+				strcpy(dispDiv4, "--");
+				strcpy(dispDiv5, "--");
+				strcpy(dispDiv6, "--");
+				strcpy(dispDiv7, "--");
+				strcpy(dispDiv8, "--");
+				bDisplayNoDividers = false;
+			}
 		}
 		else {
 			// CLK input port is wired.
-			// Update segment-LEDs to display the eight dividers alongside their jacks.
-			// Based on "future" table!
-			snprintf(dispDiv1, sizeof(dispDiv1), "%2i", tblDividersRt[OUTPUT_1]);
-			snprintf(dispDiv2, sizeof(dispDiv2), "%2i", tblDividersRt[OUTPUT_2]);
-			snprintf(dispDiv3, sizeof(dispDiv3), "%2i", tblDividersRt[OUTPUT_3]);
-			snprintf(dispDiv4, sizeof(dispDiv4), "%2i", tblDividersRt[OUTPUT_4]);
-			snprintf(dispDiv5, sizeof(dispDiv5), "%2i", tblDividersRt[OUTPUT_5]);
-			snprintf(dispDiv6, sizeof(dispDiv6), "%2i", tblDividersRt[OUTPUT_6]);
-			snprintf(dispDiv7, sizeof(dispDiv7), "%2i", tblDividersRt[OUTPUT_7]);
-			snprintf(dispDiv8, sizeof(dispDiv8), "%2i", tblDividersRt[OUTPUT_8]);
 			// Increment step number.
 			currentStep++;
+			if ((currentStep % 32) == 0) {
+				// Update segment-LEDs to display the eight dividers alongside their jacks (done every 32 frames, to avoid CPU load).
+				// Based on "future" table!
+				snprintf(dispDiv1, sizeof(dispDiv1), "%2i", tblDividersRt[OUTPUT_1]);
+				snprintf(dispDiv2, sizeof(dispDiv2), "%2i", tblDividersRt[OUTPUT_2]);
+				snprintf(dispDiv3, sizeof(dispDiv3), "%2i", tblDividersRt[OUTPUT_3]);
+				snprintf(dispDiv4, sizeof(dispDiv4), "%2i", tblDividersRt[OUTPUT_4]);
+				snprintf(dispDiv5, sizeof(dispDiv5), "%2i", tblDividersRt[OUTPUT_5]);
+				snprintf(dispDiv6, sizeof(dispDiv6), "%2i", tblDividersRt[OUTPUT_6]);
+				snprintf(dispDiv7, sizeof(dispDiv7), "%2i", tblDividersRt[OUTPUT_7]);
+				snprintf(dispDiv8, sizeof(dispDiv8), "%2i", tblDividersRt[OUTPUT_8]);
+				// Rearm the "--" display, in case the CLK will be unwired later...
+				bDisplayNoDividers = true;
+			}
 			// Using Schmitt trigger (SchmittTrigger is provided by dsp/digital.hpp) to detect triggers on CLK input jack.
 			if (CLK_Port.process(rescale(inputs[CLK_INPUT].getVoltage(), 0.2f, 3.5f, 0.0f, 1.0f))) {
 				// It's a rising edge.
