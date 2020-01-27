@@ -2,7 +2,7 @@
 
 ### ***MANUALS:***
 
-[RKD & BRK User's Guide (PDF)](res/Manuals/RKD%20&%20BRK%20User's%20Manual.pdf) (still under construction).
+[RKD / RKD with "Break" User's Guide (PDF)](res/Manuals/RKD%20User's%20Manual.pdf) (still under construction and... delayed sorry!).
 
 [Metriks - Quick User's Guide](doc/Metriks.md) (module still in development, thanks for your patience!)
 
@@ -77,21 +77,21 @@ Obviously, all settings you've defined via SETUP are automatically saved along y
 
 **RKD (Rotate Klok Divider)**, inspired by [4ms Company](https://4mscompany.com/) **RCD** module (with limited permission).
 
-**BRK**, inspired by 4ms Company **RCDBO** (or **BO**) module (with limited permission), as RKD expander.
+**BRK**, inspired by 4ms Company **RCDBO** module (with limited permission), as RKD expander.
 
 ![RKD and RKD with Break modules](doc/images/RKD-RKDBRK.png)
 
-**BRK** is basically an additional **expander** panel (4 HP, must be placed alongside RKD, right or left) providing six *deported* switches. By this way, it's more comfortable to change module's settings on-the-fly, without need to access PCB to change related jumpers. When RKD module was set correctly, you'll can, if you want, remove its BRK expander!
+**BRK** is basically an additional panel (4 HP, must be placed alongside RKD) providing six deported switches. By this way, it's more comfortable to change module's settings "on-the-fly", without need to access PCB to change jumpers. When RKD module was set correctly, you'll can remove its BRK expander.
 
 **VERY IMPORTANT:** the **RKD with "Break"** 8 HP module **becomes obsolete** and now is replaced by the 4 HP **BRK** expander for RKD module (BRK can be placed at right-side or left-side, along RKD, without space between them). By this way, please consider to replace all of your existing *RKD with "Break"* modules in your patches (.vcv files) by an equivalent RKD module + BRK separate module (then, use same setting from BRK module), because **this 8 HP module will be removed in future releases** (keept now in Ohmer Modules, but temporary for compatibility).
 
-Please take a look on [PDF user's manual](res/Manuals/RKD%20&%20BRK%20User's%20Manual.pdf) _(still under construction, but useful to start however)_.
+Please take a look on [PDF user's manual](res/Manuals/RKD%20User's%20Manual.pdf) _(still under construction, but useful to start however)_.
 
 
 
 **Metriks**, a 8 HP metering/visual module, for now providing **voltmeter** and **CV tuner** modes only (please notice other modes, such *BPM Meter*, *Frequency Counter* and *Peak Counter*, are temporary disabled, like a "scrolling message" says on the dot-matrix display when you select one of these unavailable modes). 
 
-[Metriks - Quick Guide **is here!**](doc/Metriks.md) please notice the **Metriks module still in development**, thank you very much for patience!
+[Metriks - Quick Guide **is here!**](doc/Metriks.md) please notice **this Metriks module still in development**, thank you very much for patience!
 
 ![Metriks module](doc/images/Metriks.png)
 
@@ -124,7 +124,7 @@ Feature requests, suggestions, and bug reports are welcome on [GitHub repository
 
 
 
-### Current release: v1.1.3.1 (July 29st, 2019):
+### Current release: v1.1.6 (January 27st, 2020):
 
 - Bug-fixes and enhancements are described in details into [CHANGELOG.TXT](doc/CHANGELOG.txt).
 
