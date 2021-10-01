@@ -113,7 +113,7 @@ Releases for Windows, MacOS and Linux platforms are available either from VCV Ra
 
 ## License Clauses
 
-All Ohmer Modules are free, source code is provided.
+All Ohmer modules are free, source code is provided.
 
 Source code is licensed under **BSD 3-Clause**, by Dominique Camus. Some graphic materials can't be used for derivative works without my permission.
 
@@ -138,15 +138,15 @@ Feature requests, suggestions, and bug reports are welcome on [GitHub repository
 - **Michael Struggl** , for similar suggestion (about Audible Instruments' Tidal, using similar feature).
 - **Gerhard Brandt**, about Prime numbers & Fibonacci tables for RKD module.
 - 4ms Company, for their (conditional) permission about their RCD / RCDBO modules conversion.
-- **Builders** for MacOS & Linux (particular mention to **Clément Foulc** for MacOS builds, and to **Zulu Echo Romeo-Oscar** for Linux builds).
+- **Builders** for MacOS & Linux (particular mention to **Clément Foulc** / **Steve Baker** for MacOS builds, and to **Zulu Echo Romeo-Oscar** for Linux builds).
 - Many enthusiast users!
-- Generous contributors, coding tips & optimizations, enhancements and features ideas!
+- Generous contributors, coding tips & optimizations, enhancements, and features ideas!
 - The most important: our existing (and growing every day) communities around VCV Rack!
 
 
 ### Who am I?
 
-My name is Dominique CAMUS, 58 years old French guy, my job is networks and systems administrator (but at the moment, I'm unemployed). I'm living near [Chartres](https://en.wikipedia.org/wiki/Chartres) (world-famous about its wonderful cathedral), city located 90 km west/southwest of Paris, France. Mine hobbies are mainly C.M. experimentations (as curious guy I am), playing keyboard (only live performance at home, in my living room, using now two keyboards, Komplete Kontrol S61 MK2 as main, older M-Audio CODE61 as secondary), flight simulation (Prepar3D v5, flying mainly airliners such Airbus A319/A320, Boeing 737 NG, Boeing 777-200/-300), Kerbal Space Program, Elite: Dangerous Horizons, videogame emulators (for sure, I'm a nostalgic guy) such M.A.M.E, pinball games, infiltration games (Metal Gear, Splinter Cell, Sniper Ghost Warrior franchise), homemade developments, friends, my girlfriend (ton of kisses), swimming pool, my city...
+My name is Dominique CAMUS, 58-yr old French guy, my job is networks and systems administrator (but at the moment, I'm unemployed). I'm living near [Chartres](https://en.wikipedia.org/wiki/Chartres) (world-famous about its wonderful cathedral), city located 90 km west/southwest of Paris, France. Mine hobbies are mainly C.M. experimentations (as curious guy I am), playing keyboard (only live performance at home, in my living room, using now two keyboards, Komplete Kontrol S61 MK2 as main, older M-Audio CODE61 as secondary), flight simulation (Prepar3D v5, flying mainly airliners such Airbus A319/A320, Boeing 737 NG, Boeing 777-200/-300), Kerbal Space Program, Elite: Dangerous Horizons, videogame emulators (for sure, I'm a nostalgic guy) such M.A.M.E, pinball games, infiltration games (Metal Gear, Splinter Cell, Sniper Ghost Warrior franchise), homemade developments, friends, my girlfriend (ton of kisses), swimming pool, my city...
 
 
-### Enjoy Ohmer Modules!
+### Enjoy Ohmer modules!
