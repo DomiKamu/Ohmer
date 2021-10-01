@@ -81,9 +81,9 @@ Obviously, all settings you've defined via SETUP are automatically saved along y
 
 ![RKD and RKD with Break modules](doc/images/RKD-RKDBRK.png)
 
-**BRK** is basically an additional **expander panel for RKD** (it's also a 4 HP, can be placed alongside RKD) providing six deported switches. By this way, it's more comfortable to change module's settings "on-the-fly", without need to access PCB to change related jumpers. When RKD module was set correctly, you'll can remove its BRK expander if you want.
+**BRK** is basically an additional panel (4 HP, must be placed alongside RKD) providing six deported switches. By this way, it's more comfortable to change module's settings "on-the-fly", without need to access PCB to change jumpers. When RKD module was set correctly, you'll can remove its BRK expander.
 
-**VERY IMPORTANT:** the **RKD with "Break"** 8 HP module was tagged as **DEPRECATED** in previous release (1.1.3.1). Now this module is removed, because replaced by the 4 HP **BRK** as expander for RKD module (BRK can be placed at right-side or left-side, along RKD, without space between them).
+**VERY IMPORTANT:** the **RKD with "Break"** 8 HP module **becomes obsolete** and now is replaced by the 4 HP **BRK** expander for RKD module (BRK can be placed at right-side or left-side, along RKD, without space between them). By this way, please consider to replace all of your existing *RKD with "Break"* modules in your patches (.vcv files) by an equivalent RKD module + BRK separate module (then, use same setting from BRK module), because **this 8 HP module will be removed in future releases** (keept now in Ohmer Modules, but temporary for compatibility).
 
 Please take a look on [PDF user's manual](res/Manuals/RKD%20User's%20Manual.pdf) _(still under construction, but useful to start however)_.
 
@@ -124,7 +124,7 @@ Feature requests, suggestions, and bug reports are welcome on [GitHub repository
 
 
 
-### Current release: v1.1.6 (January 27st, 2020):
+### Current (pre-)release: v2.0.0 BETA (october 1st, 2021):
 
 - Bug-fixes and enhancements are described in details into [CHANGELOG.TXT](doc/CHANGELOG.txt).
 
