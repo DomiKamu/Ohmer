@@ -18,7 +18,7 @@ Available as six models (aka... GUI themes), can be changed anytime you want, fr
 
 Basically, KlokSpid module provides two modes:
 
-- **Standalone BPM-clock generator**, covering all possible BPM from 1 to... 960 (beats), selectable only by encoder (no CV). The small button (at the right side of module) may be used as toggle, to start or stop BPM clocking (current state is reflected by "SYNC" LED: green while running, red when stopped). However, each output jack may receives a predefined clock ratio, and jack #4 (when set at x1) may delivers LFO waveform (based on displayed BPM).
+- **BPM-based clock generator**, covering all possible BPM from 1 to... 960, selectable only by encoder (no CV). The small button (at the right side of module) may be used as toggle to start or stop BPM clocking (current state is reflected by "SYNC" LED: green while running, red when stopped). However, each output jack may receives a predefined clock ratio, and jack #4 (when set at x1) may delivers LFO waveform (based on displayed BPM).
 - **Clock modulator** (sometimes designed as *clock multiplier or divider*) covers a lot of predefined ratios (or rates), from 1 to 10 (all), 12, 15, 16, 24, 32 and 64, when the ratio (rate) is set manually (via encoder). However, the ratio is ***voltage-controllable*** (thanks to **CV-RATIO/TRIG.** input jack) to reach any multiplier or divider value you'd like, including "exotic" ratios (like x37 or /59), from 1 to 64.
 
 ![KlokSpid Module](doc/images/KlokSpid.png)
@@ -27,17 +27,17 @@ Basically, KlokSpid module provides two modes:
 
 Clocking mode is automatically selected by an internal sensor (and module's firmware), in fact, depending the **CLK** input jack is connected, or not.
 
-If connected (patched), KlokSpid module works as ***clock modulator*** (multiplier or divider), otherwise, it works as standalone BPM-based ***clock generator***.
+If connected (patched), KlokSpid module works as ***clock modulator*** (multiplier or divider), otherwise, it works as BPM-based ***clock generator***.
 
 As clock modulator, generated signals are always sent to **four identical** outputs (like a "1x4" multi), to avoid splitter/multiples usage behind module (or multiples patch cables connected on the same jack).
 
-However, while KlokSpid works as clock generator, several options (determinable via module's SETUP) permits to select a specific multiplier or divider for any output jack, and output a specific LFO waveform to output jack #4 such sine, inverted sine, triangle, inverted triangle, sawtooth or inverted sawtooth (sometimes called *down sawtooth*). From module's SETUP, this feature is **Out. #4 LFO**. (disabled by default), but can be enabled only if jack #4 ratio is set as "x1" (ratio take priority over LFO).
+However, while KlokSpid works as clock generator, several options (customizable via module's SETUP) permits to select a specific multiplier or divider for any output jack, also may outputs a specific LFO waveform to jack #4 such sine, inverted sine, triangle, inverted triangle, sawtooth or inverted sawtooth (sometimes called *down sawtooth*). From module's SETUP, this feature is **Out. #4 LFO** (disabled by default), but can be enabled only if jack #4 ratio is set as "x1" (ratio always takes priority over LFO feature).
 
-Voltages sent to all outputs is, by default, defined to **+5V**, but, in case you'll need another voltage, it can be changed to either **+2V**,  **+10V**, or **+11.7V**.
+Voltages sent to all outputs is, by default, defined to **+5V**, but, in case you'll need another voltage, it can be changed to either **+2V**, **+10V**, or **+11.7V** from module's SETUP.
 
-Output signal duration is mainly *gate-based*, by default as **Square** waveform (aka gate 50%) of BPM pulse, if working as standalone BPM-clock generator, or current multiplied/divided frequency (as soon as the source frequency is stable / established by the module - indicated by SYNC" LED - green means source frequency is stable). This factory setting covers major usages about a clocking device, but of course, other duration can be selected, in fact depending your needs (e.g.: to control longer sustains for ADSR envelope generators, to hold longer playing sample, etc.). Shortest durations are mostly designed to control a sequencer or to trigger a drum module.
+Output signal duration is mainly *gate-based*, by default as **Square** waveform (aka gate 50%) of BPM pulse (if working as clock generator), or current multiplied/divided frequency (as soon as the source frequency is stable / established by the module - indicated by SYNC" LED - green means source frequency is stable). This factory setting covers major usages about a clocking device, but of course, other duration can be selected, in fact depending your needs (e.g.: to control longer sustains for ADSR envelope generators, to hold longer playing sample, etc.). Shortest durations are mostly designed to control a sequencer or to trigger a drum module.
 
-The right-side input jack labeled both **CV-RATIO** and **TRIG.** is versatile: when KlokSpid module is working as clock multiplier/divider, this jack can accept CV to control clocking ratio (any integer value from /64 to x64), via **-5V/+5V bipolar** voltage (default), or optionally 0V/+10V unipolar. At the other side, when KlokSpid module is working as standalone BPM-clock generator, this jack becomes a "trigger" input, and provides, in this case, one of these features:
+The right-side input jack labeled both **CV-RATIO** and **TRIG.** is versatile: when KlokSpid module is working as clock multiplier/divider, this jack can accept CV to control clocking ratio (any integer value from /64 to x64), via **-5V/+5V bipolar** voltage (default), or optionally 0V/+10V unipolar. At the other side, when KlokSpid module is working as clock generator, this jack becomes a "trigger" input, and provides, in this case, one of these features:
 
 - as BPM-reset (most common usage) to keep separate KlokSpid modules, as clock generators, perfectly synchronized (default) between each other. Also all waveforms generated by KlokSpid become "in phase" after a reset. Obviously, all related BPM-clock generators must have exactly the same BPM!
 - to toggle BPM "start/stop" state, exactly like a "remote" does (optional, can be defined via SETUP).
