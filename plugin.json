@@ -22,12 +22,14 @@
       "slug": "RKD",
       "name": "RKD (Rotate Klok Divider)",
       "description": "Rotate Klok Divider (RKD) module (inspired from 4ms RCD hardware)",
+  		"manualUrl": "https://github.com/DomiKamu/Ohmer/blob/v2/res/Manuals/RKD%20%26%20BRK%20User's%20Manual.pdf",
       "tags": ["Clock modulator"]
     },
     {
       "slug": "BRK",
       "name": "BRK (\"Break\") expander for RKD",
       "description": "BRK (\"Break\") expander to setup RKD jumpers (inspired from 4ms BO hardware)",
+  		"manualUrl": "https://github.com/DomiKamu/Ohmer/blob/v2/res/Manuals/RKD%20%26%20BRK%20User's%20Manual.pdf",
       "tags": ["Clock modulator", "Expander"]
     },
     {
