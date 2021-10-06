@@ -4,7 +4,8 @@ CHANGELOG
 
 Pre-release v2.0.0 Beta (October 5th, 2021)
 
-- Added code for loadFont in draw method (KlokSpid, Metriks, and RKD modules).
+- Added code for "loadFont" in "draw" method (KlokSpid, Metriks, and RKD modules). Recommended for V2 migration.
+- Added bypasses for KlokSpid (CLK -> all outputs), Metriks (IN -> OUT), and RKD (CLK -> all outputs).
 
 ------------------------------------------------------------------------------------------------------------------------------
 
