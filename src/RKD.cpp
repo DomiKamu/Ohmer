@@ -161,6 +161,15 @@ struct RKD : Module {
 		configParam(JUMPER_MAXDIVRANGE32, 0.0, 1.0, 1.0, "Max Div 32"); // On by default;
 		configParam(JUMPER_SPREAD, 0.0, 1.0, 0.0, "Spread"); // Off by default;
 		configParam(JUMPER_AUTORESET, 0.0, 1.0, 0.0, "Auto-Reset"); // Off by default;
+		// Bypasses (new feature in Rack V2).
+		configBypass(CLK_INPUT, OUTPUT_1);
+		configBypass(CLK_INPUT, OUTPUT_2);
+		configBypass(CLK_INPUT, OUTPUT_3);
+		configBypass(CLK_INPUT, OUTPUT_4);
+		configBypass(CLK_INPUT, OUTPUT_5);
+		configBypass(CLK_INPUT, OUTPUT_6);
+		configBypass(CLK_INPUT, OUTPUT_7);
+		configBypass(CLK_INPUT, OUTPUT_8);
 		// BRK module as expander (right-side of RKD - default and have priority aka possible left-side is ignored).
 		rightExpander.producerMessage = rightMessages[0];
 		rightExpander.consumerMessage = rightMessages[1];
