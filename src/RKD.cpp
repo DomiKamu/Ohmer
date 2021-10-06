@@ -837,12 +837,18 @@ struct RKD : Module {
 struct RKD_Displays : TransparentWidget {
 	RKD *module;
 	std::shared_ptr<Font> font;
+	std::string fontPath;
 
 	RKD_Displays() {
-		font = APP->window->loadFont(asset::plugin(pluginInstance, "res/fonts/digital-readout.medium.ttf"));
+		fontPath = std::string(asset::plugin(pluginInstance, "res/fonts/digital-readout.medium.ttf"));
 	}
 
 	void draw(const DrawArgs &args) override {
+
+		if (!(font = APP->window->loadFont(fontPath))) {
+				return;
+		}
+
 		// Display 1.
 		nvgFontSize(args.vg, 14);
 		nvgFontFaceId(args.vg, font->handle);
