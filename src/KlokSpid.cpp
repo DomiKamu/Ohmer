@@ -1587,12 +1587,18 @@ struct KlokSpidModule : Module {
 struct KlokSpidDMD : TransparentWidget {
 	KlokSpidModule *module;
 	std::shared_ptr<Font> font;
+	std::string fontPath;
 
 	KlokSpidDMD() {
-		font = APP->window->loadFont(asset::plugin(pluginInstance, "res/fonts/LEDCounter7.ttf"));
+		fontPath = std::string(asset::plugin(pluginInstance, "res/fonts/LEDCounter7.ttf"));
 	}
 
 	void draw(const DrawArgs &args) override {
+
+		if (!(font = APP->window->loadFont(fontPath))) {
+				return;
+		}
+
 		// Main DMD, upper line.
 		nvgFontSize(args.vg, 16);
 		nvgFontFaceId(args.vg, font->handle);
