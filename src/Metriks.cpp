@@ -219,6 +219,7 @@ struct MetriksModule : Module {
 		configParam(BUTTON_OPTIONS, 0.0f, 1.0f, 0.0f, "Options");
 		configParam(BUTTON_PLAYPAUSE, 0.0f, 1.0f, 0.0f, "Play/Pause");
 		configParam(BUTTON_RESET, 0.0f, 1.0f, 0.0f, "Reset");
+		configBypass(INPUT_SOURCE, OUTPUT_THRU);
 		b_InopMode = false; // TEMPORARY - false means the mode is operational (totally or partially) - MUST BE REMOVED WHEN ALL MODES WORK.
 		bChangingMode = false;
 		ct_SwitchedMode = 0;
