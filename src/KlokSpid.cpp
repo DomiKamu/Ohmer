@@ -316,6 +316,10 @@ struct KlokSpidModule : Module {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 		configParam(PARAM_ENCODER, -INFINITY, INFINITY, 0.0f, "Encoder");	
 		configParam(PARAM_BUTTON, 0.0f, 1.0f, 0.0f, "Button");
+		configBypass(INPUT_CLOCK, OUTPUT_1);
+		configBypass(INPUT_CLOCK, OUTPUT_2);
+		configBypass(INPUT_CLOCK, OUTPUT_3);
+		configBypass(INPUT_CLOCK, OUTPUT_4);
 		onSampleRateChange();
 	}
 
