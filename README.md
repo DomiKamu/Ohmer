@@ -123,7 +123,7 @@ Feature requests, suggestions, and bug reports are welcome on [GitHub repository
 
 
 
-### Current (pre-)release: v2.0.0 BETA (october 1st, 2021):
+### Current (pre-)release: v2.0.0-beta 4 (October 18th, 2021), vs. Rack-SDK-2.git.219bbaf1:
 
 - Bug-fixes and enhancements are described in details into [CHANGELOG.TXT](doc/CHANGELOG.txt).
 
@@ -146,7 +146,7 @@ Feature requests, suggestions, and bug reports are welcome on [GitHub repository
 
 ### Who am I?
 
-My name is Dominique CAMUS, 58-yr old French guy, my job is networks and systems administrator (but at the moment, I'm unemployed). I'm living near [Chartres](https://en.wikipedia.org/wiki/Chartres) (world-famous about its wonderful cathedral), city located 90 km west/southwest of Paris, France. Mine hobbies are mainly C.M. experimentations (as curious guy I am), playing keyboard (only live performance at home, in my living room, using now two keyboards, Komplete Kontrol S61 MK2 as main, older M-Audio CODE61 as secondary), flight simulation (Prepar3D v5, flying mainly airliners such Airbus A319/A320, Boeing 737 NG, Boeing 777-200/-300), Kerbal Space Program, Elite: Dangerous Horizons, videogame emulators (for sure, I'm a nostalgic guy) such M.A.M.E, pinball games, infiltration games (Metal Gear, Splinter Cell, Sniper Ghost Warrior franchise), homemade developments, friends, my girlfriend (ton of kisses), swimming pool, my city...
+My name is Dominique CAMUS, 58-years old French guy, my job is networks and systems admin (but at the moment, I'm unemployed). I'm living near [Chartres](https://en.wikipedia.org/wiki/Chartres) (world-famous about its wonderful cathedral), city located 90 km west/southwest of Paris, France. Mine hobbies are mainly C.M. experimentations (as curious guy I am), playing keyboard (only live performance at home, in my living room, using now two keyboards, Komplete Kontrol S61 MK2 as main, older M-Audio CODE61 as secondary), flight simulation (Prepar3D v5, flying mainly airliners such Airbus A319/A320, Boeing 737 NG, Boeing 777-200/-300), Kerbal Space Program, Elite: Dangerous Horizons, videogame emulators (for sure, I'm a nostalgic guy) such M.A.M.E, pinball games, infiltration games (Metal Gear, Splinter Cell, Sniper Ghost Warrior franchise), homemade developments, friends, my girlfriend (ton of kisses), swimming pool, my city...
 
 
 ### Enjoy Ohmer modules!
