@@ -213,12 +213,17 @@ struct MetriksModule : Module {
 	int i_InopMsgCycling = 0;
 
 	MetriksModule() {
+		// Constructor...
 		b_dspIsRunning = false; // Will be set true as soon as DSP is running.
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 		configParam(PARAM_ENCODER, -INFINITY, INFINITY, 0.0f, "Encoder");
 		configParam(BUTTON_OPTIONS, 0.0f, 1.0f, 0.0f, "Options");
 		configParam(BUTTON_PLAYPAUSE, 0.0f, 1.0f, 0.0f, "Play/Pause");
 		configParam(BUTTON_RESET, 0.0f, 1.0f, 0.0f, "Reset");
+		configInput(INPUT_SOURCE, "Signal");
+		configInput(INPUT_PLAYPAUSE, "Play/Pause trigger");
+		configInput(INPUT_RESET, "Reset trigger");
+		configOutput(OUTPUT_THRU, "Signal");
 		configBypass(INPUT_SOURCE, OUTPUT_THRU);
 		b_InopMode = false; // TEMPORARY - false means the mode is operational (totally or partially) - MUST BE REMOVED WHEN ALL MODES WORK.
 		bChangingMode = false;

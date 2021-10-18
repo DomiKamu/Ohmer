@@ -313,9 +313,17 @@ struct KlokSpidModule : Module {
 	std::string _tmpString; // Dummy string.
 
 	KlokSpidModule() {
+		// Constructor...
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+		configInput(INPUT_CLOCK, "Clock");
+		configInput(INPUT_CV_TRIG, "CV-Ratio or trigger");
+		configOutput(OUTPUT_1, "1st");
+		configOutput(OUTPUT_2, "2nd");
+		configOutput(OUTPUT_3, "3rd");
+		configOutput(OUTPUT_4, "4th");
 		configParam(PARAM_ENCODER, -INFINITY, INFINITY, 0.0f, "Encoder");	
 		configParam(PARAM_BUTTON, 0.0f, 1.0f, 0.0f, "Button");
+		//configButton(PARAM_BUTTON);
 		configBypass(INPUT_CLOCK, OUTPUT_1);
 		configBypass(INPUT_CLOCK, OUTPUT_2);
 		configBypass(INPUT_CLOCK, OUTPUT_3);

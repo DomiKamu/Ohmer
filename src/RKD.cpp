@@ -154,6 +154,7 @@ struct RKD : Module {
 	int ledResetAfterglow = 0;
 
 	RKD() {
+		// Constructor...
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 		configParam(JUMPER_COUNTINGDOWN, 0.0, 1.0, 0.0, "Counting Up/Dn"); // Off by default;
 		configParam(JUMPER_GATE, 0.0, 1.0, 0.0, "Trig./Gate"); // Off by default;
@@ -161,6 +162,18 @@ struct RKD : Module {
 		configParam(JUMPER_MAXDIVRANGE32, 0.0, 1.0, 1.0, "Max Div 32"); // On by default;
 		configParam(JUMPER_SPREAD, 0.0, 1.0, 0.0, "Spread"); // Off by default;
 		configParam(JUMPER_AUTORESET, 0.0, 1.0, 0.0, "Auto-Reset"); // Off by default;
+		// Labels (tooltips, new feature in Rack V2).
+		configInput(ROTATE_INPUT, "Rotate");
+		configInput(RESET_INPUT, "Reset");
+		configInput(CLK_INPUT, "Clock");
+		configOutput(OUTPUT_1, "1st");
+		configOutput(OUTPUT_2, "2ns");
+		configOutput(OUTPUT_3, "3rd");
+		configOutput(OUTPUT_4, "4th");
+		configOutput(OUTPUT_5, "5th");
+		configOutput(OUTPUT_6, "6th");
+		configOutput(OUTPUT_7, "7th");
+		configOutput(OUTPUT_8, "8th");
 		// Bypasses (new feature in Rack V2).
 		configBypass(CLK_INPUT, OUTPUT_1);
 		configBypass(CLK_INPUT, OUTPUT_2);

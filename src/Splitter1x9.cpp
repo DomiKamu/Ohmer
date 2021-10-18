@@ -44,7 +44,18 @@ struct SplitterModule : Module {
 	bool ledClipAfterglow = false;
 
 	SplitterModule() {
+		// Constructor...
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+		configInput(MAIN_INPUT, "Splitter");
+		configOutput(OUTPUT_1, "Splitter 1st");
+		configOutput(OUTPUT_2, "Splitter 2nd");
+		configOutput(OUTPUT_3, "Splitter 3rd");
+		configOutput(OUTPUT_4, "Splitter 4th");
+		configOutput(OUTPUT_5, "Splitter 5th");
+		configOutput(OUTPUT_6, "Splitter 6th");
+		configOutput(OUTPUT_7, "Splitter 7th");
+		configOutput(OUTPUT_8, "Splitter 8th");
+		configOutput(OUTPUT_9, "Splitter 8th");
 		onSampleRateChange();
 	}
 
