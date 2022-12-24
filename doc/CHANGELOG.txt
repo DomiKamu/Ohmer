@@ -2,6 +2,15 @@
 CHANGELOG
 ==============================================================================================================================
 
+Release v2.2.1 (December 24th, 2022)
+
+- Builds against Rack-SDK-2.2.1 (December 7th, 2022).
+- Klokspid: default behavior for TRIG. input jack now is transport Play/Stop (instead of Reset).
+- Klokspid: fixed "Factory" (from SETUP) restore concerning custom output ratios. Now set at /4, X1, X2, and X4, as expected.
+- User Guide for RKD and BRK modules is finished.
+
+------------------------------------------------------------------------------------------------------------------------------
+
 Pre-release v2.0.0-beta 4 (October 18th, 2021)
 
 - Builds against Rack-SDK-2.git.219bbaf1
@@ -24,7 +33,7 @@ Release v1.1.6 (January 27th, 2020):
 - RKD module: fixed high CPU load when CLK is patched, by refreshing all (8) displays every 32 frames (GitHub issue #3). Other
   features remain as realtime, however.
 - BRK module: fixed inversion of mechanical switches (Max Div 16 and Max Div 32).
-- RKD with BRK module removed (indicated as "deprecated" in future from previous 1.1.3.1.
+- RKD with BRK module removed (indicated as "deprecated" in future from previous 1.1.3.1).
 - Plugin compiled against Rack v1.1.6.
 
 ------------------------------------------------------------------------------------------------------------------------------
