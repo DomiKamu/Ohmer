@@ -123,7 +123,7 @@ Feature requests, suggestions, and bug reports are welcome on [GitHub repository
 
 
 
-### Current release: v2.1.0 (March 7th, 2022), vs. Rack-SDK-2 v2.1.0:
+### Current release: v2.2.1 (December 24th, 2022), vs. Rack-SDK-2 v2.2.1:
 
 - Bug-fixes and enhancements are described in details into [CHANGELOG.TXT](doc/CHANGELOG.txt).
 
@@ -146,7 +146,7 @@ Feature requests, suggestions, and bug reports are welcome on [GitHub repository
 
 ### Who am I?
 
-My name is Dominique CAMUS, 58-years old French guy, my job is networks and systems admin (but at the moment, I'm unemployed). I'm living now in south of France, village named Barjac (Gard - 30). Mine hobbies are mainly C.M. experimentations (as curious guy I am), playing keyboard (only live performance at home, in my living room, using Native Instruments Komplete Kontrol S61 MK2 keyboard, and Arturia BeatStep Pro MIDI controller, older M-Audio CODE61 as secondary), flight simulation (Prepar3D v5, flying mainly airliners such Airbus A319/A320, Boeing 737 NG, Boeing 777-200/-300), Kerbal Space Program, Elite: Dangerous Horizons, videogame emulators (for sure, I'm a nostalgic guy) such M.A.M.E, pinball games, infiltration games (Metal Gear, Splinter Cell, Sniper Ghost Warrior franchise), homemade developments, friends, my girlfriend (ton of kisses), swimming pool, my lovely village...
+My name is Dominique CAMUS, 59-years old French guy, my job is networks and systems admin (but at the moment, I'm unemployed). I'm living now in south of France, village named Barjac (Gard - 30). Mine hobbies are mainly C.M. experimentations (as curious guy I am), playing keyboard (only live performance at home, in my living room, using Native Instruments Komplete Kontrol S61 MK2 keyboard, and Arturia BeatStep Pro MIDI controller, older M-Audio CODE61 as secondary), flight simulation (Prepar3D v5, flying mainly airliners such Airbus A319/A320, Boeing 737 NG, Boeing 777-200/-300), Kerbal Space Program, Elite: Dangerous Horizons, videogame emulators (for sure, I'm a nostalgic guy) such M.A.M.E, pinball games, infiltration games (Metal Gear, Splinter Cell, Sniper Ghost Warrior franchise), homemade developments, friends, my girlfriend (ton of kisses), swimming pool, my lovely village...
 
 
 ### Enjoy Ohmer modules!
