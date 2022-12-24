@@ -1,13 +1,14 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //// KlokSpid is a 8 HP module designed to divide/multiply an external clock frequency (clock modulator), ////
-//// but it can work as standalone clock generator (BPM-based).                                           ////
+//// obviously it can work as standalone clock generator (BPM-based).                                     ////
 //// - 2 input jacks:                                                                                     ////
 ////   - external clock (CLK), to work as divider/multiplier (standalone clock generator if not patched). ////
 ////   - multipurpose CV-RATIO/TRIG. jack:                                                                ////
 ////     - when running as clock multiplier/divider: CV-controllable ratio (full range /64 to x64).       ////
-////     - when running as BPM-clock generator: trigger input (BPM start/stop, or BPM reset).             ////
+////     - when running as BPM-clock generator: trigger input (BPM start/stop - default, or BPM reset).   ////
 //// - 4 output jacks: gates (default +5V/0V Square waveform). Other gates (%) and 1ms/2ms/5ms triggers   ////
 ////   (fixed duration pulses) are possible, via SETUP.                                                   ////
+////   Outputs deliver unipolar 0 ~ +5V (default), 0 ~ +10V, 0 ~ +11.7V, or 0 ~ +2V voltage.              ////
 ////                                                                                                      ////
 //// As standalone (BPM-based) clock generator only:                                                      ////
 //// - any jack may have its custom ratio (via SETUP) - default is x1, for all jacks.                     ////
@@ -203,12 +204,13 @@ struct KlokSpidModule : Module {
 	// Custom jacks ratios (per output jack). By default false, all are X1 (original setting for KlokSpid). True means each jack can receive an optional ratio.
 	bool defOutRatios = false;
 	int outputRatio[4] = {9, 12, 13, 15};
-//	int outputRatioInUse[4] = {12, 12, 12, 12};
 	int outputRatioInUse[4] = {9, 12, 13, 15};
 	float list_outRatiof[25] = {64.0f, 32.0f, 24.0f, 16.0f, 12.0f, 9.0f, 8.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f, 0.5f, 1.0f/3.0f, 0.25f, 0.2f, 1.0f/6.0f, 0.125f, 1.0f/9.0f, 1.0f/12.0f, 0.0625f, 1.0f/24.0f, 0.03125f, 0.015625f};
 
-	// Indicates if "CV-RATIO/TRIG." input port (used as trigger, standalone BPM-clock mode only) is a transport trigger (true = toggle start/stop) or reset (false, default) useful for "re-sync" between modules.
-	bool transportTrig = false;
+	// Indicates if "CV-RATIO/TRIG." input port (used as trigger, standalone BPM-clock mode only) is a transport trigger.
+	// true means act as transport toggle start/stop (default).
+	// false means act as reset (useful for clock "re-sync" between different modules).
+	bool transportTrig = true;
 	// Standalone clock generator mode only: indicates if BPM is running or stopped.
 	bool isBPMRunning = true;
 	bool runBPMOnInit = true;
@@ -228,7 +230,7 @@ struct KlokSpidModule : Module {
 		SETUP_OUT4RATIO, // SETUP menu entry for custom ratio concerning output jack #4.
 		SETUP_OUT4LFO,	// SETUP menu entry for LFO to output jack #4.
 		SETUP_OUT4LFOPOLARITY,	// SETUP menu entry for LFO polarity to output jack #4 (bipolar, or unipolar).
-		SETUP_CVTRIG,	// SETUP menu entry describing how CV/TRIG input port is working (as start/stop toggle, or as "RST" input).
+		SETUP_CVTRIG,	// SETUP menu entry describing how CV/TRIG input port is working (as start/stop toggle, or as "RESET" input).
 		SETUP_EXIT,	// Lastest menu entry is always used to exit SETUP (options are "Save/Exit", "Canc/Exit", "Review" or "Factory").
 		NUM_SETUP_ENTRIES // This position indicates how many entries the KlokSpid's SETUP menu have.
 	};
@@ -255,9 +257,9 @@ struct KlokSpidModule : Module {
 	// Table containing number of possible values for each parameter.
 	int setup_NumValue[NUM_SETUP_ENTRIES] = {0, 2, 9, 4, 2, 25, 25, 25, 25, 7, 2, 2, 4};
 	// Default factory values for each parameter.
-	int setup_Factory[NUM_SETUP_ENTRIES] = {0, 0, 5, 0, 0, 9, 12, 13, 15, 0, 0, 1, 1};
+	int setup_Factory[NUM_SETUP_ENTRIES] = {0, 0, 5, 0, 1, 9, 12, 13, 15, 0, 0, 0, 1};
 	// Table containing current values for all parameters.
-	int setup_Current[NUM_SETUP_ENTRIES] = {0, 0, 5, 0, 0, 9, 12, 13, 15, 0, 0, 1, 1};
+	int setup_Current[NUM_SETUP_ENTRIES] = {0, 0, 5, 0, 1, 9, 12, 13, 15, 0, 0, 0, 1};
 	// Table containing edited parameters during SETUP (will be filled when entering SETUP).
 	int setup_Edited[NUM_SETUP_ENTRIES] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
 	// Table containing backup edited parameters during SETUP (will be filled when entering SETUP).
