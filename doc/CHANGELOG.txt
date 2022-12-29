@@ -2,9 +2,9 @@
 CHANGELOG
 ==============================================================================================================================
 
-Release v2.2.1 (December 24th, 2022)
+Release v2.2.2 (December 29th, 2022)
 
-- Builds against Rack-SDK-2.2.1 (December 7th, 2022).
+- Builds against Rack-SDK-2.2.2.
 - Klokspid: default behavior for TRIG. input jack now is transport Play/Stop (instead of Reset).
 - Klokspid: fixed "Factory" (from SETUP) restore concerning custom output ratios. Now set at /4, X1, X2, and X4, as expected.
 - User Guide for RKD and BRK modules is finished.
