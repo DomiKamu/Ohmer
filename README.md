@@ -1,4 +1,4 @@
-# ![Ohmer Modules logo](doc/images/Logo_Ohmer.png)Ohmer modules for VCV Rack
+# ![Ohmer Modules logo](doc/images/Logo_Ohmer.png)Ohmer modules for VCV Rack 2
 
 ### ***MANUALS:***
 
@@ -10,7 +10,7 @@
 
 Flagship of *Ohmer* plugin is **KlokSpid** (pronunciation of "clock speed"), a modern "CPU-controlled"-style clocking module, designed for any rack requiring BPM-based clock sources and/or clock modulators (clock multipliers and dividers).
 
-Available as six models (aka... GUI themes), can be changed anytime you want, from context-menu (right-click menu).
+Available as six models (aka... GUI themes), can be changed anytime you want, via context-menu (right-click menu).
 
 **Classic** (default beige), **Stage Repro** and **Absolute Night** models embed LCD dot-matrix displays (DMD) and silver parts (button, screws and jacks). The Absolute Night model embeds a yellow-backlit LCD DMD, however.
 
@@ -107,7 +107,7 @@ Please take a look on [PDF user's manual](res/Manuals/RKD%20&%20BRK%20User's%20M
 
 ## Releases
 
-Releases for Windows, MacOS and Linux platforms are available either from VCV Rack [Plugin Library](https://vcvrack.com/plugins.html) page, and/or from [my GitHub "releases" page](https://github.com/DomiKamu/Ohmer/releases) (.vcvplugin file - once per platform).
+Releases for Windows, MacOS (Intel, ARM64) and Linux platforms are available either from VCV Rack [Plugin Library](https://vcvrack.com/plugins.html) page, and/or from [my GitHub "releases" page](https://github.com/DomiKamu/Ohmer/releases) (.vcvplugin file - per platform).
 
 
 
@@ -123,7 +123,7 @@ Feature requests, suggestions, and bug reports are welcome on [GitHub repository
 
 
 
-### Current release: v2.2.1 (December 24th, 2022), vs. Rack-SDK-2 v2.2.1:
+### Current release: v2.2.2 (December 29th, 2022), vs. Rack-SDK-2 v2.2.2:
 
 - Bug-fixes and enhancements are described in details into [CHANGELOG.TXT](doc/CHANGELOG.txt).
 
@@ -138,7 +138,7 @@ Feature requests, suggestions, and bug reports are welcome on [GitHub repository
 - **Michael Struggl** , for similar suggestion (about Audible Instruments' Tidal, using similar feature).
 - **Gerhard Brandt**, about Prime numbers & Fibonacci tables for RKD module.
 - 4ms Company, for their (conditional) permission about their RCD / RCDBO modules conversion.
-- **Builders** for MacOS & Linux (particular mention to **Clément Foulc**, **Steve Baker** and **Marc Boulé** for MacOS builds, also  to **Zulu Echo Romeo-Oscar** for Linux builds).
+- **Builders** for MacOS & Linux (particular mention to **Jens Peter Nielsen**, **Clément Foulc**, **Steve Baker** and **Marc Boulé** for MacOS builds, also  to **Zulu Echo Romeo-Oscar** for Linux builds).
 - Many enthusiast users!
 - Generous contributors, coding tips & optimizations, enhancements, and features ideas!
 - The most important: our existing (and growing every day) communities around VCV Rack!
@@ -146,7 +146,7 @@ Feature requests, suggestions, and bug reports are welcome on [GitHub repository
 
 ### Who am I?
 
-My name is Dominique CAMUS, 59-years old French guy, my job is networks and systems admin (but at the moment, I'm unemployed). I'm living now in south of France, village named Barjac (Gard - 30). Mine hobbies are mainly C.M. experimentations (as curious guy I am), playing keyboard (only live performance at home, in my living room, using Native Instruments Komplete Kontrol S61 MK2 keyboard, and Arturia BeatStep Pro MIDI controller, older M-Audio CODE61 as secondary), flight simulation (Prepar3D v5, flying mainly airliners such Airbus A319/A320, Boeing 737 NG, Boeing 777-200/-300), Kerbal Space Program, Elite: Dangerous Horizons, videogame emulators (for sure, I'm a nostalgic guy) such M.A.M.E, pinball games, infiltration games (Metal Gear, Splinter Cell, Sniper Ghost Warrior franchise), homemade developments, friends, my girlfriend (ton of kisses), swimming pool, my lovely village...
+My name is Dominique CAMUS, 59-years old French guy, my job is networks and systems admin (but at the moment, I'm unemployed). I'm living now in south of France, near Nîmes (Gard - 30). Mine hobbies are mainly C.M. experimentations (as curious guy I am), playing keyboard (only live performance at home, in my living room, using Native Instruments KOMPLETE KONTROL S61 MK2 MIDI keyboard, and Arturia BeatStep Pro MIDI controller, flight simulation (Prepar3D v5, flying mainly airliners such Airbus A319/A320, Boeing 737 NG, Boeing 777-200/-300), Kerbal Space Program, Elite: Dangerous Horizons, videogame emulators (for sure, I'm a nostalgic guy) such M.A.M.E, pinball games, infiltration games (HITMAN series, Metal Gear, Splinter Cell, Sniper Ghost Warrior franchise), homemade developments, friends, family, swimming pool, my lovely village...
 
 
 ### Enjoy Ohmer modules!
