@@ -1315,48 +1315,48 @@ struct MetriksDMD : TransparentWidget {
 		fontPath = std::string(asset::plugin(pluginInstance, "res/fonts/LEDCounter7.ttf"));
 	}
 
-	void draw(const DrawArgs &args) override {
-
-		if (!(font = APP->window->loadFont(fontPath))) {
-				return;
-		}
-
-		// Main DMD, upper line.
-		nvgFontSize(args.vg, 16);
-		nvgFontFaceId(args.vg, font->handle);
-		nvgTextLetterSpacing(args.vg, -2);
-		Vec textPos = Vec(14, box.size.y - 174);
-		if (!module) {
-			// Required as "module preview" (from VCV Rack modules browser).
-			// Default message on DMD (LCD).
-			nvgFillColor(args.vg, nvgTransRGBA(nvgRGB(0x08, 0x08, 0x08), 0xff)); // Using default black LCD.
-			nvgText(args.vg, textPos.x, textPos.y, "Voltmeter", NULL); // Default message on first line (Voltmeter, the default mode).
+	void drawLayer(const DrawArgs &args, int layer) override {
+		if (layer == 1) {
+			if (!(font = APP->window->loadFont(fontPath))) {
+					return;
+			}
+			// Main DMD, upper line.
+			nvgFontSize(args.vg, 16);
+			nvgFontFaceId(args.vg, font->handle);
+			nvgTextLetterSpacing(args.vg, -2);
+			Vec textPos = Vec(14, box.size.y - 174);
+			if (!module) {
+				// Required as "module preview" (from VCV Rack modules browser).
+				// Default message on DMD (LCD).
+				nvgFillColor(args.vg, nvgTransRGBA(nvgRGB(0x08, 0x08, 0x08), 0xff)); // Using default black LCD.
+				nvgText(args.vg, textPos.x, textPos.y, "Voltmeter", NULL); // Default message on first line (Voltmeter, the default mode).
+				// Main DMD, lower line.
+				nvgFontSize(args.vg, 20);
+				nvgTextLetterSpacing(args.vg, -1);
+				textPos = Vec(12, box.size.y - 152);
+				nvgText(args.vg, textPos.x + 26, textPos.y, "+3.14V", NULL); // Default message on second line (display fictious voltage).
+				return; // Exit method immediatly (code below will be ignored).
+			}
+			nvgFillColor(args.vg, nvgTransRGBA(module->DMDtextColor, 0xff)); // Using current color for DMD.
+			nvgText(args.vg, textPos.x, textPos.y, module->dmdTextMain1, NULL); // Proceeding module->dmdTextMain2 string (second line).
 			// Main DMD, lower line.
 			nvgFontSize(args.vg, 20);
 			nvgTextLetterSpacing(args.vg, -1);
 			textPos = Vec(12, box.size.y - 152);
-			nvgText(args.vg, textPos.x + 26, textPos.y, "+3.14V", NULL); // Default message on second line (display fictious voltage).
-			return; // Exit method immediatly (code below will be ignored).
+			nvgText(args.vg, textPos.x + module->dmdOffsetTextMain2, textPos.y, module->dmdTextMain2, NULL); // Displaying module->dmdTextMain2 string (second line). The second line may have an horizontal offset.
+			// CV Tuner (Mode = 1) only from this point.
+			if (module->Mode != 1)
+				return; // Exit immediatly (code below will be ignored) if current mode isn't "CV Tuner".
+			if (module->bChangingMode || module->bChangingOption)
+				return; // Exit immediatly if currently changing mode or changing option.
+			if (!module->b_tunrMarkerVisible)
+				return; // Flag "module->b_tunrMarkerVisible" is false, don't display marker(s): exit method immediatly.
+			// Display marker(s) on the DMD.
+			nvgFontSize(args.vg, 14);
+			nvgTextLetterSpacing(args.vg, -1);
+			textPos = Vec(12.0f, box.size.y - 154);
+			nvgText(args.vg, textPos.x + module->dmdTunerMarkerPos, textPos.y, module->dmdTunerMarker, NULL);
 		}
-		nvgFillColor(args.vg, nvgTransRGBA(module->DMDtextColor, 0xff)); // Using current color for DMD.
-		nvgText(args.vg, textPos.x, textPos.y, module->dmdTextMain1, NULL); // Proceeding module->dmdTextMain2 string (second line).
-		// Main DMD, lower line.
-		nvgFontSize(args.vg, 20);
-		nvgTextLetterSpacing(args.vg, -1);
-		textPos = Vec(12, box.size.y - 152);
-		nvgText(args.vg, textPos.x + module->dmdOffsetTextMain2, textPos.y, module->dmdTextMain2, NULL); // Displaying module->dmdTextMain2 string (second line). The second line may have an horizontal offset.
-		// CV Tuner (Mode = 1) only from this point.
-		if (module->Mode != 1)
-			return; // Exit immediatly (code below will be ignored) if current mode isn't "CV Tuner".
-		if (module->bChangingMode || module->bChangingOption)
-			return; // Exit immediatly if currently changing mode or changing option.
-		if (!module->b_tunrMarkerVisible)
-			return; // Flag "module->b_tunrMarkerVisible" is false, don't display marker(s): exit method immediatly.
-		// Display marker(s) on the DMD.
-		nvgFontSize(args.vg, 14);
-		nvgTextLetterSpacing(args.vg, -1);
-		textPos = Vec(12.0f, box.size.y - 154);
-		nvgText(args.vg, textPos.x + module->dmdTunerMarkerPos, textPos.y, module->dmdTunerMarker, NULL);
 	}
 
 };
