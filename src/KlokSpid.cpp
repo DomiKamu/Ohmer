@@ -1607,54 +1607,54 @@ struct KlokSpidDMD : TransparentWidget {
 		fontPath = std::string(asset::plugin(pluginInstance, "res/fonts/LEDCounter7.ttf"));
 	}
 
-	void draw(const DrawArgs &args) override {
-
-		if (!(font = APP->window->loadFont(fontPath))) {
-				return;
+	void drawLayer(const DrawArgs &args, int layer) override {
+		if (layer == 1) {
+			if (!(font = APP->window->loadFont(fontPath))) {
+					return;
+			}
+			// Main DMD, upper line.
+			nvgFontSize(args.vg, 16);
+			nvgFontFaceId(args.vg, font->handle);
+			nvgTextLetterSpacing(args.vg, -2);
+			Vec textPos = Vec(14, box.size.y - 174);
+			if (module) {
+				nvgFillColor(args.vg, nvgTransRGBA(module->DMDtextColor, 0xff)); // Using current color for DMD.
+				nvgText(args.vg, textPos.x, textPos.y, module->dmdTextMain1, NULL); // Proceeding module->dmdTextMain2 string (second line).
+			}
+			else {
+				// Default message on DMD (LCD).
+				nvgFillColor(args.vg, nvgTransRGBA(nvgRGB(0x08, 0x08, 0x08), 0xff)); // Using default black LCD.
+				nvgText(args.vg, textPos.x, textPos.y, "Clk Generator", NULL); // Default message on first line.
+			}
+			// Main DMD, lower line.
+			nvgFontSize(args.vg, 20);
+			nvgTextLetterSpacing(args.vg, -1);
+			textPos = Vec(12, box.size.y - 152);
+			if (module)
+				nvgText(args.vg, textPos.x + module->dmdOffsetTextMain2, textPos.y, module->dmdTextMain2, NULL); // Displaying module->dmdTextMain2 string (second line). The second line may have an horizontal offset.
+				else nvgText(args.vg, textPos.x + 7, textPos.y, "120 BPM", NULL); // Default message on second line.
+			// Lower DMD, display between output jacks, top-left (output #1).
+			nvgFontSize(args.vg, 14);
+			textPos = Vec(35, box.size.y + 61);
+			if (module)
+				nvgText(args.vg, textPos.x + module->dmdOffsetTextOut1, textPos.y, module->dmdTextMainOut1, NULL); // Displaying module->dmdTextMainOut1 string (top-left, related to output port #1).
+				else nvgText(args.vg, textPos.x + 5, textPos.y, "X1", NULL); // Default message: X1.
+			// Lower DMD, display between output jacks, top-right (output #2).
+			textPos = Vec(62.5, box.size.y + 61);
+			if (module)
+				nvgText(args.vg, textPos.x + module->dmdOffsetTextOut2, textPos.y, module->dmdTextMainOut2, NULL); // Displaying module->dmdTextMainOut2 string (top-right, related to output port #2).
+				else nvgText(args.vg, textPos.x + 5, textPos.y, "X1", NULL); // Default message: X1.
+			// Lower DMD, display between output jacks, bottom-left (output #3).
+			textPos = Vec(35, box.size.y + 75);
+			if (module)
+				nvgText(args.vg, textPos.x + module->dmdOffsetTextOut3, textPos.y, module->dmdTextMainOut3, NULL); // Displaying module->dmdTextMainOut3 string (bottom-left, related to output port #3).
+				else nvgText(args.vg, textPos.x + 5, textPos.y, "X1", NULL); // Default message: X1.
+			// Lower DMD, display between output jacks, bottom-right (output #4).
+			textPos = Vec(62.5, box.size.y + 75);
+			if (module)
+				nvgText(args.vg, textPos.x + module->dmdOffsetTextOut4, textPos.y, module->dmdTextMainOut4, NULL); // Displaying module->dmdTextMainOut4 string (bottom-right, related to output port #4).
+				else nvgText(args.vg, textPos.x + 5, textPos.y, "X1", NULL); // Default message: X1.
 		}
-
-		// Main DMD, upper line.
-		nvgFontSize(args.vg, 16);
-		nvgFontFaceId(args.vg, font->handle);
-		nvgTextLetterSpacing(args.vg, -2);
-		Vec textPos = Vec(14, box.size.y - 174);
-		if (module) {
-			nvgFillColor(args.vg, nvgTransRGBA(module->DMDtextColor, 0xff)); // Using current color for DMD.
-			nvgText(args.vg, textPos.x, textPos.y, module->dmdTextMain1, NULL); // Proceeding module->dmdTextMain2 string (second line).
-		}
-		else {
-			// Default message on DMD (LCD).
-			nvgFillColor(args.vg, nvgTransRGBA(nvgRGB(0x08, 0x08, 0x08), 0xff)); // Using default black LCD.
-			nvgText(args.vg, textPos.x, textPos.y, "Clk Generator", NULL); // Default message on first line.
-		}
-		// Main DMD, lower line.
-		nvgFontSize(args.vg, 20);
-		nvgTextLetterSpacing(args.vg, -1);
-		textPos = Vec(12, box.size.y - 152);
-		if (module)
-			nvgText(args.vg, textPos.x + module->dmdOffsetTextMain2, textPos.y, module->dmdTextMain2, NULL); // Displaying module->dmdTextMain2 string (second line). The second line may have an horizontal offset.
-			else nvgText(args.vg, textPos.x + 7, textPos.y, "120 BPM", NULL); // Default message on second line.
-		// Lower DMD, display between output jacks, top-left (output #1).
-		nvgFontSize(args.vg, 14);
-		textPos = Vec(35, box.size.y + 61);
-		if (module)
-			nvgText(args.vg, textPos.x + module->dmdOffsetTextOut1, textPos.y, module->dmdTextMainOut1, NULL); // Displaying module->dmdTextMainOut1 string (top-left, related to output port #1).
-			else nvgText(args.vg, textPos.x + 5, textPos.y, "X1", NULL); // Default message: X1.
-		// Lower DMD, display between output jacks, top-right (output #2).
-		textPos = Vec(62.5, box.size.y + 61);
-		if (module)
-			nvgText(args.vg, textPos.x + module->dmdOffsetTextOut2, textPos.y, module->dmdTextMainOut2, NULL); // Displaying module->dmdTextMainOut2 string (top-right, related to output port #2).
-			else nvgText(args.vg, textPos.x + 5, textPos.y, "X1", NULL); // Default message: X1.
-		// Lower DMD, display between output jacks, bottom-left (output #3).
-		textPos = Vec(35, box.size.y + 75);
-		if (module)
-			nvgText(args.vg, textPos.x + module->dmdOffsetTextOut3, textPos.y, module->dmdTextMainOut3, NULL); // Displaying module->dmdTextMainOut3 string (bottom-left, related to output port #3).
-			else nvgText(args.vg, textPos.x + 5, textPos.y, "X1", NULL); // Default message: X1.
-		// Lower DMD, display between output jacks, bottom-right (output #4).
-		textPos = Vec(62.5, box.size.y + 75);
-		if (module)
-			nvgText(args.vg, textPos.x + module->dmdOffsetTextOut4, textPos.y, module->dmdTextMainOut4, NULL); // Displaying module->dmdTextMainOut4 string (bottom-right, related to output port #4).
-			else nvgText(args.vg, textPos.x + 5, textPos.y, "X1", NULL); // Default message: X1.
 	}
 
 };
