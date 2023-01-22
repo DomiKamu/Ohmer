@@ -1,15 +1,16 @@
-==============================================================================================================================
+================================================================================================================================
 CHANGELOG
-==============================================================================================================================
+================================================================================================================================
 
-IN PROGRESS Release v2.2.3 (Xxxxx xxth, 2023)
+IN PROGRESS ---- Release v2.2.3 (Xxxxx xxth, 2023)
 
-- KlokSpid, Metriks: plasma-gas dot-matrix displays for "Signature"-line modules now are visible in dark room.
-  (ToDo: for Absolute Night models, the yellow-backlit LCD dot-matrix-display must be visible).
-- RKD: the eight displays (near each output ports) now are visible in dark room.
+- KlokSpid, Metriks: plasma-gas dot-matrix displays for "Signature"-line modules now are visible in dark room (night) condition.
+  (ToDo: for "Absolute Night" models, the yellow-backlit LCD dot-matrix-display must be visible).
+- RKD: the eight displays (along output ports) now are visible in dark room (night) condition.
+- RKD: fixed typo for second output jack description (2ns replaced by 2nd).
 - RKD and BRK modules User's Guide (PDF): added sections about extra tables, some fixed typos.
 
-------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
 
 Release v2.2.2 (December 29th, 2022)
 
@@ -18,24 +19,24 @@ Release v2.2.2 (December 29th, 2022)
 - Klokspid: fixed "Factory" (from SETUP) restore concerning custom output ratios. Now set at /4, X1, X2, and X4, as expected.
 - RKD and BRK modules User's Guide (PDF) is finished.
 
-------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
 
 Pre-release v2.0.0-beta 4 (October 18th, 2021)
 
 - Builds against Rack-SDK-2.git.219bbaf1
 
-------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
 
 Pre-release v2.0.0 Beta (October 5th, 2021)
 
 - Added code for "loadFont" in "draw" method (KlokSpid, Metriks, and RKD modules). Recommended for V2 migration.
 - Added bypasses for KlokSpid (CLK -> all outputs), Metriks (IN -> OUT), and RKD (CLK -> all outputs).
 
-------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
 
 Pre-release v2.0.0 Beta (October 1st, 2021)
 
-------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
 
 Release v1.1.6 (January 27th, 2020):
 
@@ -45,7 +46,7 @@ Release v1.1.6 (January 27th, 2020):
 - RKD with BRK module removed (indicated as "deprecated" in future from previous 1.1.3.1).
 - Plugin compiled against Rack v1.1.6.
 
-------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
 
 Release v1.1.3.1 (July 29th, 2019):
 
@@ -54,7 +55,7 @@ Release v1.1.3.1 (July 29th, 2019):
 - RKD-BRK module (8 HP) continues to exist for patch compatibility, BUT WILL BE DEPRECATED!
   during migration (by replacing all RKD-BRK by simple RKD in your patches is highly recommended).
 
-------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
 
 Release v1.1.3 (July 26th, 2019):
 
@@ -62,7 +63,7 @@ Release v1.1.3 (July 26th, 2019):
 - Metriks: for Voltmeter, new option (1st) is added: Realtime (default), Minimum, Maximum, or Median.
 - Metriks: added manual (links from main README.md).
 
-------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
 
 Release v1.1.2 (July 21st, 2019):
 
@@ -75,7 +76,7 @@ Release v1.1.2 (July 21st, 2019):
 - KlokSpid: now default (when added on rack) is "Custom" jack rates (/4, x1, x2 and x4), instead of "All @ x1".
 - plugin.json: some module descriptions has been reworked.
 
-------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
 
 Release v1.0.0 (June 24th, 2019):
 
@@ -88,7 +89,7 @@ Release v1.0.0 (June 24th, 2019):
 - Revamped context-menus (right-click menu).
 - Splitter 1x9: support both monophonic and polyphonic cables (no SIMD).
 
-------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
 
 Release v0.6.4 (April 28th, 2018):
 
@@ -99,14 +100,14 @@ Release v0.6.4 (April 28th, 2018):
 - KlokSpid: enhanced afterglow for red LED (CLK).
 - KlokSpid, Metriks: background DMD (dot matrix display) now is more dark for Deepblue Signature models.
 
-------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
 
 Release v0.6.3 (April 8th, 2018):
 
 - KlokSpid: added new feature: optional LFO to jack #4 (BPM-clock generator only). Can be enabled via SETUP.
 - KlokSpid, Metriks: added initialization blinking (fake "Calibrating...") message on DMD, while encoder isn't stable.
 
-------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
 
 Release v0.6.2 (April 2st, 2018):
 
@@ -114,7 +115,7 @@ Release v0.6.2 (April 2st, 2018):
   (why as modified knob ? why no auto rescale to "0.0" - neutral - on mouse release for an encoder?, why it uses - like knobs
   the stupid transient values during instanciation?).
 
-------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
 
 Release v0.6.1 (April 1st, 2018):
 
@@ -125,7 +126,7 @@ Release v0.6.1 (April 1st, 2018):
 
 NOTE: developments/maintenances around previous v0.5.x (for VCV Rack v0.5.1) are cancelled!
 
-------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
 
 Release v0.6.0 (March 28th, 2018):
 
@@ -134,7 +135,7 @@ Release v0.6.0 (March 28th, 2018):
   (required for auto-reset sequence, when enabled/On by jumper J6).
 - New module (0.6 only): Metriks (voltmeter and peak counter operatioal, frequency meter stays in development).
 
-------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
 
 Release v0.6.0.7-beta (March 25th, 2018):
 
@@ -153,7 +154,7 @@ Release v0.6.0.7-beta (March 25th, 2018):
   avoid issues on some dividers when cloning RKD module while its PCB isn't visible.
 - New (experimental) module: Metriks (WIP) - for continuous encoder training... working as voltmeter for now...
 
-------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
 
 Release v0.6.0.6-beta (March 19th, 2018):
 
@@ -162,7 +163,7 @@ Release v0.6.0.6-beta (March 19th, 2018):
 - RKD modules: added a bi-colored LED near RESET jack: red on full module reset (or disabled/idle), cyan during "Auto-Reset"
   (if configured by jumper J6 ON, or via switch on BRK panel).
 
-------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
 
 Release v0.6.0.5-beta (March 17th, 2018):
 
@@ -171,7 +172,7 @@ Release v0.6.0.5-beta (March 17th, 2018):
 - KlokSpid: fixed issue when "Signature" module was choosen from context-menu, then the module was cloned, resulting bad text
   color in DMD instead of "plasma-like" color (white, orange or cyan).
 
-------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
 
 Release v0.6.0.4-beta (March 8th, 2018):
 
@@ -184,7 +185,7 @@ Release v0.6.0.4-beta (March 8th, 2018):
   correctly aligned on the port edge!
 - KlokSpid: now default factory for CV-RATIO/TRIG. input port, TRIG. is BPM-clocking reset, instead of BPM start/stop toggle.
 
-------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
 
 Release v0.6.0.3-beta (February 28th, 2018):
 
@@ -202,15 +203,13 @@ Release v0.6.0.3-beta (February 28th, 2018):
 - Splitter 1x9: reworked port positions.
 - 2 HP Blank Panel have a context-menu to change its screws setting (three settings).
 
-------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
 TODO LIST / PLANNED:
-------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
 
 - Metriks: other modes (BPM Meter, Peak Counter, Frequency Counter).
-- Metriks: implementation of optional 432Hz (A4 Pitch) for CV Tuner? (is it necessary?)
-- RKD modules: LED are off on small duration pulses (but TBC).
-- RKD modules: PDF manual still under construction, YouTube video under consideration.
-- RKD with "Break": consider Break module as expander (left side or right side).
-- RKD, when jumpers (PCB) are visible, move fly-over jumper display a kind of SVG manual about current jumper...
+- UNDER CONSIDERATION for Metriks: implementation of optional 432Hz (A4 Pitch) as reference for CV Tuner? (is it necessary?)
+- ??? RKD modules: LED are off on small duration pulses (but TBC).
+- RKD modules: YouTube video tutorial under consideration.
 - KlokSpid: PDF manual (under consideration), and/or YouTube tutorial video (redo a separate dedicated video).
 - Metriks: PDF manual (under consideration), and/or YouTube tutorial video (redo a separate dedicated video).
