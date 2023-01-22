@@ -1655,6 +1655,7 @@ struct KlokSpidDMD : TransparentWidget {
 				nvgText(args.vg, textPos.x + module->dmdOffsetTextOut4, textPos.y, module->dmdTextMainOut4, NULL); // Displaying module->dmdTextMainOut4 string (bottom-right, related to output port #4).
 				else nvgText(args.vg, textPos.x + 5, textPos.y, "X1", NULL); // Default message: X1.
 		}
+		Widget::drawLayer(args, layer);
 	}
 
 };

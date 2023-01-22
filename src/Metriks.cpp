@@ -1357,6 +1357,7 @@ struct MetriksDMD : TransparentWidget {
 			textPos = Vec(12.0f, box.size.y - 154);
 			nvgText(args.vg, textPos.x + module->dmdTunerMarkerPos, textPos.y, module->dmdTunerMarker, NULL);
 		}
+		Widget::drawLayer(args, layer);
 	}
 
 };

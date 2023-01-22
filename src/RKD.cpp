@@ -167,7 +167,7 @@ struct RKD : Module {
 		configInput(RESET_INPUT, "Reset");
 		configInput(CLK_INPUT, "Clock");
 		configOutput(OUTPUT_1, "1st");
-		configOutput(OUTPUT_2, "2ns");
+		configOutput(OUTPUT_2, "2nd");
 		configOutput(OUTPUT_3, "3rd");
 		configOutput(OUTPUT_4, "4th");
 		configOutput(OUTPUT_5, "5th");
@@ -896,6 +896,7 @@ struct RKD_Displays : TransparentWidget {
 				nvgText(args.vg, textPos.x, textPos.y + 239.5, " 8", NULL);
 			}
 		}
+		Widget::drawLayer(args, layer);
 	}
 
 };
