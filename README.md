@@ -23,6 +23,9 @@ Basically, KlokSpid module provides two modes:
 
 ![KlokSpid Module](doc/images/KlokSpid.png)
 
+Now, KlokSpid (and Metriks) modules support the night! (dark room):
+
+![KlokSpid Module](doc/images/KlokSpid_Dark_Mode.png)
 
 
 Clocking mode is automatically selected by an internal sensor (and module's firmware), in fact, depending the **CLK** input jack is connected, or not.
