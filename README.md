@@ -23,7 +23,7 @@ Basically, KlokSpid module provides two modes:
 
 ![KlokSpid Module](doc/images/KlokSpid.png)
 
-Now, KlokSpid (and Metriks) modules support the night! (dark room):
+Now, KlokSpid (and Metriks) modules support the night! (VCV Rack 2 **dark room** feature):
 
 ![KlokSpid Module](doc/images/KlokSpid_Dark_Mode.png)
 
