@@ -23,9 +23,9 @@ Basically, KlokSpid module provides two modes:
 
 ![KlokSpid Module](doc/images/KlokSpid.png)
 
-Now, KlokSpid (also Metriks and RKD) support the night fever! (VCV Rack 2 **dark room** feature):
+Now, KlokSpid, Metriks and RKD modules support the night fever! (VCV Rack 2 **dark room** feature):
 
-![KlokSpid Module](doc/images/KlokSpid_Dark_Mode.png)
+![](doc/images/KlokSpid_Dark_Mode.png)![](doc/images/Dark_Mode.png)
 
 
 Clocking mode is automatically selected by an internal sensor (and module's firmware), in fact, depending the **CLK** input jack is connected, or not.
