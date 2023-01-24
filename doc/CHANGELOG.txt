@@ -2,13 +2,13 @@
 CHANGELOG
 ================================================================================================================================
 
-IN PROGRESS ---- Release v2.2.3 (Xxxxx xxth, 2023)
+Release v2.2.3 (January 24th, 2023)
 
 - KlokSpid, Metriks: plasma-gas dot-matrix displays for "Signature"-line modules now are visible in dark room (night) condition.
-  (ToDo: for "Absolute Night" models, the yellow-backlit LCD dot-matrix-display must be visible).
+  for "Absolute Night" models: the yellow-backlit LCD dot-matrix-display causes the display is visible in dark room condition.
 - RKD: the eight displays (along output ports) now are visible in dark room (night) condition.
 - RKD: fixed typo for second output jack description (2ns replaced by 2nd).
-- RKD and BRK modules User's Guide (PDF): added sections about extra tables, some fixed typos.
+- RKD and BRK modules User's Guide (PDF): added sections concerning extra dividers tables, some fixed typos and English faults.
 
 --------------------------------------------------------------------------------------------------------------------------------
 
@@ -209,7 +209,6 @@ TODO LIST / PLANNED:
 
 - Metriks: other modes (BPM Meter, Peak Counter, Frequency Counter).
 - UNDER CONSIDERATION for Metriks: implementation of optional 432Hz (A4 Pitch) as reference for CV Tuner? (is it necessary?)
-- ??? RKD modules: LED are off on small duration pulses (but TBC).
-- RKD modules: YouTube video tutorial under consideration.
-- KlokSpid: PDF manual (under consideration), and/or YouTube tutorial video (redo a separate dedicated video).
-- Metriks: PDF manual (under consideration), and/or YouTube tutorial video (redo a separate dedicated video).
+- RKD modules: LED are off on small duration pulses (but TBC).
+- UNDER CONSIDERATION for RKD module: YouTube video tutorial.
+- KlokSpid, Metriks: PDF manual (also under consideration), and/or YouTube tutorial video (redo a separate dedicated video).
