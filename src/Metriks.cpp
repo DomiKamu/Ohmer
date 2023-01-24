@@ -1317,8 +1317,18 @@ struct MetriksDMD : TransparentWidget {
 
 	void drawLayer(const DrawArgs &args, int layer) override {
 		if (layer == 1) {
-			if (!(font = APP->window->loadFont(fontPath))) {
-					return;
+			if (!(font = APP->window->loadFont(fontPath)))
+				return;
+			// Yellow rounded rectangle to simulate yellow backlit of (LCD) dot-matrix display ("Absolute Night" model only).
+			if (module) {
+				if (module->Theme == 2) {
+					// Main DMD.
+					nvgBeginPath(args.vg);
+					nvgRoundedRect(args.vg, 7.16f, 43.6f, 105.7f, 45.48f, 6.5f);
+					nvgFillColor(args.vg, nvgRGBA(0xC0, 0xE9, 0x10, 0xff));
+					nvgFill(args.vg);
+					nvgClosePath(args.vg);
+				}
 			}
 			// Main DMD, upper line.
 			nvgFontSize(args.vg, 16);
