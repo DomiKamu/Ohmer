@@ -23,9 +23,9 @@ Basically, KlokSpid module provides two modes:
 
 ![KlokSpid Module](doc/images/KlokSpid.png)
 
-Now, KlokSpid, Metriks and RKD modules support the night fever! (VCV Rack 2 **dark room** feature):
+Now, KlokSpid (Metriks, and RKD) modules support the night fever! (VCV Rack 2 **dark room** feature):
 
-![](doc/images/KlokSpid_Dark_Mode.png)![](doc/images/Dark_Room.png)
+![](doc/images/KlokSpid_Dark_Mode.png)
 
 
 Clocking mode is automatically selected by an internal sensor (and module's firmware), in fact, depending the **CLK** input jack is connected, or not.
@@ -106,6 +106,10 @@ Please take a look on [PDF user's manual](res/Manuals/RKD_BRK_Manual.pdf).
 ![Blank_2HP_Screws_Opt](doc/images/Blank_2HP_Screws_Opts.png)
 
 
+KlokSpid (Deepblue "Signature" model), Metriks (Absolute Night) and RKD, together, during night session:
+
+![](doc/images/Dark_Room.png)
+
 
 
 ## Releases
@@ -126,7 +130,7 @@ Feature requests, suggestions, and bug reports are welcome on [GitHub repository
 
 
 
-### Current release: v2.2.2 (December 29th, 2022), vs. Rack-SDK-2 v2.2.2:
+### Current release: v2.2.3 (January 24th, 2023), vs. Rack-SDK-2 v2.2.2:
 
 - Bug-fixes and enhancements are described in details into [CHANGELOG.TXT](doc/CHANGELOG.txt).
 
