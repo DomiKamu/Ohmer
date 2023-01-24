@@ -867,9 +867,8 @@ struct RKD_Displays : TransparentWidget {
 
 	void drawLayer(const DrawArgs &args, int layer) override {
 		if (layer == 1) {
-			if (!(font = APP->window->loadFont(fontPath))) {
-					return;
-			}
+			if (!(font = APP->window->loadFont(fontPath)))
+				return;
 			nvgFontSize(args.vg, 14);
 			nvgFontFaceId(args.vg, font->handle);
 			nvgTextLetterSpacing(args.vg, -1);
