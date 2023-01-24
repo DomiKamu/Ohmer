@@ -88,16 +88,16 @@ Obviously, all settings you've defined via SETUP are automatically saved along y
 
 **VERY IMPORTANT:** the **obsolete RKD with "Break"** 8 HP module is removed, and replaced by the 4 HP **BRK** expander for RKD module (BRK module can be placed at right-side or left-side, but along RKD without space between them).
 
-Please take a look on [PDF user's manual](res/Manuals/RKD%20&%20BRK%20User's%20Manual.pdf) _(still under construction, but useful to start, however)_.
+Please take a look on [PDF user's manual](res/Manuals/RKD_BRK_Manual.pdf).
 
 
 **Metriks**, a 8 HP metering module, for now providing **voltmeter** and **CV tuner** modes only (please notice other modes, such *BPM Meter*, *Frequency Counter* and *Peak Counter* are temporary disabled, like a "scrolling message" says on the dot-matrix display when you select one of these unavailable modes). 
 
-[Metriks - Quick Guide **is here!**](doc/Metriks.md) please notice **this Metriks module still in development**, thank you very much for patience!
+[Metriks - Quick Guide **is here!**](doc/Metriks.md) please notice **this Metriks module remains in development**.
 
 ![Metriks module](doc/images/Metriks.png)
 
-**Splitter 1x9**, a simple "multi" 1-input to 9-outputs. Like KlokSpid and Metriks, this module is also available... all six models (from context-menu). This module supports both monophonic or polyphonic cables.
+**Splitter 1x9**, a simple "multi" 1-input to 9-outputs. Like KlokSpid and Metriks, this module is also available all six liveries (models, from context-menu). This module supports both monophonic or polyphonic cables.
 
 ![Splitter 1x9 module](doc/images/Splitter.png)
 
