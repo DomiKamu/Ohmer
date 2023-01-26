@@ -2,7 +2,7 @@
 CHANGELOG
 ================================================================================================================================
 
-IN PROGRESS --- Release v2.2.4 (Xxxxxx xxxx, 2023) for VCV Rack v2.
+Release v2.2.4 (January 26th, 2023) for VCV Rack v2.
 
 - KlokSpid, Metriks: disabled DMD (dot-matrix display) while the module is bypassed (nothing displayed).
   for "Absolute Night" models: the yellow-backlit(s) behind LCD is (are) turned off while the module is bypassed.
