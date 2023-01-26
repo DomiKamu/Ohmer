@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    id="svg8"
    viewBox="0 0 120 380"
    version="1.1"
    sodipodi:docname="Metriks_Absolute_Night.svg"
-   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
    width="120"
-   height="380">
+   height="380"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <title
      id="title9">Metriks (8 HP) panel, for VCV Rack</title>
   <metadata
@@ -45,17 +45,18 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:window-width="1920"
-     inkscape:window-height="1058"
+     inkscape:window-height="1057"
      id="namedview37"
      showgrid="false"
      inkscape:zoom="7.8451636"
-     inkscape:cx="51.685879"
-     inkscape:cy="168.24158"
+     inkscape:cx="51.687896"
+     inkscape:cy="253.3408"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg8"
-     units="px" />
+     units="px"
+     inkscape:pagecheckerboard="0" />
   <defs
      id="defs4">
     <style
@@ -319,4 +320,16 @@
        id="path865"
        inkscape:connector-curvature="0" />
   </g>
+  <circle
+     style="fill:#000000;fill-opacity:1;stroke:#ff006e;stroke-width:0"
+     id="path886"
+     cx="36.400002"
+     cy="249.10001"
+     r="9.0999994" />
+  <circle
+     style="fill:#000000;fill-opacity:1;stroke:#ff006e;stroke-width:0"
+     id="circle891"
+     cx="84.400002"
+     cy="249.10001"
+     r="9.0999994" />
 </svg>
