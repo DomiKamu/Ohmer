@@ -130,7 +130,7 @@ Feature requests, suggestions, and bug reports are welcome on [GitHub repository
 
 
 
-### Current release: v2.2.3 (January 24th, 2023), vs. Rack-SDK-2 v2.2.2:
+### Current release: v2.2.4 (January 26th, 2023), vs. Rack-SDK-2 v2.2.2:
 
 - Bug-fixes and enhancements are described in details into [CHANGELOG.TXT](doc/CHANGELOG.txt).
 
