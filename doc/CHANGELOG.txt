@@ -2,6 +2,16 @@
 CHANGELOG
 ================================================================================================================================
 
+IN PROGRESS --- Release v2.2.4 (Xxxxxx xxxx, 2023) for VCV Rack v2.
+
+- KlokSpid, Metriks: disabled DMD (dot-matrix display) while the module is bypassed (nothing displayed).
+  for "Absolute Night" models: the yellow-backlit(s) behind LCD is (are) turned off while the module is bypassed.
+- Metriks: module cosmetic while bypassed (for all six models) is fixed.
+- RKD: all displays are turned off while module is bypassed.
+- RKD: module bypass behavior is described at the end of PDF User's Guide.
+
+--------------------------------------------------------------------------------------------------------------------------------
+
 Release v2.2.3 (January 24th, 2023)
 
 - KlokSpid, Metriks: plasma-gas dot-matrix displays for "Signature"-line modules now are visible in dark room (night) condition.
@@ -209,6 +219,5 @@ TODO LIST / PLANNED:
 
 - Metriks: other modes (BPM Meter, Peak Counter, Frequency Counter).
 - UNDER CONSIDERATION for Metriks: implementation of optional 432Hz (A4 Pitch) as reference for CV Tuner? (is it necessary?)
-- RKD modules: LED are off on small duration pulses (but TBC).
 - UNDER CONSIDERATION for RKD module: YouTube video tutorial.
 - KlokSpid, Metriks: PDF manual (also under consideration), and/or YouTube tutorial video (redo a separate dedicated video).
