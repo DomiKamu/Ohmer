@@ -117,9 +117,6 @@ struct KlokSpidModule : Module {
 	int Theme = 0; // 0 = Classic (default), 1 = Stage Repro, 2 = Absolute Night, 3 = Dark Signature, 4 = Deepblue Signature, 5 = Carbon Signature.
 	int portMetal = 0; // 0 = silver connector (default), 1 = gold connector used by "Signature"-line models only.
 
-	// DMD-font color (default is "Classic" beige model).
-	NVGcolor DMDtextColor = nvgRGB(0x08, 0x08, 0x08);
-
 	//// Main DMD and small displays (near output jacks).
 	char dmdTextMain1[24] = "";
 	char dmdTextMain2[24] = "";
@@ -317,15 +314,15 @@ struct KlokSpidModule : Module {
 	KlokSpidModule() {
 		// Constructor...
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
-		configInput(INPUT_CLOCK, "Clock");
-		configInput(INPUT_CV_TRIG, "CV-Ratio or trigger");
-		configOutput(OUTPUT_1, "1st");
-		configOutput(OUTPUT_2, "2nd");
-		configOutput(OUTPUT_3, "3rd");
-		configOutput(OUTPUT_4, "4th");
-		configParam(PARAM_ENCODER, -INFINITY, INFINITY, 0.0f, "Encoder");	
-		configParam(PARAM_BUTTON, 0.0f, 1.0f, 0.0f, "Button");
-		//configButton(PARAM_BUTTON);
+		configInput(INPUT_CLOCK, "Master clock");
+		configInput(INPUT_CV_TRIG, "CV-Ratio / trigger");
+		configOutput(OUTPUT_1, "1st clock");
+		configOutput(OUTPUT_2, "2nd clock");
+		configOutput(OUTPUT_3, "3rd clock");
+		configOutput(OUTPUT_4, "4th clock");
+		configParam(PARAM_ENCODER, -INFINITY, INFINITY, 0.0f, "");	
+		configParam(PARAM_BUTTON, 0.0f, 1.0f, 0.0f);
+		configButton(PARAM_BUTTON, "Play/Stop/SETUP");
 		configBypass(INPUT_CLOCK, OUTPUT_1);
 		configBypass(INPUT_CLOCK, OUTPUT_2);
 		configBypass(INPUT_CLOCK, OUTPUT_3);
@@ -657,8 +654,7 @@ struct KlokSpidModule : Module {
 
 	void process(const ProcessArgs &args) override {
 		// DSP processing...
-		// Depending current KlokSpid model (theme), set the relevant DMD-text color.
-		DMDtextColor = tblDMDtextColor[Theme];
+
 		// Bypass if not early run (executed once to initialize KlokSpid).
 		if (bEarlyRun) {
 			// Small displays near output jacks.
@@ -1611,9 +1607,9 @@ struct KlokSpidDMD : TransparentWidget {
 		if (layer == 1) {
 			if (!(font = APP->window->loadFont(fontPath)))
 				return;
-			// Yellow rounded rectangle to simulate yellow backlit of (LCD) dot-matrix display ("Absolute Night" model only).
 			if (module) {
-				if (module->Theme == 2) {
+				if ((module->Theme == 2) && (!module->isBypassed())) {
+					// Yellow rounded rectangle to simulate yellow backlit of (LCD) dot-matrix display ("Absolute Night" model only, and not bypassed).
 					// Main DMD.
 					nvgBeginPath(args.vg);
 					nvgRoundedRect(args.vg, 7.16f, 43.6f, 105.7f, 45.48f, 6.5f);
@@ -1634,8 +1630,9 @@ struct KlokSpidDMD : TransparentWidget {
 			nvgTextLetterSpacing(args.vg, -2);
 			Vec textPos = Vec(14, box.size.y - 174);
 			if (module) {
-				nvgFillColor(args.vg, nvgTransRGBA(module->DMDtextColor, 0xff)); // Using current color for DMD.
-				nvgText(args.vg, textPos.x, textPos.y, module->dmdTextMain1, NULL); // Proceeding module->dmdTextMain2 string (second line).
+				nvgFillColor(args.vg, nvgTransRGBA(tblDMDtextColor[module->Theme], 0xff)); // Using current color for DMD.
+				if (!module->isBypassed())
+					nvgText(args.vg, textPos.x, textPos.y, module->dmdTextMain1, NULL); // Main DMD, upper line.
 			}
 			else {
 				// Default message on DMD (LCD).
@@ -1646,30 +1643,35 @@ struct KlokSpidDMD : TransparentWidget {
 			nvgFontSize(args.vg, 20);
 			nvgTextLetterSpacing(args.vg, -1);
 			textPos = Vec(12, box.size.y - 152);
-			if (module)
-				nvgText(args.vg, textPos.x + module->dmdOffsetTextMain2, textPos.y, module->dmdTextMain2, NULL); // Displaying module->dmdTextMain2 string (second line). The second line may have an horizontal offset.
-				else nvgText(args.vg, textPos.x + 7, textPos.y, "120 BPM", NULL); // Default message on second line.
+			if (module) {
+				if (!module->isBypassed())
+					nvgText(args.vg, textPos.x + module->dmdOffsetTextMain2, textPos.y, module->dmdTextMain2, NULL); // Displaying module->dmdTextMain2 string (second line). The second line may have an horizontal offset.
+			} else nvgText(args.vg, textPos.x + 7, textPos.y, "120 BPM", NULL); // Default message on second line.
 			// Lower DMD, display between output jacks, top-left (output #1).
 			nvgFontSize(args.vg, 14);
 			textPos = Vec(35, box.size.y + 61);
-			if (module)
-				nvgText(args.vg, textPos.x + module->dmdOffsetTextOut1, textPos.y, module->dmdTextMainOut1, NULL); // Displaying module->dmdTextMainOut1 string (top-left, related to output port #1).
-				else nvgText(args.vg, textPos.x + 5, textPos.y, "X1", NULL); // Default message: X1.
+			if (module) {
+				if (!module->isBypassed())
+					nvgText(args.vg, textPos.x + module->dmdOffsetTextOut1, textPos.y, module->dmdTextMainOut1, NULL); // Displaying module->dmdTextMainOut1 string (top-left, related to output port #1).
+			} else nvgText(args.vg, textPos.x + 5, textPos.y, "X1", NULL); // Default message: X1.
 			// Lower DMD, display between output jacks, top-right (output #2).
 			textPos = Vec(62.5, box.size.y + 61);
-			if (module)
-				nvgText(args.vg, textPos.x + module->dmdOffsetTextOut2, textPos.y, module->dmdTextMainOut2, NULL); // Displaying module->dmdTextMainOut2 string (top-right, related to output port #2).
-				else nvgText(args.vg, textPos.x + 5, textPos.y, "X1", NULL); // Default message: X1.
+			if (module) {
+				if (!module->isBypassed())
+					nvgText(args.vg, textPos.x + module->dmdOffsetTextOut2, textPos.y, module->dmdTextMainOut2, NULL); // Displaying module->dmdTextMainOut2 string (top-right, related to output port #2).
+			} else nvgText(args.vg, textPos.x + 5, textPos.y, "X1", NULL); // Default message: X1.
 			// Lower DMD, display between output jacks, bottom-left (output #3).
 			textPos = Vec(35, box.size.y + 75);
-			if (module)
-				nvgText(args.vg, textPos.x + module->dmdOffsetTextOut3, textPos.y, module->dmdTextMainOut3, NULL); // Displaying module->dmdTextMainOut3 string (bottom-left, related to output port #3).
-				else nvgText(args.vg, textPos.x + 5, textPos.y, "X1", NULL); // Default message: X1.
+			if (module) {
+				if (!module->isBypassed())
+					nvgText(args.vg, textPos.x + module->dmdOffsetTextOut3, textPos.y, module->dmdTextMainOut3, NULL); // Displaying module->dmdTextMainOut3 string (bottom-left, related to output port #3).
+			} else nvgText(args.vg, textPos.x + 5, textPos.y, "X1", NULL); // Default message: X1.
 			// Lower DMD, display between output jacks, bottom-right (output #4).
 			textPos = Vec(62.5, box.size.y + 75);
-			if (module)
-				nvgText(args.vg, textPos.x + module->dmdOffsetTextOut4, textPos.y, module->dmdTextMainOut4, NULL); // Displaying module->dmdTextMainOut4 string (bottom-right, related to output port #4).
-				else nvgText(args.vg, textPos.x + 5, textPos.y, "X1", NULL); // Default message: X1.
+			if (module) {
+				if (!module->isBypassed())
+					nvgText(args.vg, textPos.x + module->dmdOffsetTextOut4, textPos.y, module->dmdTextMainOut4, NULL); // Displaying module->dmdTextMainOut4 string (bottom-right, related to output port #4).
+			} else nvgText(args.vg, textPos.x + 5, textPos.y, "X1", NULL); // Default message: X1.
 		}
 		Widget::drawLayer(args, layer);
 	}

@@ -132,6 +132,17 @@ struct KS_Encoder : SvgKnob {
 		maxAngle = M_PI;
 		setSvg(APP->window->loadSvg(asset::plugin(pluginInstance, "res/components/KS_Encoder.svg")));
 	}
+
+	void onEnter(const event::Enter &e) override {
+	}
+
+	void onLeave(const event::Leave &e) override {
+	}
+
+	void step() override {
+		ParamWidget::step();
+	}
+
 };
 
 // Custom orange color used by two small LEDs (CV-RATIO, start/stop), KlokSpid module.

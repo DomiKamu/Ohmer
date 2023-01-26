@@ -47,9 +47,6 @@ struct MetriksModule : Module {
 	int Theme = 0;
 	int portMetal = 0; // used to select silver or gold jacks.
 
-	// DMD-font color (default is black LCD), related to selected model.
-	NVGcolor DMDtextColor = nvgRGB(0x08, 0x08, 0x08);
-
 	// Mode (0: voltmeter, 1: CV Tuner, 2: frequency counter, 2: BPM meter, 4: peak counter).
 	bool bChangingMode = false; // true during mode transition, false otherwise.
 	int Mode = 0; // Current mode.
@@ -216,13 +213,16 @@ struct MetriksModule : Module {
 		// Constructor...
 		b_dspIsRunning = false; // Will be set true as soon as DSP is running.
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
-		configParam(PARAM_ENCODER, -INFINITY, INFINITY, 0.0f, "Encoder");
-		configParam(BUTTON_OPTIONS, 0.0f, 1.0f, 0.0f, "Options");
-		configParam(BUTTON_PLAYPAUSE, 0.0f, 1.0f, 0.0f, "Play/Pause");
-		configParam(BUTTON_RESET, 0.0f, 1.0f, 0.0f, "Reset");
-		configInput(INPUT_SOURCE, "Signal");
-		configInput(INPUT_PLAYPAUSE, "Play/Pause trigger");
-		configInput(INPUT_RESET, "Reset trigger");
+		configParam(PARAM_ENCODER, -INFINITY, INFINITY, 0.0f, "");
+		configParam(BUTTON_OPTIONS, 0.0f, 1.0f, 0.0f, "");
+		configParam(BUTTON_PLAYPAUSE, 0.0f, 1.0f, 0.0f, "");
+		configParam(BUTTON_RESET, 0.0f, 1.0f, 0.0f, "");
+		configButton(BUTTON_OPTIONS, "Options");
+		configButton(BUTTON_PLAYPAUSE, "Play/Pause");
+		configButton(BUTTON_RESET, "Reset");
+		configInput(INPUT_SOURCE, "Signal to analyze");
+		configInput(INPUT_PLAYPAUSE, "Play/Pause");
+		configInput(INPUT_RESET, "Reset");
 		configOutput(OUTPUT_THRU, "Signal");
 		configBypass(INPUT_SOURCE, OUTPUT_THRU);
 		b_InopMode = false; // TEMPORARY - false means the mode is operational (totally or partially) - MUST BE REMOVED WHEN ALL MODES WORK.
@@ -760,9 +760,6 @@ struct MetriksModule : Module {
 			_f_InVoltage = f_InVoltage + 1.0f;
 			b_dspIsRunning = true; // Yes, DSP is running...
 		}
-
-		// Depending current Metriks model (theme), set the relevant DMD-text color.
-		DMDtextColor = tblDMDtextColor[Theme];
 
 		// TEMPORARY - used for inoperative mode(s) - MUST BE REMOVED WHEN ALL MODES WORK.
 		if (b_InopMode)
@@ -1319,9 +1316,9 @@ struct MetriksDMD : TransparentWidget {
 		if (layer == 1) {
 			if (!(font = APP->window->loadFont(fontPath)))
 				return;
-			// Yellow rounded rectangle to simulate yellow backlit of (LCD) dot-matrix display ("Absolute Night" model only).
 			if (module) {
-				if (module->Theme == 2) {
+				if ((module->Theme == 2) && (!module->isBypassed())) {
+					// Yellow rounded rectangle to simulate yellow backlit of (LCD) dot-matrix display ("Absolute Night" model only, and not bypassed).
 					// Main DMD.
 					nvgBeginPath(args.vg);
 					nvgRoundedRect(args.vg, 7.16f, 43.6f, 105.7f, 45.48f, 6.5f);
@@ -1347,13 +1344,15 @@ struct MetriksDMD : TransparentWidget {
 				nvgText(args.vg, textPos.x + 26, textPos.y, "+3.14V", NULL); // Default message on second line (display fictious voltage).
 				return; // Exit method immediatly (code below will be ignored).
 			}
-			nvgFillColor(args.vg, nvgTransRGBA(module->DMDtextColor, 0xff)); // Using current color for DMD.
-			nvgText(args.vg, textPos.x, textPos.y, module->dmdTextMain1, NULL); // Proceeding module->dmdTextMain2 string (second line).
+			nvgFillColor(args.vg, nvgTransRGBA(tblDMDtextColor[module->Theme], 0xff)); // Using current color for DMD.
+			if (!module->isBypassed())
+				nvgText(args.vg, textPos.x, textPos.y, module->dmdTextMain1, NULL); // Proceeding module->dmdTextMain2 string (second line).
 			// Main DMD, lower line.
 			nvgFontSize(args.vg, 20);
 			nvgTextLetterSpacing(args.vg, -1);
 			textPos = Vec(12, box.size.y - 152);
-			nvgText(args.vg, textPos.x + module->dmdOffsetTextMain2, textPos.y, module->dmdTextMain2, NULL); // Displaying module->dmdTextMain2 string (second line). The second line may have an horizontal offset.
+			if (!module->isBypassed())
+				nvgText(args.vg, textPos.x + module->dmdOffsetTextMain2, textPos.y, module->dmdTextMain2, NULL); // Displaying module->dmdTextMain2 string (second line). The second line may have an horizontal offset.
 			// CV Tuner (Mode = 1) only from this point.
 			if (module->Mode != 1)
 				return; // Exit immediatly (code below will be ignored) if current mode isn't "CV Tuner".
@@ -1365,7 +1364,8 @@ struct MetriksDMD : TransparentWidget {
 			nvgFontSize(args.vg, 14);
 			nvgTextLetterSpacing(args.vg, -1);
 			textPos = Vec(12.0f, box.size.y - 154);
-			nvgText(args.vg, textPos.x + module->dmdTunerMarkerPos, textPos.y, module->dmdTunerMarker, NULL);
+			if (!module->isBypassed())
+				nvgText(args.vg, textPos.x + module->dmdTunerMarkerPos, textPos.y, module->dmdTunerMarker, NULL);
 		}
 		Widget::drawLayer(args, layer);
 	}

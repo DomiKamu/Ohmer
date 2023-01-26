@@ -875,14 +875,16 @@ struct RKD_Displays : TransparentWidget {
 			nvgFillColor(args.vg, nvgTransRGBA(nvgRGB(0x6c, 0xff, 0xff), 0xff));
 			Vec textPos = Vec(16, box.size.y - 150);
 			if (module) {
-				nvgText(args.vg, textPos.x, textPos.y + 29.5, module->dispDiv1, NULL);
-				nvgText(args.vg, textPos.x, textPos.y + 59.5, module->dispDiv2, NULL);
-				nvgText(args.vg, textPos.x, textPos.y + 89.5, module->dispDiv3, NULL);
-				nvgText(args.vg, textPos.x, textPos.y + 119.5, module->dispDiv4, NULL);
-				nvgText(args.vg, textPos.x, textPos.y + 149.5, module->dispDiv5, NULL);
-				nvgText(args.vg, textPos.x, textPos.y + 179.5, module->dispDiv6, NULL);
-				nvgText(args.vg, textPos.x, textPos.y + 209.5, module->dispDiv7, NULL);
-				nvgText(args.vg, textPos.x, textPos.y + 239.5, module->dispDiv8, NULL);
+				if (!module->isBypassed()) {
+					nvgText(args.vg, textPos.x, textPos.y + 29.5, module->dispDiv1, NULL);
+					nvgText(args.vg, textPos.x, textPos.y + 59.5, module->dispDiv2, NULL);
+					nvgText(args.vg, textPos.x, textPos.y + 89.5, module->dispDiv3, NULL);
+					nvgText(args.vg, textPos.x, textPos.y + 119.5, module->dispDiv4, NULL);
+					nvgText(args.vg, textPos.x, textPos.y + 149.5, module->dispDiv5, NULL);
+					nvgText(args.vg, textPos.x, textPos.y + 179.5, module->dispDiv6, NULL);
+					nvgText(args.vg, textPos.x, textPos.y + 209.5, module->dispDiv7, NULL);
+					nvgText(args.vg, textPos.x, textPos.y + 239.5, module->dispDiv8, NULL);
+				}
 			}
 			else {
 				nvgText(args.vg, textPos.x, textPos.y + 29.5, " 1", NULL);
