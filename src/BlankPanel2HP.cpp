@@ -214,16 +214,16 @@ struct OhmerBlank2Background : TransparentWidget {
 struct OhmerBlank2Widget : ModuleWidget {
 	// Panel (transparent widget).
 	OhmerBlank2Background *blankPanel;
-	// Silver Torx screws.
-	SvgScrew *topLeftScrewSilver;
-	SvgScrew *topRightScrewSilver;
-	SvgScrew *bottomLeftScrewSilver;
-	SvgScrew *bottomRightScrewSilver;
 	// Gold Torx screws.
 	SvgScrew *topLeftScrewGold;
 	SvgScrew *topRightScrewGold;
 	SvgScrew *bottomLeftScrewGold;
 	SvgScrew *bottomRightScrewGold;
+	// Silver Torx screws.
+	SvgScrew *topLeftScrewSilver;
+	SvgScrew *topRightScrewSilver;
+	SvgScrew *bottomLeftScrewSilver;
+	SvgScrew *bottomRightScrewSilver;
 
 	OhmerBlank2Widget(OhmerBlank2 *module) {
 		setModule(module);
@@ -235,18 +235,6 @@ struct OhmerBlank2Widget : ModuleWidget {
 			blankPanel->module = module;
 			addChild(blankPanel);
 		}
-		// Top-left silver screw.
-		topLeftScrewSilver = createWidget<Torx_Silver>(Vec(0, 0));
-		addChild(topLeftScrewSilver);
-		// Top-right silver screw.
-		topRightScrewSilver = createWidget<Torx_Silver>(Vec(box.size.x - RACK_GRID_WIDTH, 0));
-		addChild(topRightScrewSilver);
-		// Bottom-left silver screw.
-		bottomLeftScrewSilver = createWidget<Torx_Silver>(Vec(0, RACK_GRID_HEIGHT - RACK_GRID_WIDTH));
-		addChild(bottomLeftScrewSilver);
-		// Bottom-right silver screw.
-		bottomRightScrewSilver = createWidget<Torx_Silver>(Vec(box.size.x - RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH));
-		addChild(bottomRightScrewSilver);
 		// Top-left gold screw.
 		topLeftScrewGold = createWidget<Torx_Gold>(Vec(0, 0));
 		addChild(topLeftScrewGold);
@@ -259,33 +247,45 @@ struct OhmerBlank2Widget : ModuleWidget {
 		// Bottom-right gold screw.
 		bottomRightScrewGold = createWidget<Torx_Gold>(Vec(box.size.x - RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH));
 		addChild(bottomRightScrewGold);
+		// Top-left silver screw.
+		topLeftScrewSilver = createWidget<Torx_Silver>(Vec(0, 0));
+		addChild(topLeftScrewSilver);
+		// Top-right silver screw.
+		topRightScrewSilver = createWidget<Torx_Silver>(Vec(box.size.x - RACK_GRID_WIDTH, 0));
+		addChild(topRightScrewSilver);
+		// Bottom-left silver screw.
+		bottomLeftScrewSilver = createWidget<Torx_Silver>(Vec(0, RACK_GRID_HEIGHT - RACK_GRID_WIDTH));
+		addChild(bottomLeftScrewSilver);
+		// Bottom-right silver screw.
+		bottomRightScrewSilver = createWidget<Torx_Silver>(Vec(box.size.x - RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH));
+		addChild(bottomRightScrewSilver);
 	}
 
 	void step() override {
 		OhmerBlank2 *module = dynamic_cast<OhmerBlank2*>(this->module);
 		if (module) {
-			// Silver Torx screws visible or hidden (depending screws disposal from module's context-menu).
-			topLeftScrewSilver->visible = ((module->screwsDisposal == 0) || (module->screwsDisposal == 2)) && (module->Theme < 3);
-			topRightScrewSilver->visible = ((module->screwsDisposal == 1) || (module->screwsDisposal == 2)) && (module->Theme < 3);
-			bottomLeftScrewSilver->visible = ((module->screwsDisposal == 1) || (module->screwsDisposal == 2)) && (module->Theme < 3);
-			bottomRightScrewSilver->visible = ((module->screwsDisposal == 0) || (module->screwsDisposal == 2)) && (module->Theme < 3);
 			// Gold Torx screws visible or hidden (depending screws disposal from module's context-menu).
 			topLeftScrewGold->visible = ((module->screwsDisposal == 0) || (module->screwsDisposal == 2)) && (module->Theme > 2);
 			topRightScrewGold->visible = ((module->screwsDisposal == 1) || (module->screwsDisposal == 2)) && (module->Theme > 2);
 			bottomLeftScrewGold->visible = ((module->screwsDisposal == 1) || (module->screwsDisposal == 2)) && (module->Theme > 2);
 			bottomRightScrewGold->visible = ((module->screwsDisposal == 0) || (module->screwsDisposal == 2)) && (module->Theme > 2);
+			// Silver Torx screws visible or hidden (depending screws disposal from module's context-menu).
+			topLeftScrewSilver->visible = ((module->screwsDisposal == 0) || (module->screwsDisposal == 2)) && (module->Theme < 3);
+			topRightScrewSilver->visible = ((module->screwsDisposal == 1) || (module->screwsDisposal == 2)) && (module->Theme < 3);
+			bottomLeftScrewSilver->visible = ((module->screwsDisposal == 1) || (module->screwsDisposal == 2)) && (module->Theme < 3);
+			bottomRightScrewSilver->visible = ((module->screwsDisposal == 0) || (module->screwsDisposal == 2)) && (module->Theme < 3);
 		}
 		else {
-			// By default, only top-left and bottom right, silver.
-			topLeftScrewSilver->visible = true;
-			topRightScrewSilver->visible = false;
-			bottomLeftScrewSilver->visible = false;
-			bottomRightScrewSilver->visible = true;
 			// By default, all gold are hidden for Classic blank plate.
 			topLeftScrewGold->visible = false;
 			topRightScrewGold->visible = false;
 			bottomLeftScrewGold->visible = false;
 			bottomRightScrewGold->visible = false;
+			// By default, only top-left and bottom right, silver.
+			topLeftScrewSilver->visible = true;
+			topRightScrewSilver->visible = false;
+			bottomLeftScrewSilver->visible = false;
+			bottomRightScrewSilver->visible = true;
 		}
 		ModuleWidget::step();
 	}

@@ -9,6 +9,7 @@ extern Model *modelKlokSpid;
 extern Model *modelRKD;
 extern Model *modelBRK;
 extern Model *modelMetriks;
+extern Model *modelPolaritySwitch;
 extern Model *modelSplitter;
 extern Model *modelBlankPanel1;
 extern Model *modelBlankPanel2;

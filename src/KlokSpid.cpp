@@ -1613,13 +1613,13 @@ struct KlokSpidDMD : TransparentWidget {
 					// Main DMD.
 					nvgBeginPath(args.vg);
 					nvgRoundedRect(args.vg, 7.16f, 43.6f, 105.7f, 45.48f, 6.5f);
-					nvgFillColor(args.vg, nvgRGBA(0xC0, 0xE9, 0x10, 0xff));
+					nvgFillColor(args.vg, nvgRGBA(0xc0, 0xe9, 0x10, 0xff));
 					nvgFill(args.vg);
 					nvgClosePath(args.vg);
 					// Lower DMD.
 					nvgBeginPath(args.vg);
 					nvgRoundedRect(args.vg, 33.14f, 282.95f, 53.71f, 29.35f, 3.3f);
-					nvgFillColor(args.vg, nvgRGBA(0xC0, 0xE9, 0x10, 0xff));
+					nvgFillColor(args.vg, nvgRGBA(0xc0, 0xe9, 0x10, 0xff));
 					nvgFill(args.vg);
 					nvgClosePath(args.vg);
 				}

@@ -162,16 +162,16 @@ struct OhmerBlank32Background : TransparentWidget {
 struct OhmerBlank32Widget : ModuleWidget {
 	// Panel (transparent widget).
 	OhmerBlank32Background *blankPanel;
-	// Silver Torx screws.
-	SvgScrew *topLeftScrewSilver;
-	SvgScrew *topRightScrewSilver;
-	SvgScrew *bottomLeftScrewSilver;
-	SvgScrew *bottomRightScrewSilver;
 	// Gold Torx screws.
 	SvgScrew *topLeftScrewGold;
 	SvgScrew *topRightScrewGold;
 	SvgScrew *bottomLeftScrewGold;
 	SvgScrew *bottomRightScrewGold;
+	// Silver Torx screws.
+	SvgScrew *topLeftScrewSilver;
+	SvgScrew *topRightScrewSilver;
+	SvgScrew *bottomLeftScrewSilver;
+	SvgScrew *bottomRightScrewSilver;
 
 	OhmerBlank32Widget(OhmerBlank32 *module) {
 		setModule(module);
@@ -184,18 +184,6 @@ struct OhmerBlank32Widget : ModuleWidget {
 			addChild(blankPanel);
 		}
 		// This 32 HP module uses 4 screws (may are silver or gold).
-		// Top-left silver screw.
-		topLeftScrewSilver = createWidget<Torx_Silver>(Vec(RACK_GRID_WIDTH, 0));
-		addChild(topLeftScrewSilver);
-		// Top-right silver screw.
-		topRightScrewSilver = createWidget<Torx_Silver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0));
-		addChild(topRightScrewSilver);
-		// Bottom-left silver screw.
-		bottomLeftScrewSilver = createWidget<Torx_Silver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH));
-		addChild(bottomLeftScrewSilver);
-		// Bottom-right silver screw.
-		bottomRightScrewSilver = createWidget<Torx_Silver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH));
-		addChild(bottomRightScrewSilver);
 		// Top-left gold screw.
 		topLeftScrewGold = createWidget<Torx_Gold>(Vec(RACK_GRID_WIDTH, 0));
 		addChild(topLeftScrewGold);
@@ -208,36 +196,48 @@ struct OhmerBlank32Widget : ModuleWidget {
 		// Bottom-right gold screw.
 		bottomRightScrewGold = createWidget<Torx_Gold>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH));
 		addChild(bottomRightScrewGold);
+		// Top-left silver screw.
+		topLeftScrewSilver = createWidget<Torx_Silver>(Vec(RACK_GRID_WIDTH, 0));
+		addChild(topLeftScrewSilver);
+		// Top-right silver screw.
+		topRightScrewSilver = createWidget<Torx_Silver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0));
+		addChild(topRightScrewSilver);
+		// Bottom-left silver screw.
+		bottomLeftScrewSilver = createWidget<Torx_Silver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH));
+		addChild(bottomLeftScrewSilver);
+		// Bottom-right silver screw.
+		bottomRightScrewSilver = createWidget<Torx_Silver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH));
+		addChild(bottomRightScrewSilver);
 	}
 
 	void step() override {
 		OhmerBlank32 *module = dynamic_cast<OhmerBlank32*>(this->module);
 		if (module) {
 			// Torx screws metal (silver, gold) are visible or hidden, depending selected model (from module's context-menu).
-			// Silver Torx screws are visible only for non-"Signature" modules (Classic, Stage Repro or Absolute Night).
-			topLeftScrewSilver->visible = (module->Theme < 3);
-			topRightScrewSilver->visible = (module->Theme < 3);
-			bottomLeftScrewSilver->visible = (module->Theme < 3);
-			bottomRightScrewSilver->visible = (module->Theme < 3);
 			// Gold Torx screws are visible only for "Signature" modules (Dark Signature, Deepblue Signature or Carbon Signature).
 			topLeftScrewGold->visible = (module->Theme > 2);
 			topRightScrewGold->visible = (module->Theme > 2);
 			bottomLeftScrewGold->visible = (module->Theme > 2);
 			bottomRightScrewGold->visible = (module->Theme > 2);
+			// Silver Torx screws are visible only for non-"Signature" modules (Classic, Stage Repro or Absolute Night).
+			topLeftScrewSilver->visible = (module->Theme < 3);
+			topRightScrewSilver->visible = (module->Theme < 3);
+			bottomLeftScrewSilver->visible = (module->Theme < 3);
+			bottomRightScrewSilver->visible = (module->Theme < 3);
 		}
 		else {
 			// Default panel theme is always "Classic" (beige, using silver screws, using silver button, LCD).
 			// Other panels are, of course, hidden.
-			// By default, silver screws are visible for default beige Classic panel...
-			topLeftScrewSilver->visible = true;
-			topRightScrewSilver->visible = true;
-			bottomLeftScrewSilver->visible = true;
-			bottomRightScrewSilver->visible = true;
-			// ...and, of course, golden screws are hidden.
+			// By default, golden screws are hidden...
 			topLeftScrewGold->visible = false;
 			topRightScrewGold->visible = false;
 			bottomLeftScrewGold->visible = false;
 			bottomRightScrewGold->visible = false;
+			// ...and silver screws are visible (for default beige "Classic" model, in module browser)...
+			topLeftScrewSilver->visible = true;
+			topRightScrewSilver->visible = true;
+			bottomLeftScrewSilver->visible = true;
+			bottomRightScrewSilver->visible = true;
 		}
 		ModuleWidget::step();
 	}

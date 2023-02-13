@@ -162,11 +162,11 @@ struct OhmerBlank1Widget : ModuleWidget {
 	// Panel (transparent widget).
 	OhmerBlank1Background *blankPanel;
 	// Silver Torx screws.
-	SvgScrew *topScrewSilver;
 	SvgScrew *bottomScrewSilver;
+	SvgScrew *topScrewSilver;
 	// Gold Torx screws.
-	SvgScrew *topScrewGold;
 	SvgScrew *bottomScrewGold;
+	SvgScrew *topScrewGold;
 
 	OhmerBlank1Widget(OhmerBlank1 *module) {
 		setModule(module);
@@ -179,18 +179,18 @@ struct OhmerBlank1Widget : ModuleWidget {
 			addChild(blankPanel);
 		}
 		// This 1 HP module uses two screws only.
-		// Top silver screw.
-		topScrewSilver = createWidget<Torx_Silver>(Vec(0, 0));
-		addChild(topScrewSilver);
-		// Bottom silver screw.
-		bottomScrewSilver = createWidget<Torx_Silver>(Vec(0, RACK_GRID_HEIGHT - RACK_GRID_WIDTH));
-		addChild(bottomScrewSilver);
 		// Top gold screw.
 		topScrewGold = createWidget<Torx_Gold>(Vec(0, 0));
 		addChild(topScrewGold);
+		// Top silver screw.
+		topScrewSilver = createWidget<Torx_Silver>(Vec(0, 0));
+		addChild(topScrewSilver);
 		// Bottom gold screw.
 		bottomScrewGold = createWidget<Torx_Gold>(Vec(0, RACK_GRID_HEIGHT - RACK_GRID_WIDTH));
 		addChild(bottomScrewGold);
+		// Bottom silver screw.
+		bottomScrewSilver = createWidget<Torx_Silver>(Vec(0, RACK_GRID_HEIGHT - RACK_GRID_WIDTH));
+		addChild(bottomScrewSilver);
 	}
 
 	void step() override {
@@ -208,11 +208,11 @@ struct OhmerBlank1Widget : ModuleWidget {
 			// Default panel theme is always "Classic" (beige, using silver screws, using silver button, LCD).
 			// Other panels are, of course, hidden.
 			// By default, silver screws are visible for default beige Classic panel...
-			topScrewSilver->visible = true;
-			bottomScrewSilver->visible = true;
 			// ...and, of course, golden screws are hidden.
 			topScrewGold->visible = false;
 			bottomScrewGold->visible = false;
+			topScrewSilver->visible = true;
+			bottomScrewSilver->visible = true;
 		}
 		ModuleWidget::step();
 	}

@@ -28,7 +28,6 @@ struct SplitterModule : Module {
 		NUM_OUTPUTS
 	};
 	enum LightIds {
-		LED_CLIP,
 		NUM_LIGHTS
 	};
 
@@ -38,10 +37,6 @@ struct SplitterModule : Module {
 
 	// Sample rate (from Rack engine).
 	float sampleRate = 0.0f;
-	// Counter used for red LED afterglow (used together with "ledClipAfterglow" boolean flag).
-	unsigned long ledClipDelay = 0; // long type is required for highest engine sample rates!
-	// This flag controls red LED afterglow (active or not).
-	bool ledClipAfterglow = false;
 
 	SplitterModule() {
 		// Constructor...
@@ -72,11 +67,6 @@ struct SplitterModule : Module {
 				// then per polyphonic channel (1 channel if monophonic cable on input).
 					float raw_input_voltage = inputs[MAIN_INPUT].getVoltage(c);
 					float splitted_out_voltage = clamp(raw_input_voltage, -11.7f, 11.7f); // These -11.7 V / +11.7 V limits are max. possible voltage on Eurorack.
-					if (!ledClipAfterglow && (raw_input_voltage != splitted_out_voltage)) {
-						// Different is meaning the voltage was clipped: turn on the LED and reset its afterglow counter (for 0.5 s).
-						ledClipDelay = 0;
-						ledClipAfterglow = true;
-					}
 					outputs[i].setVoltage(splitted_out_voltage, c);
 				}
 				outputs[i].setChannels(nChannels);
@@ -88,18 +78,7 @@ struct SplitterModule : Module {
 				outputs[i].setVoltage(0.0f);
 				outputs[i].setChannels(1);
 			}
-			ledClipAfterglow = false;
 		}
-
-		// Clipping LED management (including its 1-second afterglow).
-		if (ledClipAfterglow && (ledClipDelay < (unsigned long)(sampleRate / 2.0f)))
-			ledClipDelay++;
-			else {
-				ledClipAfterglow = false;
-				ledClipDelay = 0;
-			}
-		// Lit or unlit LED (depending "ledClipAfterglow" flag).
-		lights[LED_CLIP].setBrightness((ledClipAfterglow ? 1.0 : 0.0f));
 	}
 
 	json_t *dataToJson() override {
@@ -305,8 +284,6 @@ struct SplitterWidget : ModuleWidget {
 		addOutput(createDynamicPort<DynSVGPort>(Vec(2.5, 250), false, module, SplitterModule::OUTPUT_7, module ? &module->portMetal : NULL));
 		addOutput(createDynamicPort<DynSVGPort>(Vec(2.5, 280), false, module, SplitterModule::OUTPUT_8, module ? &module->portMetal : NULL));
 		addOutput(createDynamicPort<DynSVGPort>(Vec(2.5, 310), false, module, SplitterModule::OUTPUT_9, module ? &module->portMetal : NULL));
-		// Red LED (used to indicate "clipping" if input voltage is out of bounds).
-		addChild(createLight<MediumLight<RedLight>>(Vec(18, 47), module, SplitterModule::LED_CLIP));
 	}
 
 	void step() override {
