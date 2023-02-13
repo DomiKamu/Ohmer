@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    id="svg8"
    viewBox="0 0 120 380"
    version="1.1"
    sodipodi:docname="KlokSpid_Absolute_Night.svg"
-   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
    width="120"
-   height="380">
+   height="380"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <title
-     id="title9">KlokSpid modules 8 HP for VCV Rack</title>
+     id="title9">KlokSpid panel for VCV Rack 2</title>
   <metadata
      id="metadata39">
     <rdf:RDF>
@@ -24,7 +24,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title>KlokSpid modules 8 HP for VCV Rack</dc:title>
+        <dc:title>KlokSpid panel for VCV Rack 2</dc:title>
         <cc:license
            rdf:resource="" />
       </cc:Work>
@@ -40,35 +40,24 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:window-width="1920"
-     inkscape:window-height="1058"
+     inkscape:window-height="1057"
      id="namedview37"
      showgrid="false"
-     inkscape:zoom="2.7736842"
-     inkscape:cx="-119.44972"
-     inkscape:cy="193.3079"
+     inkscape:zoom="1"
+     inkscape:cx="-135"
+     inkscape:cy="194"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg8"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:snap-text-baseline="false" />
+     inkscape:snap-text-baseline="false"
+     inkscape:showpageshadow="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
   <defs
      id="defs4">
-    <marker
-       inkscape:stockid="TriangleOutL"
-       orient="auto"
-       refY="0.0"
-       refX="0.0"
-       id="TriangleOutL"
-       style="overflow:visible"
-       inkscape:isstock="true">
-      <path
-         id="path999"
-         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
-         style="fill-rule:evenodd;stroke:#00ff00;stroke-width:1pt;stroke-opacity:1;fill:#00ff00;fill-opacity:1"
-         transform="scale(0.8)" />
-    </marker>
     <style
        id="style2">.cls-1{fill:#ab2d2d;}.cls-2{fill:#952d2d;}.cls-3{fill:#251e1e;}.cls-4{fill:#fff7d4;}.cls-5{fill:#202020;}</style>
   </defs>
@@ -140,7 +129,7 @@
      d="m 63.921903,358.84168 h -1.175782 l -0.683593,3.42709 -0.209636,1.23958 q 0,0.48307 0.929688,0.54688 l 0.164062,0.009 -0.173177,0.84766 h -5.395833 l 0.164063,-0.84766 0.173177,-0.009 q 0.957031,-0.0638 1.148437,-0.27344 0.200521,-0.21875 0.501302,-1.51302 l 1.63151,-8.21224 q 0.08203,-0.48307 0.191407,-1.17578 0,-0.52865 -1.121094,-0.61068 l -0.173177,-0.009 0.173177,-0.83855 h 4.046875 l 2.351562,-0.0638 q 1.822917,0 2.725261,0.66537 0.911458,0.65625 0.911458,1.98698 0,1.43099 -0.957031,2.63411 -0.947917,1.20313 -2.606771,1.8776 l 1.768229,3.73698 q 0.65625,1.3125 0.847656,1.54037 0.191407,0.21875 0.710938,0.25521 l 0.164062,0.009 -0.164062,0.84766 h -3.308594 z m -0.99349,-0.90234 h 0.610677 q 1.686198,0 2.72526,-0.99349 1.039063,-1.0026 1.039063,-2.63411 0,-1.00261 -0.574219,-1.49479 -0.574219,-0.50131 -1.731771,-0.50131 h -0.947916 z"
      inkscape:connector-curvature="0" />
   <rect
-     style="fill:#b6e910;fill-opacity:1;stroke:#43435b;stroke-width:4.45609856;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
+     style="fill:#c0e910;fill-opacity:1;stroke:#43435b;stroke-width:4.45609856;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
      id="rect840"
      width="110.24391"
      height="50.0509"
@@ -328,7 +317,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <rect
-     style="opacity:1;fill:#b6e910;fill-opacity:1;stroke:#43435b;stroke-width:3;stroke-linecap:butt;stroke-miterlimit:2.29999995;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+     style="opacity:1;fill:#c0e910;fill-opacity:1;stroke:#43435b;stroke-width:3;stroke-linecap:butt;stroke-miterlimit:2.29999995;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
      id="rect867"
      width="56.738419"
      height="32.424419"

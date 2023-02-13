@@ -4,7 +4,7 @@
    viewBox="0 0 120 380"
    version="1.1"
    sodipodi:docname="Metriks_Absolute_Night.svg"
-   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
    width="120"
    height="380"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -15,7 +15,7 @@
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:dc="http://purl.org/dc/elements/1.1/">
   <title
-     id="title9">Metriks (8 HP) panel, for VCV Rack</title>
+     id="title9">Metriks panel for VCV Rack 2</title>
   <metadata
      id="metadata39">
     <rdf:RDF>
@@ -24,7 +24,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title>Metriks (8 HP) panel, for VCV Rack</dc:title>
+        <dc:title>Metriks panel for VCV Rack 2</dc:title>
         <cc:license
            rdf:resource="" />
         <dc:rights>
@@ -48,15 +48,17 @@
      inkscape:window-height="1057"
      id="namedview37"
      showgrid="false"
-     inkscape:zoom="7.8451636"
-     inkscape:cx="51.687896"
-     inkscape:cy="253.3408"
+     inkscape:zoom="1"
+     inkscape:cx="4"
+     inkscape:cy="163"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg8"
      units="px"
-     inkscape:pagecheckerboard="0" />
+     inkscape:pagecheckerboard="0"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#d1d1d1" />
   <defs
      id="defs4">
     <style
@@ -130,7 +132,7 @@
        id="path3707-7" />
   </g>
   <rect
-     style="fill:#b6e910;fill-opacity:1;stroke:#43435b;stroke-width:4.45607805;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
+     style="fill:#c0e910;fill-opacity:1;stroke:#43435b;stroke-width:4.45607805;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
      id="rect840-4-4"
      width="110.24391"
      height="50.050503"
