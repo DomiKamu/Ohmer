@@ -2,6 +2,14 @@
 CHANGELOG
 ================================================================================================================================
 
+Release v2.2.7 (February 13th, 2023) for VCV Rack v2.
+
+- New (basic) switch module: Polarity Switch. Depending voltage on input jack, the signal is routed to "P" output port if
+  positive, or to "N" output port if negative.
+- Cleaned repository.
+
+--------------------------------------------------------------------------------------------------------------------------------
+
 Release v2.2.4 (January 26th, 2023) for VCV Rack v2.
 
 - KlokSpid, Metriks: disabled DMD (dot-matrix display) while the module is bypassed (nothing displayed).
