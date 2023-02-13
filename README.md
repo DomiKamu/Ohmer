@@ -130,7 +130,7 @@ Feature requests, suggestions, and bug reports are welcome on [GitHub repository
 
 
 
-### Current release: v2.2.4 (January 26th, 2023), vs. Rack-SDK-2 v2.2.2:
+### Current release: v2.2.7 (February 13th, 2023), vs. Rack-SDK-2 v2.2.3:
 
 - Bug-fixes and enhancements are described in details into [CHANGELOG.TXT](doc/CHANGELOG.txt).
 
@@ -153,7 +153,7 @@ Feature requests, suggestions, and bug reports are welcome on [GitHub repository
 
 ### Who am I?
 
-My name is Dominique CAMUS, 59-years old French guy, my job is networks and systems admin (but at the moment, I'm unemployed). I'm living now in south of France, near Nîmes (Gard - 30). Mine hobbies are mainly C.M. experimentations (as curious guy I am), playing keyboard (only live performance at home, in my living room, using Native Instruments KOMPLETE KONTROL S61 MK2 MIDI keyboard, and Arturia BeatStep Pro MIDI controller, flight simulation (Prepar3D v5, flying mainly airliners such Airbus A319/A320, Boeing 737 NG, Boeing 777-200/-300), Kerbal Space Program, Elite: Dangerous Horizons, videogame emulators (for sure, I'm a nostalgic guy) such M.A.M.E, pinball games, infiltration games (HITMAN series, Metal Gear, Splinter Cell, Sniper Ghost Warrior franchise), homemade developments, friends, family, swimming pool, my lovely village...
+My name is Dominique CAMUS, 59-years old French guy, my job is networks and systems admin (but at the moment, I'm unemployed). I'm living now in south of France, near Nîmes (Gard - 30). Mine hobbies are mainly C.M. experimentations (as curious guy I am), playing keyboard (only live performance at home, in my living room, using Native Instruments KOMPLETE KONTROL S61 MK2 MIDI keyboard, and Arturia BeatStep Pro MIDI controller, flight simulation (Prepar3D v5, flying mainly airliners such Airbus A319/A320, Boeing 737 NG, Boeing 777-200/-300), Kerbal Space Program, Elite: Dangerous Horizons, videogame emulators (for sure, I'm a nostalgic guy) such M.A.M.E, pinball games, infiltration games (HITMAN series, Metal Gear, Sniper Ghost Warrior), homemade developments, friends, family, swimming pool, my lovely village...
 
 
 ### Enjoy Ohmer modules!
