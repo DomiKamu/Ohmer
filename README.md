@@ -86,8 +86,6 @@ Obviously, all settings you've defined via SETUP are automatically saved along y
 
 **BRK** is basically an additional panel (4 HP, must be placed alongside RKD) providing six deported switches. By this way, it's more comfortable to change module's settings "on-the-fly", without need to access PCB to change jumpers. When RKD module was set correctly, you'll can remove its BRK expander.
 
-**VERY IMPORTANT:** the **obsolete RKD with "Break"** 8 HP module is removed, and replaced by the 4 HP **BRK** expander for RKD module (BRK module can be placed at right-side or left-side, but along RKD without space between them).
-
 Please take a look on [PDF user's manual](res/Manuals/RKD_BRK_Manual.pdf).
 
 
