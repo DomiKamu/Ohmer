@@ -49,6 +49,11 @@ struct PolaritySwitchModule : Module {
 		onSampleRateChange();
 	}
 
+	void onReset() override {
+		Bipolar = false;
+		Force10V = false;
+	}
+
 	void onSampleRateChange() override {
 		sampleRate = APP->engine->getSampleRate();
 	}		
