@@ -2,10 +2,11 @@
 CHANGELOG
 ================================================================================================================================
 
-Release v2.2.7 (February 13th, 2023) for VCV Rack v2.
+Release v2.2.7 (February 14th, 2023) for VCV Rack v2.
 
-- New (basic) switch module: Polarity Switch. Depending voltage on input jack, the signal is routed to "P" output port if
-  positive, or to "N" output port if negative.
+- New (basic) dual switch module: Polarity Switch. Depending voltage on input jack, the signal is routed to "P" output port if
+  its voltage is positive, or to "N" output port if negative. Possible voltages processing.
+- Blank plates: fixed cosmetic concerning screws (view from module browser).
 - Cleaned repository.
 
 --------------------------------------------------------------------------------------------------------------------------------
