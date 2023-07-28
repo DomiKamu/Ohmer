@@ -8,13 +8,16 @@
 #include "Ohmer.hpp"
 
 struct SplitterModule : Module {
+
 	enum ParamIds {
 		NUM_PARAMS
 	};
+
 	enum InputIds {
 		MAIN_INPUT,
 		NUM_INPUTS
 	};
+
 	enum OutputIds {
 		OUTPUT_1,
 		OUTPUT_2,
@@ -27,6 +30,7 @@ struct SplitterModule : Module {
 		OUTPUT_9,
 		NUM_OUTPUTS
 	};
+
 	enum LightIds {
 		NUM_LIGHTS
 	};
@@ -333,7 +337,9 @@ struct SplitterWidget : ModuleWidget {
 
 	void appendContextMenu(Menu *menu) override {
 		SplitterModule *module = dynamic_cast<SplitterModule*>(this->module);
-		menu->addChild(new MenuEntry);
+
+		menu->addChild(new MenuSeparator);
+
 		SplitterSubMenuItems *spltrSubMenuItems = new SplitterSubMenuItems;
 		spltrSubMenuItems->text = "Model";
 		spltrSubMenuItems->rightText = RIGHT_ARROW;

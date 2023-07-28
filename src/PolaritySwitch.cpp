@@ -3,15 +3,17 @@
 // 3 HP module.                                                                                //
 // - Input signal is routed to "P" (upper output) if its voltage is positive.                  //
 // - Input signal is routed to "N" (lower output) if its voltage is negative, after conversion //
-//   to positive unipolar equivalent voltage (aka... absolute value).                          //
+//   to positive unipolar equivalent voltage (aka... absolute value), or +5V, or +10V.         //
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Ohmer.hpp"
 
 struct PolaritySwitchModule : Module {
+
 	enum ParamIds {
 		NUM_PARAMS
 	};
+
 	enum InputIds {
 		INPUT_1,
 		INPUT_2,
@@ -24,6 +26,7 @@ struct PolaritySwitchModule : Module {
 		OUTPUT_N2,
 		NUM_OUTPUTS
 	};
+
 	enum LightIds {
 		NUM_LIGHTS
 	};
@@ -31,14 +34,16 @@ struct PolaritySwitchModule : Module {
 	// Current selected model (GUI theme).
 	int Theme = 0; // 0 = Classic (default), 1 = Stage Repro, 2 = Absolute Night, 3 = Dark Signature, 4 = Deepblue Signature, 5 = Carbon Signature.
 	int portMetal = 0; // 0 = silver connector (default), 1 = gold connector used by "Signature"-line models only.
-	bool Bipolar = false; // default false: N outputs are converted to positive voltage, true: voltage is kept as is.
-	bool Force10V = false; // default false: absolute value of voltage stays unchanged, true: voltage is forced to +10V or to -10V.
+
+	// Output voltage settings for upper module and lower module.
+	int UpperVoltage = 0; // 0 means unaltered IN voltage, 1 means output voltage(s) is/are forced to +5V, 2 means output voltage(s) is/are forced to +10V.
+	int LowerVoltage = 0; // 0 means unaltered IN voltage, 1 means output voltage(s) is/are forced to +5V, 2 means output voltage(s) is/are forced to +10V.
 
 	// Sample rate (from Rack engine).
 	float sampleRate = 0.0f;
 
 	PolaritySwitchModule() {
-		// Constructor...
+		// Module's constructor...
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 		configInput(INPUT_1, "Signal");
 		configOutput(OUTPUT_P1, "P (if IN1 > 0)");
@@ -46,12 +51,9 @@ struct PolaritySwitchModule : Module {
 		configInput(INPUT_2, "Signal");
 		configOutput(OUTPUT_P2, "P (if IN2 > 0)");
 		configOutput(OUTPUT_N2, "N (if IN2 < 0)");
+		UpperVoltage = 0;
+		LowerVoltage = 0;
 		onSampleRateChange();
-	}
-
-	void onReset() override {
-		Bipolar = false;
-		Force10V = false;
 	}
 
 	void onSampleRateChange() override {
@@ -59,60 +61,80 @@ struct PolaritySwitchModule : Module {
 	}		
 
 	void process(const ProcessArgs &args) override {
-		float bipol;
 		float out_voltage;
-		// First input (top part of module).
-		if (inputs[INPUT_1].isConnected()) {
-			out_voltage = clamp(inputs[INPUT_1].getVoltage(), -10.f, 10.f);
-			bipol = Bipolar ? 1.f : -1.f;
-			if (out_voltage > 0.f) {
-				outputs[OUTPUT_P1].setVoltage(Force10V ? 10.f : out_voltage);
-				outputs[OUTPUT_N1].setVoltage(0.f);
+		// First input (upper part of the module).
+		out_voltage = clamp(inputs[INPUT_1].getVoltage(), -10.f, 10.f);
+		if (out_voltage >= 0.f) {
+			// Voltage is positive: routing to "P" output jack.
+			switch (UpperVoltage) {
+				case 0:
+					outputs[OUTPUT_P1].setVoltage(out_voltage); // IN voltage is kept as is, routed to "P" output jack.
+					break;
+				case 1:
+					outputs[OUTPUT_P1].setVoltage(5.f); // Forced +5V routed to "P" output jack.
+					break;
+				case 2:
+					outputs[OUTPUT_P1].setVoltage(10.f); // Forced +10V routed to "P" output jack.
 			}
-			else if (out_voltage < 0.f) {
-				outputs[OUTPUT_P1].setVoltage(0.f);
-				outputs[OUTPUT_N1].setVoltage(Force10V ? -10.f * bipol : out_voltage * bipol);
-			}
-			else {
-				outputs[OUTPUT_P1].setVoltage(0.f);
-				outputs[OUTPUT_N1].setVoltage(0.f);
-			}
-		}
-		else {
-			// If input jack isn't connected, sets outputs at 0V.
-			outputs[OUTPUT_P1].setVoltage(0.f);
+			// Voltage is positive: "N" output jack is set to 0V.
 			outputs[OUTPUT_N1].setVoltage(0.f);
 		}
-
-		// Second input (bottom part of module).
-		if (inputs[INPUT_2].isConnected()) {
-			out_voltage = clamp(inputs[INPUT_2].getVoltage(), -10.f, 10.f);
-			bipol = Bipolar ? 1.f : -1.f;
-			if (out_voltage > 0.f) {
-				outputs[OUTPUT_P2].setVoltage(Force10V ? 10.f : out_voltage);
-				outputs[OUTPUT_N2].setVoltage(0.f);
-			}
-			else if (out_voltage < 0.f) {
-				outputs[OUTPUT_P2].setVoltage(0.f);
-				outputs[OUTPUT_N2].setVoltage(Force10V ? -10.f * bipol : out_voltage * bipol);
-			}
-			else {
-				outputs[OUTPUT_P2].setVoltage(0.f);
-				outputs[OUTPUT_N2].setVoltage(0.f);
-			}
-		}
 		else {
-			// If input jack isn't connected, sets outputs at 0V.
-			outputs[OUTPUT_P2].setVoltage(0.f);
+			// Voltage is negative: routing to "N" output jack (but as absolute value).
+			switch (UpperVoltage) {
+				case 0:
+					outputs[OUTPUT_N1].setVoltage(-1.f * out_voltage); // Convert the negative voltage applied on "IN" jack to positive equivalent (absolute value) before sending it to "N" jack!
+					break;
+				case 1:
+					outputs[OUTPUT_N1].setVoltage(5.f); // Forced +5V routed to "N" output jack.
+					break;
+				case 2:
+					outputs[OUTPUT_N1].setVoltage(10.f); // Forced +10V routed to "N" output jack.
+			}
+			// Voltage is negative: "P" output jack is set to 0V.
+			outputs[OUTPUT_P1].setVoltage(0.f);
+		}
+
+		// Second input (lower part of the module).
+		out_voltage = clamp(inputs[INPUT_2].getVoltage(), -10.f, 10.f);
+		if (out_voltage >= 0.f) {
+			// Voltage is positive: routing to "P" output jack.
+			switch (LowerVoltage) {
+				case 0:
+					outputs[OUTPUT_P2].setVoltage(out_voltage); // IN voltage is kept as is, routed to "P" output jack.
+					break;
+				case 1:
+					outputs[OUTPUT_P2].setVoltage(5.f); // Forced +5V routed to "P" output jack.
+					break;
+				case 2:
+					outputs[OUTPUT_P2].setVoltage(10.f); // Forced +10V routed to "P" output jack.
+			}
+			// Voltage is positive: "N" output jack is set to 0V.
 			outputs[OUTPUT_N2].setVoltage(0.f);
 		}
+		else {
+			// Voltage is negative: routing to "N" output jack (but as absolute value).
+			switch (LowerVoltage) {
+				case 0:
+					outputs[OUTPUT_N2].setVoltage(-1.f * out_voltage); // Convert the negative voltage applied on "IN" jack to positive equivalent (absolute value) before sending it to "N" jack!
+					break;
+				case 1:
+					outputs[OUTPUT_N2].setVoltage(5.f); // Forced +5V routed to "N" output jack.
+					break;
+				case 2:
+					outputs[OUTPUT_N2].setVoltage(10.f); // Forced +10V routed to "N" output jack.
+			}
+			// Voltage is negative: "P" output jack is set to 0V.
+			outputs[OUTPUT_P2].setVoltage(0.f);
+		}
+
 	}
 
 	json_t *dataToJson() override {
 		json_t *rootJ = json_object();
 		json_object_set_new(rootJ, "Theme", json_integer(Theme));
-		json_object_set_new(rootJ, "Bipolar", json_boolean(Bipolar));
-		json_object_set_new(rootJ, "Force10V", json_boolean(Force10V));
+		json_object_set_new(rootJ, "UpperVoltage", json_integer(UpperVoltage));
+		json_object_set_new(rootJ, "LowerVoltage", json_integer(LowerVoltage));
 		return rootJ;
 	}
 
@@ -123,15 +145,17 @@ struct PolaritySwitchModule : Module {
 			Theme = json_integer_value(ThemeJ);
 			portMetal = Theme / 3; // first three use silver (0), last three use gold (1) - the int division by 3 is useful ;)
 		}
-		// Retrieving unipolar/bipolar (when loading .vcv and cloning module).
-		json_t *BipolarJ = json_object_get(rootJ, "Bipolar");
-		if (BipolarJ)
-			Bipolar = json_boolean_value(BipolarJ);
 
-		// Retrieving forcing to 10V (when loading .vcv and cloning module).
-		json_t *Force10VJ = json_object_get(rootJ, "Force10V");
-		if (Force10VJ)
-			Force10V = json_boolean_value(Force10VJ);
+		// Retrieving upper module voltage behavior ("P" and "N" outputs).
+		json_t *UpperVoltageJ = json_object_get(rootJ, "UpperVoltage");
+		if (UpperVoltageJ)
+			UpperVoltage = json_integer_value(UpperVoltageJ);
+
+		// Retrieving lower module voltage behavior ("P" and "N" outputs).
+		json_t *LowerVoltageJ = json_object_get(rootJ, "LowerVoltage");
+		if (LowerVoltageJ)
+			LowerVoltage = json_integer_value(LowerVoltageJ);
+
 	}
 
 };
@@ -231,22 +255,49 @@ struct PolaritySwitchModelSubMenuItems : MenuItem {
 	}
 };
 
+/////////////////////////////////////////// CONTEXT-MENU: UPPER MODULE //////////////////////////////////////////////////
 
-///////////////////////////////////////////////////// CONTEXT-MENU: BIPOLAR /////////////////////////////////////////////
-
-struct PolaritySwitchBipolarMenu : MenuItem {
+struct UpperKeepVoltage : MenuItem {
 	PolaritySwitchModule *module;
 	void onAction(const event::Action &e) override {
-		module->Bipolar = !(module->Bipolar);
+		module->UpperVoltage = 0; // Keep voltage.
 	}
 };
 
-///////////////////////////////////////////////////// CONTEXT-MENU: BIPOLAR /////////////////////////////////////////////
-
-struct PolaritySwitchForceTenVoltsMenu : MenuItem {
+struct UpperForce5V : MenuItem {
 	PolaritySwitchModule *module;
 	void onAction(const event::Action &e) override {
-		module->Force10V = !(module->Force10V);
+		module->UpperVoltage = 1; // Force all outputs to +5V.
+	}
+};
+
+struct UpperForce10V : MenuItem {
+	PolaritySwitchModule *module;
+	void onAction(const event::Action &e) override {
+		module->UpperVoltage = 2; // Force all outputs to +10V.
+	}
+};
+
+/////////////////////////////////////////// CONTEXT-MENU: LOWER MODULE //////////////////////////////////////////////////
+
+struct LowerKeepVoltage : MenuItem {
+	PolaritySwitchModule *module;
+	void onAction(const event::Action &e) override {
+		module->LowerVoltage = 0; // Keep voltage.
+	}
+};
+
+struct LowerForce5V : MenuItem {
+	PolaritySwitchModule *module;
+	void onAction(const event::Action &e) override {
+		module->LowerVoltage = 1; // Force all outputs to +5V.
+	}
+};
+
+struct LowerForce10V : MenuItem {
+	PolaritySwitchModule *module;
+	void onAction(const event::Action &e) override {
+		module->LowerVoltage = 2; // Force all outputs to +10V.
 	}
 };
 
@@ -386,7 +437,8 @@ struct PolaritySwitchWidget : ModuleWidget {
 
 	void appendContextMenu(Menu *menu) override {
 		PolaritySwitchModule *module = dynamic_cast<PolaritySwitchModule*>(this->module);
-		menu->addChild(new MenuEntry);
+
+		menu->addChild(new MenuSeparator);
 
 		PolaritySwitchModelSubMenuItems *polswModelSubMenuItems = new PolaritySwitchModelSubMenuItems;
 		polswModelSubMenuItems->text = "Model";
@@ -394,17 +446,54 @@ struct PolaritySwitchWidget : ModuleWidget {
 		polswModelSubMenuItems->module = module;
 		menu->addChild(polswModelSubMenuItems);
 
-		PolaritySwitchBipolarMenu *polswmenubipolar = new PolaritySwitchBipolarMenu;
-		polswmenubipolar->text = "\"N\" outs: keep negative V";
-		polswmenubipolar->rightText = CHECKMARK(module->Bipolar == true);
-		polswmenubipolar->module = module;
-		menu->addChild(polswmenubipolar);
+		menu->addChild(new MenuSeparator);
 
-		PolaritySwitchForceTenVoltsMenu *polswmenuforce = new PolaritySwitchForceTenVoltsMenu;
-		polswmenuforce->text = "\"N\" outs: force to 10V";
-		polswmenuforce->rightText = CHECKMARK(module->Force10V == true);
-		polswmenuforce->module = module;
-		menu->addChild(polswmenuforce);
+		MenuLabel *upperPolaritySwitchLabel = new MenuLabel();
+		upperPolaritySwitchLabel->text = "UPPER PART";
+		menu->addChild(upperPolaritySwitchLabel);
+
+		UpperKeepVoltage *upperKeepVoltage = new UpperKeepVoltage;
+		upperKeepVoltage->text = "Keep IN voltage (default)";
+		upperKeepVoltage->rightText = CHECKMARK(module->UpperVoltage == 0);
+		upperKeepVoltage->module = module;
+		menu->addChild(upperKeepVoltage);
+
+		UpperForce5V *upperforce5v = new UpperForce5V;
+		upperforce5v->text = "Force outputs to +5V";
+		upperforce5v->rightText = CHECKMARK(module->UpperVoltage == 1);
+		upperforce5v->module = module;
+		menu->addChild(upperforce5v);
+
+		UpperForce10V *upperforce10v = new UpperForce10V;
+		upperforce10v->text = "Force outputs to +10V";
+		upperforce10v->rightText = CHECKMARK(module->UpperVoltage == 2);
+		upperforce10v->module = module;
+		menu->addChild(upperforce10v);
+
+		menu->addChild(new MenuSeparator);
+
+		MenuLabel *lowerPolaritySwitchLabel = new MenuLabel();
+		lowerPolaritySwitchLabel->text = "LOWER PART";
+		menu->addChild(lowerPolaritySwitchLabel);
+
+		LowerKeepVoltage *lowerKeepVoltage = new LowerKeepVoltage;
+		lowerKeepVoltage->text = "Keep IN voltage (default)";
+		lowerKeepVoltage->rightText = CHECKMARK(module->LowerVoltage == 0);
+		lowerKeepVoltage->module = module;
+		menu->addChild(lowerKeepVoltage);
+
+		LowerForce5V *lowerforce5v = new LowerForce5V;
+		lowerforce5v->text = "Force outputs to +5V";
+		lowerforce5v->rightText = CHECKMARK(module->LowerVoltage == 1);
+		lowerforce5v->module = module;
+		menu->addChild(lowerforce5v);
+
+		LowerForce10V *lowerforce10v = new LowerForce10V;
+		lowerforce10v->text = "Force outputs to +10V";
+		lowerforce10v->rightText = CHECKMARK(module->LowerVoltage == 2);
+		lowerforce10v->module = module;
+		menu->addChild(lowerforce10v);
+
 	}
 
 };
