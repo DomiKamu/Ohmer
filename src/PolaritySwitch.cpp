@@ -449,11 +449,11 @@ struct PolaritySwitchWidget : ModuleWidget {
 		menu->addChild(new MenuSeparator);
 
 		MenuLabel *upperPolaritySwitchLabel = new MenuLabel();
-		upperPolaritySwitchLabel->text = "UPPER PART";
+		upperPolaritySwitchLabel->text = "UPPER PART:";
 		menu->addChild(upperPolaritySwitchLabel);
 
 		UpperKeepVoltage *upperKeepVoltage = new UpperKeepVoltage;
-		upperKeepVoltage->text = "Keep IN voltage (default)";
+		upperKeepVoltage->text = "Keep IN1 voltage (default)";
 		upperKeepVoltage->rightText = CHECKMARK(module->UpperVoltage == 0);
 		upperKeepVoltage->module = module;
 		menu->addChild(upperKeepVoltage);
@@ -473,11 +473,11 @@ struct PolaritySwitchWidget : ModuleWidget {
 		menu->addChild(new MenuSeparator);
 
 		MenuLabel *lowerPolaritySwitchLabel = new MenuLabel();
-		lowerPolaritySwitchLabel->text = "LOWER PART";
+		lowerPolaritySwitchLabel->text = "LOWER PART:";
 		menu->addChild(lowerPolaritySwitchLabel);
 
 		LowerKeepVoltage *lowerKeepVoltage = new LowerKeepVoltage;
-		lowerKeepVoltage->text = "Keep IN voltage (default)";
+		lowerKeepVoltage->text = "Keep IN2 voltage (default)";
 		lowerKeepVoltage->rightText = CHECKMARK(module->LowerVoltage == 0);
 		lowerKeepVoltage->module = module;
 		menu->addChild(lowerKeepVoltage);
