@@ -2,10 +2,18 @@
 CHANGELOG
 ================================================================================================================================
 
+Pre-Release v2.3.0 for VCV Rack v2.
+
+- Designed for VCV Rack v2.3.0 SDK.
+- Polarity Switch: per "module" (upper and lower parts), options about outputted voltages.
+- All modules (except BRK): menu separator (instead of blank) before custom context menus.
+
+--------------------------------------------------------------------------------------------------------------------------------
+
 Release v2.2.7 (February 14th, 2023) for VCV Rack v2.
 
 - New (basic) dual switch module: Polarity Switch. Depending voltage on input jack, the signal is routed to "P" output port if
-  its voltage is positive, or to "N" output port if negative. Possible voltages processing.
+  its voltage is positive, or to "N" output port if negative.
 - Blank plates: fixed cosmetic concerning screws (view from module browser).
 - Cleaned repository.
 
