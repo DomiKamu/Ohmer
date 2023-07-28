@@ -45,12 +45,12 @@ struct PolaritySwitchModule : Module {
 	PolaritySwitchModule() {
 		// Module's constructor...
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
-		configInput(INPUT_1, "Signal");
-		configOutput(OUTPUT_P1, "P (if IN1 > 0)");
-		configOutput(OUTPUT_N1, "N (if IN1 < 0)");
-		configInput(INPUT_2, "Signal");
-		configOutput(OUTPUT_P2, "P (if IN2 > 0)");
-		configOutput(OUTPUT_N2, "N (if IN2 < 0)");
+		configInput(INPUT_1, "IN1 signal");
+		configOutput(OUTPUT_P1, "If IN1 > 0: routed to this P1");
+		configOutput(OUTPUT_N1, "If IN1 < 0, routed to this N1");
+		configInput(INPUT_2, "IN2 signal");
+		configOutput(OUTPUT_P2, "If IN2 > 0: routed to this P2");
+		configOutput(OUTPUT_N2, "If IN2 < 0: routed to this N2");
 		UpperVoltage = 0;
 		LowerVoltage = 0;
 		onSampleRateChange();
