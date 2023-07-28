@@ -95,6 +95,11 @@ Please take a look on [PDF user's manual](res/Manuals/RKD_BRK_Manual.pdf).
 
 ![Metriks module](doc/images/Metriks.png)
 
+**Polarity Switch**, a dual module will route incoming voltage on **IN** jack to **P** output jack if the incoming voltage is positive, or to **N** output jack (as absolute value) if the incoming voltage is negative. This module is monophonic.
+
+![Splitter 1x9 module](doc/images/PolaritySwitch.png)
+
+
 **Splitter 1x9**, a simple "multi" 1-input to 9-outputs. Like KlokSpid and Metriks, this module is also available all six liveries (models, from context-menu). This module supports both monophonic or polyphonic cables.
 
 ![Splitter 1x9 module](doc/images/Splitter.png)
