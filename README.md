@@ -101,13 +101,15 @@ Voltage applied on **IN** jack may be kept 'as is' (default behavior), or conver
 
 **Please consider all outputted voltages are always positive, even on N jacks!**
 
-Like KlokSpid and Metriks, this module is also available all six liveries (models, from context-menu). This module supports both monophonic or polyphonic cables.
+Like KlokSpid and Metriks, this module is also available all six liveries (models, from context-menu).
+This module supports both monophonic or polyphonic cables.
 
 ![Splitter 1x9 module](doc/images/PolaritySwitch.png)
 
 ![Splitter 1x9 module](doc/images/PolaritySwitch_Polyphony.png)
 
-**Splitter 1x9**, a simple "multi" 1-input to 9-outputs. Like KlokSpid and Metriks, this module is also available all six liveries (models, from context-menu). This module supports both monophonic or polyphonic cables.
+**Splitter 1x9**, a simple "multi" 1-input to 9-outputs. Like KlokSpid and Metriks, this module is also available all six liveries (models, from context-menu).
+This module supports both monophonic or polyphonic cables.
 
 ![Splitter 1x9 module](doc/images/Splitter.png)
 
