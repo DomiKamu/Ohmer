@@ -1,9 +1,9 @@
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////// Splitter 1x9                                                                              ///
-////// 2 HP module, having 1 input sent "splitted" to 9 outputs, but limited voltages must stay  ///
-////// in -11.7 V / +11.7 V bounds to every output ("hard clipping").                            ///
-////// This module supports polyphonic cables.                                                   ///
-////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Splitter 1x9                                                                             //
+// 2 HP module, having 1 input sent "splitted" to 9 outputs, but limited voltages must stay //
+// into -11.7 V / +11.7 V bounds to every output ("hard clipping").                         //
+// This module is polyphonic.                                                               //
+//////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Ohmer.hpp"
 
