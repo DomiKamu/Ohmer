@@ -42,7 +42,7 @@
       "slug": "PolaritySwitch",
       "name": "Polarity Switch",
       "description": "Signal is routed to \"P\" if its voltage is positive. Otherwise, it's routed to \"N\" but as positive (absolute value)",
-      "tags": ["Dual", "Switch", "Utility"]
+      "tags": ["Dual", "Switch", "Utility", "Polyphonic"]
     },
     {
       "slug": "SplitterModule",
