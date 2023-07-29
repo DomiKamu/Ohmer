@@ -1,10 +1,10 @@
-/////////////////////////////////////////////////////////////////////////////////////////////////
-// Polarity Switch                                                                             //
-// 3 HP module.                                                                                //
-// - Input signal is routed to "P" (upper output) if its voltage is positive.                  //
-// - Input signal is routed to "N" (lower output) if its voltage is negative, after conversion //
-//   to positive unipolar equivalent voltage (aka... absolute value), or +5V, or +10V.         //
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+// Polarity Switch                                                                            //
+// 3 HP module, polyphonic.                                                                   //
+// - Input signal is routed to "P" (upper output) if voltage is positive.                     //
+// - Input signal is routed to "N" (lower output) if voltage is negative, after conversion to //
+//   positive equivalent (absolute value) voltage, or +5V, or +10V.                           //
+////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Ohmer.hpp"
 
@@ -46,11 +46,11 @@ struct PolaritySwitchModule : Module {
 		// Module's constructor...
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 		configInput(INPUT_1, "IN1 signal");
-		configOutput(OUTPUT_P1, "If IN1 > 0: routed to this P1");
-		configOutput(OUTPUT_N1, "If IN1 < 0, routed to this N1");
+		configOutput(OUTPUT_P1, "If IN1 positive: sent to this P1");
+		configOutput(OUTPUT_N1, "If IN1 negative: sent to this N1");
 		configInput(INPUT_2, "IN2 signal");
-		configOutput(OUTPUT_P2, "If IN2 > 0: routed to this P2");
-		configOutput(OUTPUT_N2, "If IN2 < 0: routed to this N2");
+		configOutput(OUTPUT_P2, "If IN2 positive: sent to this P2");
+		configOutput(OUTPUT_N2, "If IN2 negative: sent to this N2");
 		UpperVoltage = 0;
 		LowerVoltage = 0;
 		onSampleRateChange();
@@ -61,71 +61,103 @@ struct PolaritySwitchModule : Module {
 	}		
 
 	void process(const ProcessArgs &args) override {
+		int nChannels; // Used for number of channels (monophonic or polyphonic).
 		float out_voltage;
-		// First input (upper part of the module).
-		out_voltage = clamp(inputs[INPUT_1].getVoltage(), -10.f, 10.f);
-		if (out_voltage >= 0.f) {
-			// Voltage is positive: routing to "P" output jack.
-			switch (UpperVoltage) {
-				case 0:
-					outputs[OUTPUT_P1].setVoltage(out_voltage); // IN voltage is kept as is, routed to "P" output jack.
-					break;
-				case 1:
-					outputs[OUTPUT_P1].setVoltage(5.f); // Forced +5V routed to "P" output jack.
-					break;
-				case 2:
-					outputs[OUTPUT_P1].setVoltage(10.f); // Forced +10V routed to "P" output jack.
+
+		if (inputs[INPUT_1].isConnected()) {
+			// Upper input jack (IN1).
+			nChannels = std::max(1, inputs[INPUT_1].getChannels()); // Get number of polyphonic channels for IN input (1 if monophonic cable).
+			// Proceeding all channels.
+			for (int chan = 0;  chan < nChannels; chan++) {
+				out_voltage = clamp(inputs[INPUT_1].getVoltage(chan), -10.f, 10.f);
+				if (out_voltage >= 0.f) {
+					// Voltage is positive: routing to "P" output jack.
+					switch (UpperVoltage) {
+						case 0:
+							outputs[OUTPUT_P1].setVoltage(out_voltage, chan); // IN voltage is kept as is, routed to "P" output jack (related polyphony channel).
+							break;
+						case 1:
+							outputs[OUTPUT_P1].setVoltage(5.f, chan); // Forced +5V routed to "P" output jack (related polyphony channel).
+							break;
+						case 2:
+							outputs[OUTPUT_P1].setVoltage(10.f, chan); // Forced +10V routed to "P" output jack (related polyphony channel).
+					}
+					// Voltage is positive: "N" output jack is set to 0V (related polyphony channel).
+					outputs[OUTPUT_N1].setVoltage(0.f, chan);
+				}
+				else {
+					// Voltage is negative: routing to "N" output jack (but as absolute value).
+					switch (UpperVoltage) {
+						case 0:
+							outputs[OUTPUT_N1].setVoltage(std::abs(out_voltage), chan); // Convert the negative voltage to positive (aka "absolute value") before sending it to "N" jack (related polyphony channel).
+							break;
+						case 1:
+							outputs[OUTPUT_N1].setVoltage(5.f, chan); // Forced +5V routed to "N" output jack (related polyphony channel).
+							break;
+						case 2:
+							outputs[OUTPUT_N1].setVoltage(10.f, chan); // Forced +10V routed to "N" output jack (related polyphony channel).
+					}
+					// Voltage is negative: "P" output jack is set to 0V (related polyphony channel).
+					outputs[OUTPUT_P1].setVoltage(0.f, chan);
+				}
 			}
-			// Voltage is positive: "N" output jack is set to 0V.
+			outputs[OUTPUT_P1].setChannels(nChannels);
+			outputs[OUTPUT_N1].setChannels(nChannels);
+		}
+		else {
+			// IN input jack isn't connected: send 0V to both "P" and "N" jacks.
+			outputs[OUTPUT_P1].setChannels(1);
+			outputs[OUTPUT_P1].setVoltage(0.f);
+			outputs[OUTPUT_N1].setChannels(1);
 			outputs[OUTPUT_N1].setVoltage(0.f);
 		}
-		else {
-			// Voltage is negative: routing to "N" output jack (but as absolute value).
-			switch (UpperVoltage) {
-				case 0:
-					outputs[OUTPUT_N1].setVoltage(-1.f * out_voltage); // Convert the negative voltage applied on "IN" jack to positive equivalent (absolute value) before sending it to "N" jack!
-					break;
-				case 1:
-					outputs[OUTPUT_N1].setVoltage(5.f); // Forced +5V routed to "N" output jack.
-					break;
-				case 2:
-					outputs[OUTPUT_N1].setVoltage(10.f); // Forced +10V routed to "N" output jack.
-			}
-			// Voltage is negative: "P" output jack is set to 0V.
-			outputs[OUTPUT_P1].setVoltage(0.f);
-		}
 
-		// Second input (lower part of the module).
-		out_voltage = clamp(inputs[INPUT_2].getVoltage(), -10.f, 10.f);
-		if (out_voltage >= 0.f) {
-			// Voltage is positive: routing to "P" output jack.
-			switch (LowerVoltage) {
-				case 0:
-					outputs[OUTPUT_P2].setVoltage(out_voltage); // IN voltage is kept as is, routed to "P" output jack.
-					break;
-				case 1:
-					outputs[OUTPUT_P2].setVoltage(5.f); // Forced +5V routed to "P" output jack.
-					break;
-				case 2:
-					outputs[OUTPUT_P2].setVoltage(10.f); // Forced +10V routed to "P" output jack.
+		if (inputs[INPUT_2].isConnected()) {
+			// Lower input jack (IN2).
+			nChannels = std::max(1, inputs[INPUT_2].getChannels()); // Get number of polyphonic channels for IN input (1 if monophonic cable).
+			// Proceeding all channels.
+			for (int chan = 0;  chan < nChannels; chan++) {
+				out_voltage = clamp(inputs[INPUT_2].getVoltage(chan), -10.f, 10.f);
+				if (out_voltage >= 0.f) {
+					// Voltage is positive: routing to "P" output jack.
+					switch (LowerVoltage) {
+						case 0:
+							outputs[OUTPUT_P2].setVoltage(out_voltage, chan); // IN voltage is kept as is, routed to "P" output jack (related polyphony channel).
+							break;
+						case 1:
+							outputs[OUTPUT_P2].setVoltage(5.f, chan); // Forced +5V routed to "P" output jack (related polyphony channel).
+							break;
+						case 2:
+							outputs[OUTPUT_P2].setVoltage(10.f, chan); // Forced +10V routed to "P" output jack (related polyphony channel).
+					}
+					// Voltage is positive: "N" output jack is set to 0V (related polyphony channel).
+					outputs[OUTPUT_N2].setVoltage(0.f, chan);
+				}
+				else {
+					// Voltage is negative: routing to "N" output jack (but as absolute value).
+					switch (LowerVoltage) {
+						case 0:
+							outputs[OUTPUT_N2].setVoltage(std::abs(out_voltage), chan); // Convert the negative voltage to positive (aka "absolute value") before sending it to "N" jack (related polyphony channel).
+							break;
+						case 1:
+							outputs[OUTPUT_N2].setVoltage(5.f, chan); // Forced +5V routed to "N" output jack (related polyphony channel).
+							break;
+						case 2:
+							outputs[OUTPUT_N2].setVoltage(10.f, chan); // Forced +10V routed to "N" output jack (related polyphony channel).
+					}
+					// Voltage is negative: "P" output jack is set to 0V (related polyphony channel).
+					outputs[OUTPUT_P2].setVoltage(0.f, chan);
+				}
 			}
-			// Voltage is positive: "N" output jack is set to 0V.
-			outputs[OUTPUT_N2].setVoltage(0.f);
+			outputs[OUTPUT_P2].setChannels(nChannels);
+			outputs[OUTPUT_N2].setChannels(nChannels);
 		}
 		else {
-			// Voltage is negative: routing to "N" output jack (but as absolute value).
-			switch (LowerVoltage) {
-				case 0:
-					outputs[OUTPUT_N2].setVoltage(-1.f * out_voltage); // Convert the negative voltage applied on "IN" jack to positive equivalent (absolute value) before sending it to "N" jack!
-					break;
-				case 1:
-					outputs[OUTPUT_N2].setVoltage(5.f); // Forced +5V routed to "N" output jack.
-					break;
-				case 2:
-					outputs[OUTPUT_N2].setVoltage(10.f); // Forced +10V routed to "N" output jack.
-			}
-			// Voltage is negative: "P" output jack is set to 0V.
+			// IN input jack isn't connected: send 0V to both "P" and "N" jacks.
+			outputs[OUTPUT_P2].setChannels(1);
 			outputs[OUTPUT_P2].setVoltage(0.f);
+			outputs[OUTPUT_N2].setChannels(1);
+			outputs[OUTPUT_N2].setVoltage(0.f);
 		}
 
 	}
