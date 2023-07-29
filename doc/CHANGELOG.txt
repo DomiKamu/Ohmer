@@ -2,11 +2,12 @@
 CHANGELOG
 ================================================================================================================================
 
-Pre-Release v2.3.0 for VCV Rack v2.
+Release v2.3.0 (July 29th, 2023) for VCV Rack v2.
 
 - Designed for VCV Rack v2.3.0 SDK.
-- Polarity Switch: per "module" (upper and lower parts), options about outputted voltages.
-- All modules (except BRK): menu separator (instead of blank) before custom context menus.
+- Polarity Switch: now this module is polyphonic.
+- Polarity Switch: options concerning outputted voltages behaviors, either upper and lower parts (independent).
+- All modules (except BRK): menu separator (instead of blank) added before custom context menus.
 
 --------------------------------------------------------------------------------------------------------------------------------
 
