@@ -121,7 +121,9 @@ It supports both monophonic or polyphonic cables.
 ------
 ## Blank panels
 
-**Set of blank panels** (without logo yet) to fill any holes in your rack: 1 HP, 2 HP, 4 HP, 8 HP, 16 HP and 32 HP. Like KlokSpid, Metriks, and (_introduced in v1.0.0_) Splitter 1x9, **now these "blank" panels have six models too**! Please notice the 2 HP blank panel have an extra context-menu, in order to change **screws disposal**:
+**Set of blank panels** (without logo yet) to fill any holes in your rack: 1 HP, 2 HP, 4 HP, 8 HP, 16 HP and 32 HP. Like KlokSpid, Metriks, Polarity Switch, and (_introduced in v1.0.0_) Splitter 1x9, **these "blank" panels have six models too**!
+
+Please notice the 2 HP blank panel have an extra context-menu, in order to customize **screws disposal**:
 
 ![Blank_2HP_Screws_Opt](doc/images/Blank_2HP_Screws_Opts.png)
 
