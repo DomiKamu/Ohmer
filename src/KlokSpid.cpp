@@ -401,6 +401,8 @@ struct KlokSpidModule : Module {
 									strcpy(dmdTextMainOut4, "TRI");
 									break;
 								case 5:
+									strcpy(dmdTextMainOut4, "RMP");
+									break;
 								case 6:
 									strcpy(dmdTextMainOut4, "SAW");
 							}
@@ -850,9 +852,9 @@ struct KlokSpidModule : Module {
 			setupParamXOffset[SETUP_OUT4LFO][3] = 2;
 			setupParamName[SETUP_OUT4LFO][4] = "Inv. Tri.";
 			setupParamXOffset[SETUP_OUT4LFO][4] = 2;
-			setupParamName[SETUP_OUT4LFO][5] = "Sawtooth";
+			setupParamName[SETUP_OUT4LFO][5] = "Ramp";
 			setupParamXOffset[SETUP_OUT4LFO][5] = 2;
-			setupParamName[SETUP_OUT4LFO][6] = "Inv. Saw.";
+			setupParamName[SETUP_OUT4LFO][6] = "Sawtooth";
 			setupParamXOffset[SETUP_OUT4LFO][6] = 2;
 			for (int i = 7; i < 22; i++) {
 				setupParamName[SETUP_OUT4LFO][i] = ""; // Unused (useless) strings are set to empty.
@@ -1943,7 +1945,9 @@ struct KlokSpidWidget : ModuleWidget {
 
 	void appendContextMenu(Menu *menu) override {
 		KlokSpidModule *module = dynamic_cast<KlokSpidModule*>(this->module);
-		menu->addChild(new MenuEntry);
+
+		menu->addChild(new MenuSeparator);
+
 		KlokSpidSubMenuItems *klokspidsubmenuitems = new KlokSpidSubMenuItems;
 		klokspidsubmenuitems->text = "Model";
 		klokspidsubmenuitems->rightText = RIGHT_ARROW;
