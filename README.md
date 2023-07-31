@@ -24,7 +24,7 @@ Basically, KlokSpid module provides two modes:
 
 ![KlokSpid Module](doc/images/KlokSpid.png)
 
-Now, KlokSpid (Metriks, and RKD) modules support the night fever! (VCV Rack 2 **dark room** feature):
+KlokSpid (Metriks, and RKD) modules support the night fever! (VCV Rack 2 **room brightness** feature):
 
 ![](doc/images/KlokSpid_Dark_Mode.png)
 
@@ -137,7 +137,7 @@ KlokSpid (Deepblue "Signature" model), Metriks (Absolute Night) and RKD, togethe
 
 ![](doc/images/Dark_Room.png)
 
-All modules included in Ohmer plugin (default GUI themes):
+All modules included in Ohmer plugin (default *Classic* beige GUI themes):
 
 ![All Ohmer modules](doc/images/Ohmer_Modules.png)
 
