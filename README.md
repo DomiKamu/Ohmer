@@ -8,7 +8,6 @@
 
 ------
 ## KlokSpid
-------
 
 Flagship of *Ohmer* plugin is **KlokSpid** (pronunciation of "clock speed"), a modern "CPU-controlled"-style clocking module, designed for any rack requiring BPM-based clock sources and/or clock modulators (clock multipliers and dividers).
 
