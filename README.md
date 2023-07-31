@@ -24,11 +24,6 @@ Basically, KlokSpid module provides two modes:
 
 ![KlokSpid Module](doc/images/KlokSpid.png)
 
-KlokSpid (Metriks, and RKD) modules support the night fever! (VCV Rack 2 **room brightness** feature):
-
-![](doc/images/KlokSpid_Dark_Mode.png)
-
-
 Clocking mode is automatically selected by an internal sensor (and module's firmware), in fact, depending the **CLK** input jack is connected, or not.
 
 If connected (patched), KlokSpid module works as ***clock modulator*** (multiplier or divider), otherwise, it works as BPM-based ***clock generator***.
@@ -133,7 +128,9 @@ This module supports both monophonic or polyphonic cables.
 ------
 ### **Various images:**
 
-KlokSpid (Deepblue "Signature" model), Metriks (Absolute Night) and RKD, together, during night session:
+KlokSpid (Deepblue "Signature" model), Metriks (Absolute Night) and RKD, together, during night session (VCV Rack 2 **room brightness** feature):
+
+![](doc/images/KlokSpid_Dark_Mode.png)
 
 ![](doc/images/Dark_Room.png)
 
