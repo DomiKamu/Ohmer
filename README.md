@@ -1,13 +1,13 @@
 # ![Ohmer Modules logo](doc/images/Logo_Ohmer.png)Ohmer modules for VCV Rack 2
 
-### ***DEDICATED MANUALS:***
+### ***"DEDICATED" MANUALS:***
 
 [RKD / RKD with "Break" User's Guide (PDF)](res/Manuals/RKD_BRK_Manual.pdf).
 
 [Metriks - Quick User's Guide](doc/Metriks.md) (module still in development, thanks - again - for your patience!)
 
 ------
-#### KlokSpid
+## KlokSpid
 
 Flagship of *Ohmer* plugin is **KlokSpid** (pronunciation of "clock speed"), a modern "CPU-controlled"-style clocking module, designed for any rack requiring BPM-based clock sources and/or clock modulators (clock multipliers and dividers).
 
