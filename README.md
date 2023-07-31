@@ -2,7 +2,7 @@
 
 ### ***"DEDICATED" MANUALS:***
 
-[RKD / RKD with "Break" User's Guide (PDF)](res/Manuals/RKD_BRK_Manual.pdf).
+[RKD / RKD with "Break" User's Manual (PDF)](res/Manuals/RKD_BRK_Manual.pdf).
 
 [Metriks - Quick User's Guide](doc/Metriks.md) (module still in development, thanks - again - for your patience!)
 
@@ -77,7 +77,7 @@ Obviously, all settings you've defined via SETUP are automatically saved along y
 
 **BRK** is basically an additional panel (4 HP, must be placed alongside RKD) providing six deported switches. By this way, it's more comfortable to change module's settings "on-the-fly", without need to access PCB to change jumpers. When RKD module was set correctly, you'll can remove its BRK expander.
 
-Please take a look on [RKD & BRK User's Manual (PDF)](res/Manuals/RKD_BRK_Manual.pdf).
+Please take a look on [RKD / RKD with "Break" User's Manual (PDF)](res/Manuals/RKD_BRK_Manual.pdf).
 
 ------
 ## Metriks
