@@ -67,7 +67,7 @@ The last setting is SETUP-exit "human decision" (you'll can use encoder to chang
 Obviously, all settings you've defined via SETUP are automatically saved along your ".vcv" patch file (including "autosave.vcv"). Also, all current settings are transferred "on-the-fly" when you duplicate (clone) the module, even during SETUP operation (in this situation, new clone isn't running SETUP mode, however, because cloning assumes an "automatic Save/Exit" for its clone!)
 
 ------
-### RKD and BRK
+## RKD (Rotate Klok Divider) and BRK (expander)
 
 **RKD (Rotate Klok Divider)**, inspired by [4ms Company](https://4mscompany.com/) **RCD** module (with limited permission).
 
