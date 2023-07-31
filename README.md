@@ -109,9 +109,11 @@ Example by using bipolar LFO sine on input (provided by KlokSpid, sine LFO on ja
 
 ![](doc/images/PolaritySwitch_LFO_Example.png)
 
-Polarity Switch against polyphony:
+Polarity Switch against polyphony (using lower part of module only):
 
 ![](doc/images/PolaritySwitch_Polyphony.png)
+
+**NOTE:** as upper and lower parts are totally independent (like "two modules in one"), both module parts may have different polyphony settings.
 
 ------
 ### Splitter 1x9
