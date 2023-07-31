@@ -96,7 +96,7 @@ Please take a look on [RKD & BRK User's Manual (PDF)](res/Manuals/RKD_BRK_Manual
 Voltage applied on **IN** jack may be kept 'as is' (default behavior), or converted/forced to +5V or +10V - option via contextual menu, per module part (upper and lower parts are totally independent, like "two modules in one"). **Please consider all outputted voltages are always positive, even on N jacks!**
 
 Like KlokSpid and Metriks, this module is also available all six liveries (models, from context-menu).
-This module supports both monophonic or polyphonic cables.
+It supports both monophonic or polyphonic cables.
 
 ![](doc/images/PolaritySwitch.png)
 
@@ -114,7 +114,7 @@ Polarity Switch against polyphony (using lower part of module only):
 ## Splitter 1x9
 
 **Splitter 1x9**, a simple "multi" 1-input to 9-outputs. Like KlokSpid and Metriks, this module is also available all six liveries (models, from context-menu).
-This module supports both monophonic or polyphonic cables.
+It supports both monophonic or polyphonic cables.
 
 ![Splitter 1x9 module](doc/images/Splitter.png)
 
