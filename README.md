@@ -146,6 +146,10 @@ All modules included in Ohmer plugin (default *Classic* beige GUI themes):
 
 Releases for Windows, MacOS (Intel, ARM64) and Linux platforms are available either from VCV Rack 2 [Plugin Library](https://vcvrack.com/plugins.html), and from [my GitHub "releases" page](https://github.com/DomiKamu/Ohmer/releases) (.vcvplugin file - per platform).
 
+**Current release**: v2.3.0 (July 29th, 2023), vs. Rack-SDK-2 v2.3.0:
+
+All bug-fixes, new features/modules and enhancements are described in details into [CHANGELOG.TXT](doc/CHANGELOG.txt).
+
 ------
 ### License Clauses
 
@@ -156,12 +160,6 @@ Source code is licensed under **BSD 3-Clause**, by Dominique Camus. Some graphic
 About RKD modules: the [4ms Company](https://4mscompany.com/) doesn't endorse any support or responsibility about this conversion for VCV Rack, **anyway**! These modules follow guidelines given by 4ms Company, including respect of non-usage of company logo, brand name (4ms), and trademarked modules names (RCD, Rotating Clock Divider, RCDBO, and RCD Breakout). Both **RKD** and **BRK** modules use exclusively 100% homemade C++ open-source code, have many variations regarding some graphical and technical specifications, and provide additional features, such different colors on panels, and segment-LED displays (instead of silkscreen prints) showing dividers for every output jack, in real-time.
 
 Feature requests, suggestions, and bug reports are welcome on [GitHub repository](https://github.com/DomiKamu/Ohmer-Modules/issues).
-
-------
-### Current release: v2.3.0 (July 29th, 2023), vs. Rack-SDK-2 v2.3.0:
-
-- Bug-fixes and enhancements are described in details into [CHANGELOG.TXT](doc/CHANGELOG.txt).
-
 
 ------
 ### Thanks to:
