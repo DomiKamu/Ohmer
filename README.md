@@ -30,7 +30,7 @@ If connected (patched), KlokSpid module works as ***clock modulator*** (multipli
 
 As clock modulator, generated signals are always sent to **four identical** outputs (like a "1x4" multi), to avoid splitter/multiples usage behind module (or multiples patch cables connected on the same jack).
 
-However, while KlokSpid works as clock generator, several options (customizable via module's SETUP) permits to select a specific multiplier or divider for any output jack, also may outputs a specific LFO waveform to jack #4 such sine, inverted sine, triangle, inverted triangle, sawtooth or inverted sawtooth (sometimes called *down sawtooth*). From module's SETUP, this feature is **Out. #4 LFO** (disabled by default), but can be enabled only if jack #4 ratio is set as "x1" (ratio always takes priority over LFO feature).
+However, while KlokSpid works as clock generator, several options (customizable via module's SETUP) permits to select a specific multiplier or divider for any output jack, also may outputs a specific LFO waveform to jack #4 such sine, inverted sine, triangle, inverted triangle, sawtooth or ramp (inverted sawtooth). From module's SETUP, this feature is **Out. #4 LFO** (disabled by default), but can be enabled only if jack #4 ratio is set as "x1" (be careful: ratio always takes priority over LFO feature).
 
 Voltages sent to all outputs is, by default, defined to **+5V**, but, in case you'll need another voltage, it can be changed to either **+2V**, **+10V**, or **+11.7V** from module's SETUP.
 
