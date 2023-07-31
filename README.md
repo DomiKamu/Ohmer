@@ -7,6 +7,7 @@
 [Metriks - Quick User's Guide](doc/Metriks.md) (module still in development, thanks - again - for your patience!)
 
 ------
+### KlokSpid
 
 Flagship of *Ohmer* plugin is **KlokSpid** (pronunciation of "clock speed"), a modern "CPU-controlled"-style clocking module, designed for any rack requiring BPM-based clock sources and/or clock modulators (clock multipliers and dividers).
 
@@ -70,13 +71,8 @@ The last setting is SETUP-exit "human decision" (you'll can use encoder to chang
 
 Obviously, all settings you've defined via SETUP are automatically saved along your ".vcv" patch file (including "autosave.vcv"). Also, all current settings are transferred "on-the-fly" when you duplicate (clone) the module, even during SETUP operation (in this situation, new clone isn't running SETUP mode, however, because cloning assumes an "automatic Save/Exit" for its clone!)
 
-
-
-#### **All modules included in Ohmer plugin:**
-
-![All Ohmer modules](doc/images/Ohmer_Modules.png)
-
-
+------
+### RKD and BRK
 
 **RKD (Rotate Klok Divider)**, inspired by [4ms Company](https://4mscompany.com/) **RCD** module (with limited permission).
 
@@ -88,12 +84,17 @@ Obviously, all settings you've defined via SETUP are automatically saved along y
 
 Please take a look on [PDF user's manual](res/Manuals/RKD_BRK_Manual.pdf).
 
+------
+### Metriks
 
 **Metriks**, a 8 HP metering module, for now providing **voltmeter** and **CV tuner** modes only (please notice other modes, such *BPM Meter*, *Frequency Counter* and *Peak Counter* are temporary disabled, like a "scrolling message" says on the dot-matrix display when you select one of these unavailable modes). 
 
 [Metriks - Quick Guide **is here!**](doc/Metriks.md) please notice **this Metriks module remains in development**.
 
 ![Metriks module](doc/images/Metriks.png)
+
+------
+### Polarity Switch
 
 **Polarity Switch**, a dual module will route incoming voltage on **IN** jack to **P** output jack if the incoming voltage is positive, or to **N** output jack (as absolute value) if the incoming voltage is negative.
 
@@ -106,29 +107,39 @@ This module supports both monophonic or polyphonic cables.
 
 ![Polarity Switch module and polyphony](doc/images/PolaritySwitch_Polyphony.png)
 
+------
+### Splitter 1x9
+
 **Splitter 1x9**, a simple "multi" 1-input to 9-outputs. Like KlokSpid and Metriks, this module is also available all six liveries (models, from context-menu).
 This module supports both monophonic or polyphonic cables.
 
 ![Splitter 1x9 module](doc/images/Splitter.png)
 
+------
+### Blank panels
+
 **Set of blank panels** (without logo yet) to fill any holes in your rack: 1 HP, 2 HP, 4 HP, 8 HP, 16 HP and 32 HP. Like KlokSpid, Metriks, and (_introduced in v1.0.0_) Splitter 1x9, **now these "blank" panels have six models too**! Please notice the 2 HP blank panel have an extra context-menu, in order to change **screws disposal**:
 
 ![Blank_2HP_Screws_Opt](doc/images/Blank_2HP_Screws_Opts.png)
 
+------
+### **Various images:**
 
 KlokSpid (Deepblue "Signature" model), Metriks (Absolute Night) and RKD, together, during night session:
 
 ![](doc/images/Dark_Room.png)
 
+All modules included in Ohmer plugin (default GUI themes):
 
+![All Ohmer modules](doc/images/Ohmer_Modules.png)
 
+------
 ## Releases
 
-Releases for Windows, MacOS (Intel, ARM64) and Linux platforms are available either from VCV Rack [Plugin Library](https://vcvrack.com/plugins.html) page, and/or from [my GitHub "releases" page](https://github.com/DomiKamu/Ohmer/releases) (.vcvplugin file - per platform).
+Releases for Windows, MacOS (Intel, ARM64) and Linux platforms are available either from VCV Rack 2 [Plugin Library](https://vcvrack.com/plugins.html), and from [my GitHub "releases" page](https://github.com/DomiKamu/Ohmer/releases) (.vcvplugin file - per platform).
 
-
-
-## License Clauses
+------
+### License Clauses
 
 All Ohmer modules are free, source code is provided.
 
@@ -138,13 +149,13 @@ About RKD modules: the [4ms Company](https://4mscompany.com/) doesn't endorse an
 
 Feature requests, suggestions, and bug reports are welcome on [GitHub repository](https://github.com/DomiKamu/Ohmer-Modules/issues).
 
-
-
+------
 ### Current release: v2.3.0 (July 29th, 2023), vs. Rack-SDK-2 v2.3.0:
 
 - Bug-fixes and enhancements are described in details into [CHANGELOG.TXT](doc/CHANGELOG.txt).
 
 
+------
 ### Thanks to:
 
 - **Andrew Belt** (and development team) for his fantastic VCV Rack software, now in v2!
@@ -160,10 +171,9 @@ Feature requests, suggestions, and bug reports are welcome on [GitHub repository
 - Generous contributors, coding tips & optimizations, enhancements, and features ideas!
 - The most important: our existing (and growing every day) communities around VCV Rack!
 
-
+------
 ### Who am I?
 
 My name is Dominique CAMUS, 59-years old French guy, my job is networks and systems admin (but at the moment, I'm unemployed). I'm living now in south of France, near Nîmes (Gard - 30). Mine hobbies are mainly C.M. experimentations (as curious guy I am), playing keyboard (live performance at home, in my living room, using Native Instruments KOMPLETE KONTROL S61 MK2 keyboard, and Arturia BeatStep Pro controller), flight simulation (Prepar3D v5, flying mainly airliners such Airbus A319/A320, Boeing 737-800, Boeing 777-200/-300), Kerbal Space Program, Elite: Dangerous Horizons, videogame emulators (for sure, I'm a nostalgic guy) such M.A.M.E, pinball games, infiltration games (HITMAN series, Metal Gear, Sniper Ghost Warrior), homemade developments, friends, family, swimming pool, my lovely village...
-
 
 ### Enjoy Ohmer modules!
