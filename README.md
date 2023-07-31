@@ -77,7 +77,7 @@ Obviously, all settings you've defined via SETUP are automatically saved along y
 
 **BRK** is basically an additional panel (4 HP, must be placed alongside RKD) providing six deported switches. By this way, it's more comfortable to change module's settings "on-the-fly", without need to access PCB to change jumpers. When RKD module was set correctly, you'll can remove its BRK expander.
 
-Please take a look on [PDF user's manual](res/Manuals/RKD_BRK_Manual.pdf).
+Please take a look on [RKD & BRK User's Manual (PDF)](res/Manuals/RKD_BRK_Manual.pdf).
 
 ------
 ### Metriks
