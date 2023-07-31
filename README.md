@@ -1,6 +1,6 @@
 # ![Ohmer Modules logo](doc/images/Logo_Ohmer.png)Ohmer modules for VCV Rack 2
 
-### ***MANUALS:***
+### ***DEDICATED MANUALS:***
 
 [RKD / RKD with "Break" User's Guide (PDF)](res/Manuals/RKD_BRK_Manual.pdf).
 
