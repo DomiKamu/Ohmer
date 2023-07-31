@@ -103,9 +103,15 @@ Voltage applied on **IN** jack may be kept 'as is' (default behavior), or conver
 Like KlokSpid and Metriks, this module is also available all six liveries (models, from context-menu).
 This module supports both monophonic or polyphonic cables.
 
-![Polarity Switch module](doc/images/PolaritySwitch.png)
+![](doc/images/PolaritySwitch.png)
 
-![Polarity Switch module and polyphony](doc/images/PolaritySwitch_Polyphony.png)
+Example by using bipolar LFO sine on input (provided by KlokSpid, sine LFO on jack #4):
+
+![](doc/images/PolaritySwitch_LFO_Example.png)
+
+Polarity Switch against polyphony:
+
+![](doc/images/PolaritySwitch_Polyphony.png)
 
 ------
 ### Splitter 1x9
