@@ -19,35 +19,43 @@ struct OhmerBlank2 : Module {
 	};
 
 	// Current selected plate model (color).
-	int Theme = 0; // 0 = Classic (default), 1 = Stage Repro, 2 = Absolute Night, 3 = Dark Signature, 4 = Deepblue Signature, 5 = Carbon Signature.
+	int Model; // 0 = Creamy, 1 = Stage Repro, 2 = Absolute Night, 3 = Dark Signature, 4 = Deepblue Signature, 5 = Titanium Signature.
 
-	// Panel color (default is "Classic" beige model).
+	// Panel color (default is Creamy).
 	NVGcolor panelBackgroundColor = nvgRGB(0xd2, 0xd2, 0xcd);
 
 	// Screws disposal.
 	int screwsDisposal = 0;
 
 	OhmerBlank2() {
+		// Module constructor.
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+		Model = rack::settings::preferDarkPanels ? 2 : 0; // Model: assuming default is "Creamy" or "Absolute Night" (depending "Use dark panels if available" option, from "View" menu).
 	}
 
 	void process(const ProcessArgs &args) override {
 		// DSP processing...
-		// Depending current model (theme), set the relevant background color for panel.
-		panelBackgroundColor = tblPanelBackgroundColor[Theme];
+		// Depending current model, set the relevant background color for panel.
+		panelBackgroundColor = tblPanelBackgroundColor[Model];
 	}
 
 	json_t *dataToJson() override {
 		json_t *rootJ = json_object();
-		json_object_set_new(rootJ, "Theme", json_integer(Theme));
+		json_object_set_new(rootJ, "Model", json_integer(Model));
 		json_object_set_new(rootJ, "screwsDisposal", json_integer(screwsDisposal));
 		return rootJ;
 	}
 
 	void dataFromJson(json_t *rootJ) override {
-		json_t *ThemeJ = json_object_get(rootJ, "Theme");
-		if (ThemeJ)
-			Theme = json_integer_value(ThemeJ);
+		json_t *ModelJ = json_object_get(rootJ, "Model");
+		if (ModelJ)
+			Model = json_integer_value(ModelJ);
+			else {
+				// Used to migrate to "Model" (instead of "Theme") in json (compatibility).
+				json_t *ModelJ = json_object_get(rootJ, "Theme");
+				if (ModelJ)
+					Model = json_integer_value(ModelJ);
+			}
 		json_t *screwsDisposalJ = json_object_get(rootJ, "screwsDisposal");
 		if (screwsDisposalJ)
 			screwsDisposal = json_integer_value(screwsDisposalJ);
@@ -57,45 +65,45 @@ struct OhmerBlank2 : Module {
 
 ///////////////////////////////////////////////////// CONTEXT-MENU (MODEL) //////////////////////////////////////////////////////
 
-struct OhmerBlank2ClassicMenu : MenuItem {
+struct OhmerBlank2CreamyMenu : MenuItem {
 	OhmerBlank2 *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 0; // Model: default Classic (beige).
+		module->Model = 0; // Model: Creamy.
 	}
 };
 
 struct OhmerBlank2StageReproMenu : MenuItem {
 	OhmerBlank2 *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 1; // Model: Stage Repro.
+		module->Model = 1; // Model: Stage Repro.
 	}
 };
 
 struct OhmerBlank2AbsoluteNightMenu : MenuItem {
 	OhmerBlank2 *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 2; // Model: Absolute Night.
+		module->Model = 2; // Model: Absolute Night.
 	}
 };
 
 struct OhmerBlank2DarkSignatureMenu : MenuItem {
 	OhmerBlank2 *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 3; // Model: Dark Signature.
+		module->Model = 3; // Model: Dark Signature.
 	}
 };
 
 struct OhmerBlank2DeepblueSignatureMenu : MenuItem {
 	OhmerBlank2 *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 4; // Model: Deepblue Signature.
+		module->Model = 4; // Model: Deepblue Signature.
 	}
 };
 
-struct OhmerBlank2CarbonSignatureMenu : MenuItem {
+struct OhmerBlank2TitaniumSignatureMenu : MenuItem {
 	OhmerBlank2 *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 5; // Model: Carbon Signature.
+		module->Model = 5; // Model: Titanium Signature.
 	}
 };
 
@@ -104,41 +112,41 @@ struct OhmerBlank2SubMenuItems : MenuItem {
 	Menu *createChildMenu() override {
 		Menu *menu = new Menu;
 
-		OhmerBlank2ClassicMenu *ohmerblank2menuitem1 = new OhmerBlank2ClassicMenu;
-		ohmerblank2menuitem1->text = "Classic (default)";
-		ohmerblank2menuitem1->rightText = CHECKMARK(module->Theme == 0);
-		ohmerblank2menuitem1->module = module;
-		menu->addChild(ohmerblank2menuitem1);
+		OhmerBlank2CreamyMenu *ohmerblank2creamymenu = new OhmerBlank2CreamyMenu;
+		ohmerblank2creamymenu->text = "Creamy";
+		ohmerblank2creamymenu->rightText = CHECKMARK(module->Model == 0);
+		ohmerblank2creamymenu->module = module;
+		menu->addChild(ohmerblank2creamymenu);
 
-		OhmerBlank2StageReproMenu *ohmerblank2menuitem2 = new OhmerBlank2StageReproMenu;
-		ohmerblank2menuitem2->text = "Stage Repro";
-		ohmerblank2menuitem2->rightText = CHECKMARK(module->Theme == 1);
-		ohmerblank2menuitem2->module = module;
-		menu->addChild(ohmerblank2menuitem2);
+		OhmerBlank2StageReproMenu *ohmerblank2stagerepromenu = new OhmerBlank2StageReproMenu;
+		ohmerblank2stagerepromenu->text = "Stage Repro";
+		ohmerblank2stagerepromenu->rightText = CHECKMARK(module->Model == 1);
+		ohmerblank2stagerepromenu->module = module;
+		menu->addChild(ohmerblank2stagerepromenu);
 
-		OhmerBlank2AbsoluteNightMenu *ohmerblank2menuitem3 = new OhmerBlank2AbsoluteNightMenu;
-		ohmerblank2menuitem3->text = "Absolute Night";
-		ohmerblank2menuitem3->rightText = CHECKMARK(module->Theme == 2);
-		ohmerblank2menuitem3->module = module;
-		menu->addChild(ohmerblank2menuitem3);
+		OhmerBlank2AbsoluteNightMenu *ohmerblank2absolutenightmenu = new OhmerBlank2AbsoluteNightMenu;
+		ohmerblank2absolutenightmenu->text = "Absolute Night";
+		ohmerblank2absolutenightmenu->rightText = CHECKMARK(module->Model == 2);
+		ohmerblank2absolutenightmenu->module = module;
+		menu->addChild(ohmerblank2absolutenightmenu);
 
-		OhmerBlank2DarkSignatureMenu *ohmerblank2menuitem4 = new OhmerBlank2DarkSignatureMenu;
-		ohmerblank2menuitem4->text = "Dark \"Signature\"";
-		ohmerblank2menuitem4->rightText = CHECKMARK(module->Theme == 3);
-		ohmerblank2menuitem4->module = module;
-		menu->addChild(ohmerblank2menuitem4);
+		OhmerBlank2DarkSignatureMenu *ohmerblank2darksignaturemenu = new OhmerBlank2DarkSignatureMenu;
+		ohmerblank2darksignaturemenu->text = "Dark \"Signature\"";
+		ohmerblank2darksignaturemenu->rightText = CHECKMARK(module->Model == 3);
+		ohmerblank2darksignaturemenu->module = module;
+		menu->addChild(ohmerblank2darksignaturemenu);
 
-		OhmerBlank2DeepblueSignatureMenu *ohmerblank2menuitem5 = new OhmerBlank2DeepblueSignatureMenu;
-		ohmerblank2menuitem5->text = "Deepblue \"Signature\"";
-		ohmerblank2menuitem5->rightText = CHECKMARK(module->Theme == 4);
-		ohmerblank2menuitem5->module = module;
-		menu->addChild(ohmerblank2menuitem5);
+		OhmerBlank2DeepblueSignatureMenu *ohmerblank2deepbluesignaturemenu = new OhmerBlank2DeepblueSignatureMenu;
+		ohmerblank2deepbluesignaturemenu->text = "Deepblue \"Signature\"";
+		ohmerblank2deepbluesignaturemenu->rightText = CHECKMARK(module->Model == 4);
+		ohmerblank2deepbluesignaturemenu->module = module;
+		menu->addChild(ohmerblank2deepbluesignaturemenu);
 
-		OhmerBlank2CarbonSignatureMenu *ohmerblank2menuitem6 = new OhmerBlank2CarbonSignatureMenu;
-		ohmerblank2menuitem6->text = "Carbon \"Signature\"";
-		ohmerblank2menuitem6->rightText = CHECKMARK(module->Theme == 5);
-		ohmerblank2menuitem6->module = module;
-		menu->addChild(ohmerblank2menuitem6);
+		OhmerBlank2TitaniumSignatureMenu *ohmerblank2titaniumsignaturemenu = new OhmerBlank2TitaniumSignatureMenu;
+		ohmerblank2titaniumsignaturemenu->text = "Titanium \"Signature\"";
+		ohmerblank2titaniumsignaturemenu->rightText = CHECKMARK(module->Model == 5);
+		ohmerblank2titaniumsignaturemenu->module = module;
+		menu->addChild(ohmerblank2titaniumsignaturemenu);
 
 		return menu;
 	}
@@ -203,7 +211,7 @@ struct OhmerBlank2Background : TransparentWidget {
 		nvgRect(args.vg, 0.0, 0.0, box.size.x, box.size.y);
 		if (module)
 			nvgFillColor(args.vg, module->panelBackgroundColor);
-			else nvgFillColor(args.vg, nvgRGB(0xd2, 0xd2, 0xcd));
+			else nvgFillColor(args.vg, rack::settings::preferDarkPanels ? nvgRGB(0x00, 0x00, 0x00) : nvgRGB(0xd2, 0xd2, 0xcd));
 		nvgFill(args.vg);
 	}
 
@@ -264,19 +272,22 @@ struct OhmerBlank2Widget : ModuleWidget {
 	void step() override {
 		OhmerBlank2 *module = dynamic_cast<OhmerBlank2*>(this->module);
 		if (module) {
-			// Gold Torx screws visible or hidden (depending screws disposal from module's context-menu).
-			topLeftScrewGold->visible = ((module->screwsDisposal == 0) || (module->screwsDisposal == 2)) && (module->Theme > 2);
-			topRightScrewGold->visible = ((module->screwsDisposal == 1) || (module->screwsDisposal == 2)) && (module->Theme > 2);
-			bottomLeftScrewGold->visible = ((module->screwsDisposal == 1) || (module->screwsDisposal == 2)) && (module->Theme > 2);
-			bottomRightScrewGold->visible = ((module->screwsDisposal == 0) || (module->screwsDisposal == 2)) && (module->Theme > 2);
+			// Torx screws metal (silver, gold) are visible or hidden, depending selected model (from module's context-menu).
+			// Silver Torx screws are visible only for non-"Signature" modules (Creamy, Stage Repro or Absolute Night).
+			topLeftScrewGold->visible = ((module->screwsDisposal == 0) || (module->screwsDisposal == 2)) && (module->Model > 2);
+			topRightScrewGold->visible = ((module->screwsDisposal == 1) || (module->screwsDisposal == 2)) && (module->Model > 2);
+			bottomLeftScrewGold->visible = ((module->screwsDisposal == 1) || (module->screwsDisposal == 2)) && (module->Model > 2);
+			bottomRightScrewGold->visible = ((module->screwsDisposal == 0) || (module->screwsDisposal == 2)) && (module->Model > 2);
 			// Silver Torx screws visible or hidden (depending screws disposal from module's context-menu).
-			topLeftScrewSilver->visible = ((module->screwsDisposal == 0) || (module->screwsDisposal == 2)) && (module->Theme < 3);
-			topRightScrewSilver->visible = ((module->screwsDisposal == 1) || (module->screwsDisposal == 2)) && (module->Theme < 3);
-			bottomLeftScrewSilver->visible = ((module->screwsDisposal == 1) || (module->screwsDisposal == 2)) && (module->Theme < 3);
-			bottomRightScrewSilver->visible = ((module->screwsDisposal == 0) || (module->screwsDisposal == 2)) && (module->Theme < 3);
+			topLeftScrewSilver->visible = ((module->screwsDisposal == 0) || (module->screwsDisposal == 2)) && (module->Model < 3);
+			topRightScrewSilver->visible = ((module->screwsDisposal == 1) || (module->screwsDisposal == 2)) && (module->Model < 3);
+			bottomLeftScrewSilver->visible = ((module->screwsDisposal == 1) || (module->screwsDisposal == 2)) && (module->Model < 3);
+			bottomRightScrewSilver->visible = ((module->screwsDisposal == 0) || (module->screwsDisposal == 2)) && (module->Model < 3);
 		}
 		else {
-			// By default, all gold are hidden for Classic blank plate.
+			// !module - probably from module browser.
+			// By default, silver screws are visible for default Creamy or Absolute Night...
+			// ...and, of course, golden screws are hidden.
 			topLeftScrewGold->visible = false;
 			topRightScrewGold->visible = false;
 			bottomLeftScrewGold->visible = false;
@@ -292,7 +303,8 @@ struct OhmerBlank2Widget : ModuleWidget {
 
 	void appendContextMenu(Menu *menu) override {
 		OhmerBlank2 *module = dynamic_cast<OhmerBlank2*>(this->module);
-		menu->addChild(new MenuEntry);
+
+		menu->addChild(new MenuSeparator);
 
 		OhmerBlank2SubMenuItems *ohmerblank2submenuitems = new OhmerBlank2SubMenuItems;
 		ohmerblank2submenuitems->text = "Model";
