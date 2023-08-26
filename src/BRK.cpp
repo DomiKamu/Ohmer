@@ -84,10 +84,23 @@ struct BRK : Module {
 ///////////////////////////////////////////////// MODULE WIDGET SECTION /////////////////////////////////////////////////
 
 struct BRKWidget : ModuleWidget {
+	// BRK panels (light, dark).
+	SvgPanel *panelBRKlight;
+	SvgPanel *panelBRKdark;
 
 	BRKWidget(BRK *module) {
 		setModule(module);
-		setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, "res/BRK.svg")));
+		box.size = Vec(4 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
+		// BRK light panel.
+		panelBRKlight = new SvgPanel();
+		panelBRKlight->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/BRK_light.svg")));
+		panelBRKlight->visible = !rack::settings::preferDarkPanels; // Light panel.
+		addChild(panelBRKlight);
+		// BRK dark panel.
+		panelBRKdark = new SvgPanel();
+		panelBRKdark->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/BRK_dark.svg")));
+		panelBRKdark->visible = rack::settings::preferDarkPanels; // Dark panel.
+		addChild(panelBRKdark);
 		// Like original RCD Breakout module, we're using only two screws (top and bottom).
 		// Top screw.
 		addChild(createWidget<Torx_Silver>(Vec(RACK_GRID_WIDTH, 0)));
@@ -106,6 +119,13 @@ struct BRKWidget : ModuleWidget {
 		// Switch "Auto-Reset Off/On". By default Off (auto-reset is disabled).
 		addParam(createParam<RKDBRK_Switch>(Vec(10.3, 304.2), module, BRK::SWITCH_AUTORESET));
 	};
+
+	void step() override {
+		// Depending "Use dark panels if available" option (from "View" menu), use the light or dark panel.
+		panelBRKlight->visible = !rack::settings::preferDarkPanels;
+		panelBRKdark->visible = rack::settings::preferDarkPanels;
+		ModuleWidget::step();
+	}
 
 };
 
