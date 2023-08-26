@@ -1601,7 +1601,7 @@ struct MetriksWidget : ModuleWidget {
 	void step() override {
 		MetriksModule *module = dynamic_cast<MetriksModule*>(this->module);
 		if (module) {
-			// Possible alternate panel themes (GUIs).
+			// Possible panels.
 			panelMetriksCreamy->visible = (module->Model == 0);
 			panelMetriksStageRepro->visible = (module->Model == 1);
 			panelMetriksAbsoluteNight->visible = (module->Model == 2);
@@ -1638,7 +1638,7 @@ struct MetriksWidget : ModuleWidget {
 			panelMetriksDarkSignature->visible = false;
 			panelMetriksDeepBlueSignature->visible = false;
 			panelMetriksTitaniumSignature->visible = false;
-			// By default, silver screws are visible...
+			// By default, silver screws are visible by default ("Creamy" or "Absolute Night" panel).
 			topLeftScrewSilver->visible = true;
 			topRightScrewSilver->visible = true;
 			bottomLeftScrewSilver->visible = true;

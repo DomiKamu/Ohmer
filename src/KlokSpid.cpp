@@ -1900,7 +1900,7 @@ struct KlokSpidWidget : ModuleWidget {
 	void step() override {
 		KlokSpidModule *module = dynamic_cast<KlokSpidModule*>(this->module);
 		if (module) {
-			// Possible alternate panel themes (GUIs).
+			// Possible panels.
 			panelKlokSpidCreamy->visible = (module->Model == 0);
 			panelKlokSpidStageRepro->visible = (module->Model == 1);
 			panelKlokSpidAbsoluteNight->visible = (module->Model == 2);

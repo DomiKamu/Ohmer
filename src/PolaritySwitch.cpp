@@ -32,7 +32,7 @@ struct PolaritySwitchModule : Module {
 	};
 
 	// Current selected model (GUI theme).
-	int Theme = 0; // 0 = Classic (default), 1 = Stage Repro, 2 = Absolute Night, 3 = Dark Signature, 4 = Deepblue Signature, 5 = Carbon Signature.
+	int Model; // 0 = Creamy, 1 = Stage Repro, 2 = Absolute Night, 3 = Dark Signature, 4 = Deepblue Signature, 5 = Titanium Signature.
 	int portMetal = 0; // 0 = silver connector (default), 1 = gold connector used by "Signature"-line models only.
 
 	// Output voltage settings for upper module and lower module.
@@ -43,7 +43,7 @@ struct PolaritySwitchModule : Module {
 	float sampleRate = 0.0f;
 
 	PolaritySwitchModule() {
-		// Module's constructor...
+		// Module constructor.
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 		configInput(INPUT_1, "IN1 signal");
 		configOutput(OUTPUT_P1, "If IN1 positive: sent to this P1");
@@ -53,6 +53,9 @@ struct PolaritySwitchModule : Module {
 		configOutput(OUTPUT_N2, "If IN2 negative: sent to this N2");
 		UpperVoltage = 0;
 		LowerVoltage = 0;
+		// Model.
+		Model = rack::settings::preferDarkPanels ? 2 : 0; // Model: assuming default is "Creamy" or "Absolute Night" (depending "Use dark panels if available" option, from "View" menu).
+		// Get current engine sample rate.
 		onSampleRateChange();
 	}
 
@@ -164,7 +167,7 @@ struct PolaritySwitchModule : Module {
 
 	json_t *dataToJson() override {
 		json_t *rootJ = json_object();
-		json_object_set_new(rootJ, "Theme", json_integer(Theme));
+		json_object_set_new(rootJ, "Model", json_integer(Model));
 		json_object_set_new(rootJ, "UpperVoltage", json_integer(UpperVoltage));
 		json_object_set_new(rootJ, "LowerVoltage", json_integer(LowerVoltage));
 		return rootJ;
@@ -172,40 +175,42 @@ struct PolaritySwitchModule : Module {
 
 	void dataFromJson(json_t *rootJ) override {
 		// Retrieving module theme/variation (when loading .vcv and cloning module).
-		json_t *ThemeJ = json_object_get(rootJ, "Theme");
-		if (ThemeJ) {
-			Theme = json_integer_value(ThemeJ);
-			portMetal = Theme / 3; // first three use silver (0), last three use gold (1) - the int division by 3 is useful ;)
-		}
-
+		json_t *ModelJ = json_object_get(rootJ, "Model");
+		if (ModelJ)
+			Model = json_integer_value(ModelJ);
+			else {
+				// Used to migrate to "Model" (instead of "Theme") in json (compatibility).
+				json_t *ModelJ = json_object_get(rootJ, "Theme");
+				if (ModelJ)
+					Model = json_integer_value(ModelJ);
+			}
+		portMetal = Model / 3; // first three use silver (0), last three use gold (1) - the int division by 3 is useful ;)
 		// Retrieving upper module voltage behavior ("P" and "N" outputs).
 		json_t *UpperVoltageJ = json_object_get(rootJ, "UpperVoltage");
 		if (UpperVoltageJ)
 			UpperVoltage = json_integer_value(UpperVoltageJ);
-
 		// Retrieving lower module voltage behavior ("P" and "N" outputs).
 		json_t *LowerVoltageJ = json_object_get(rootJ, "LowerVoltage");
 		if (LowerVoltageJ)
 			LowerVoltage = json_integer_value(LowerVoltageJ);
-
 	}
 
 };
 
 ///////////////////////////////////////////////////// CONTEXT-MENU: MODELS //////////////////////////////////////////////////////
 
-struct PolaritySwitchClassicMenu : MenuItem {
+struct PolaritySwitchCreamyMenu : MenuItem {
 	PolaritySwitchModule *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 0; // Model: default Classic (beige).
-		module->portMetal = 0; // Silver connectors for Classic.
+		module->Model = 0; // Model: Creamy.
+		module->portMetal = 0; // Silver connectors for Creamy.
 	}
 };
 
 struct PolaritySwitchStageReproMenu : MenuItem {
 	PolaritySwitchModule *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 1; // Model: Stage Repro.
+		module->Model = 1; // Model: Stage Repro.
 		module->portMetal = 0; // Silver connectors for Stage Repro.
 	}
 };
@@ -213,7 +218,7 @@ struct PolaritySwitchStageReproMenu : MenuItem {
 struct PolaritySwitchAbsoluteNightMenu : MenuItem {
 	PolaritySwitchModule *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 2; // Model: Absolute Night.
+		module->Model = 2; // Model: Absolute Night.
 		module->portMetal = 0; // Silver connectors for Absolute Night.
 	}
 };
@@ -221,7 +226,7 @@ struct PolaritySwitchAbsoluteNightMenu : MenuItem {
 struct PolaritySwitchDarkSignatureMenu : MenuItem {
 	PolaritySwitchModule *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 3; // Model: Dark Signature.
+		module->Model = 3; // Model: Dark Signature.
 		module->portMetal = 1; // Gold connectors for Dark Signature.
 	}
 };
@@ -229,16 +234,16 @@ struct PolaritySwitchDarkSignatureMenu : MenuItem {
 struct PolaritySwitchDeepblueSignatureMenu : MenuItem {
 	PolaritySwitchModule *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 4; // Model: Deepblue Signature.
+		module->Model = 4; // Model: Deepblue Signature.
 		module->portMetal = 1; // Gold connectors for Deepblue Signature.
 	}
 };
 
-struct PolaritySwitchCarbonSignatureMenu : MenuItem {
+struct PolaritySwitchTitaniumSignatureMenu : MenuItem {
 	PolaritySwitchModule *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 5; // Model: Carbon Signature.
-		module->portMetal = 1; // Gold connectors for Carbon Signature.
+		module->Model = 5; // Model: Titanium Signature.
+		module->portMetal = 1; // Gold connectors for Titanium Signature.
 	}
 };
 
@@ -247,41 +252,41 @@ struct PolaritySwitchModelSubMenuItems : MenuItem {
 	Menu *createChildMenu() override {
 		Menu *menu = new Menu;
 
-		PolaritySwitchClassicMenu *polswmenuitem1 = new PolaritySwitchClassicMenu;
-		polswmenuitem1->text = "Classic (default)";
-		polswmenuitem1->rightText = CHECKMARK(module->Theme == 0);
-		polswmenuitem1->module = module;
-		menu->addChild(polswmenuitem1);
+		PolaritySwitchCreamyMenu *polarityswitchcreamymenu = new PolaritySwitchCreamyMenu;
+		polarityswitchcreamymenu->text = "Creamy";
+		polarityswitchcreamymenu->rightText = CHECKMARK(module->Model == 0);
+		polarityswitchcreamymenu->module = module;
+		menu->addChild(polarityswitchcreamymenu);
 
-		PolaritySwitchStageReproMenu *polswmenuitem2 = new PolaritySwitchStageReproMenu;
-		polswmenuitem2->text = "Stage Repro";
-		polswmenuitem2->rightText = CHECKMARK(module->Theme == 1);
-		polswmenuitem2->module = module;
-		menu->addChild(polswmenuitem2);
+		PolaritySwitchStageReproMenu *polarityswitchstagerepromenu = new PolaritySwitchStageReproMenu;
+		polarityswitchstagerepromenu->text = "Stage Repro";
+		polarityswitchstagerepromenu->rightText = CHECKMARK(module->Model == 1);
+		polarityswitchstagerepromenu->module = module;
+		menu->addChild(polarityswitchstagerepromenu);
 
-		PolaritySwitchAbsoluteNightMenu *polswmenuitem3 = new PolaritySwitchAbsoluteNightMenu;
-		polswmenuitem3->text = "Absolute Night";
-		polswmenuitem3->rightText = CHECKMARK(module->Theme == 2);
-		polswmenuitem3->module = module;
-		menu->addChild(polswmenuitem3);
+		PolaritySwitchAbsoluteNightMenu *polarityswitchabsolutenightmenu = new PolaritySwitchAbsoluteNightMenu;
+		polarityswitchabsolutenightmenu->text = "Absolute Night";
+		polarityswitchabsolutenightmenu->rightText = CHECKMARK(module->Model == 2);
+		polarityswitchabsolutenightmenu->module = module;
+		menu->addChild(polarityswitchabsolutenightmenu);
 
-		PolaritySwitchDarkSignatureMenu *polswmenuitem4 = new PolaritySwitchDarkSignatureMenu;
-		polswmenuitem4->text = "Dark \"Signature\"";
-		polswmenuitem4->rightText = CHECKMARK(module->Theme == 3);
-		polswmenuitem4->module = module;
-		menu->addChild(polswmenuitem4);
+		PolaritySwitchDarkSignatureMenu *polarityswitchdarksignaturemenu = new PolaritySwitchDarkSignatureMenu;
+		polarityswitchdarksignaturemenu->text = "Dark \"Signature\"";
+		polarityswitchdarksignaturemenu->rightText = CHECKMARK(module->Model == 3);
+		polarityswitchdarksignaturemenu->module = module;
+		menu->addChild(polarityswitchdarksignaturemenu);
 
-		PolaritySwitchDeepblueSignatureMenu *polswmenuitem5 = new PolaritySwitchDeepblueSignatureMenu;
-		polswmenuitem5->text = "Deepblue \"Signature\"";
-		polswmenuitem5->rightText = CHECKMARK(module->Theme == 4);
-		polswmenuitem5->module = module;
-		menu->addChild(polswmenuitem5);
+		PolaritySwitchDeepblueSignatureMenu *polarityswitchdeepbluesignaturemenu = new PolaritySwitchDeepblueSignatureMenu;
+		polarityswitchdeepbluesignaturemenu->text = "Deepblue \"Signature\"";
+		polarityswitchdeepbluesignaturemenu->rightText = CHECKMARK(module->Model == 4);
+		polarityswitchdeepbluesignaturemenu->module = module;
+		menu->addChild(polarityswitchdeepbluesignaturemenu);
 
-		PolaritySwitchCarbonSignatureMenu *polswmenuitem6 = new PolaritySwitchCarbonSignatureMenu;
-		polswmenuitem6->text = "Carbon \"Signature\"";
-		polswmenuitem6->rightText = CHECKMARK(module->Theme == 5);
-		polswmenuitem6->module = module;
-		menu->addChild(polswmenuitem6);
+		PolaritySwitchTitaniumSignatureMenu *polarityswitchtitaniumsignaturemenu = new PolaritySwitchTitaniumSignatureMenu;
+		polarityswitchtitaniumsignaturemenu->text = "Titanium \"Signature\"";
+		polarityswitchtitaniumsignaturemenu->rightText = CHECKMARK(module->Model == 5);
+		polarityswitchtitaniumsignaturemenu->module = module;
+		menu->addChild(polarityswitchtitaniumsignaturemenu);
 
 		return menu;
 	}
@@ -336,13 +341,13 @@ struct LowerForce10V : MenuItem {
 ///////////////////////////////////////////////// MODULE WIDGET SECTION /////////////////////////////////////////////////
 
 struct PolaritySwitchWidget : ModuleWidget {
-	// Panels (one per "Theme").
-	SvgPanel *panelPolaritySwitchClassic;
+	// Panels.
+	SvgPanel *panelPolaritySwitchCreamy;
 	SvgPanel *panelPolaritySwitchStageRepro;
 	SvgPanel *panelPolaritySwitchAbsoluteNight;
 	SvgPanel *panelPolaritySwitchDarkSignature;
 	SvgPanel *panelPolaritySwitchDeepBlueSignature;
-	SvgPanel *panelPolaritySwitchCarbonSignature;
+	SvgPanel *panelPolaritySwitchTitaniumSignature;
 	// Silver Torx screws.
 	SvgScrew *topLeftScrewSilver;
 	SvgScrew *topRightScrewSilver;
@@ -357,11 +362,11 @@ struct PolaritySwitchWidget : ModuleWidget {
 	PolaritySwitchWidget(PolaritySwitchModule *module) {
 		setModule(module);
 		box.size = Vec(3 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
-		// Classic (default) beige panel.
-		panelPolaritySwitchClassic = new SvgPanel();
-		panelPolaritySwitchClassic->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/Polarity_Switch_Classic.svg")));
-		panelPolaritySwitchClassic->visible = true;
-		addChild(panelPolaritySwitchClassic);
+		// Creamy panel.
+		panelPolaritySwitchCreamy = new SvgPanel();
+		panelPolaritySwitchCreamy->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/Polarity_Switch_Creamy.svg")));
+		panelPolaritySwitchCreamy->visible = !rack::settings::preferDarkPanels;
+		addChild(panelPolaritySwitchCreamy);
 		// Stage Repro panel.
 		panelPolaritySwitchStageRepro = new SvgPanel();
 		panelPolaritySwitchStageRepro->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/Polarity_Switch_Stage_Repro.svg")));
@@ -370,7 +375,7 @@ struct PolaritySwitchWidget : ModuleWidget {
 		// Absolute Night panel.
 		panelPolaritySwitchAbsoluteNight = new SvgPanel();
 		panelPolaritySwitchAbsoluteNight->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/Polarity_Switch_Absolute_Night.svg")));
-		panelPolaritySwitchAbsoluteNight->visible = false;
+		panelPolaritySwitchAbsoluteNight->visible = rack::settings::preferDarkPanels;
 		addChild(panelPolaritySwitchAbsoluteNight);
 		// Dark Signature panel.
 		panelPolaritySwitchDarkSignature = new SvgPanel();
@@ -382,11 +387,11 @@ struct PolaritySwitchWidget : ModuleWidget {
 		panelPolaritySwitchDeepBlueSignature->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/Polarity_Switch_Deepblue_Signature.svg")));
 		panelPolaritySwitchDeepBlueSignature->visible = false;
 		addChild(panelPolaritySwitchDeepBlueSignature);
-		// Deepblue Signature panel.
-		panelPolaritySwitchCarbonSignature = new SvgPanel();
-		panelPolaritySwitchCarbonSignature->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/Polarity_Switch_Carbon_Signature.svg")));
-		panelPolaritySwitchCarbonSignature->visible = false;
-		addChild(panelPolaritySwitchCarbonSignature);
+		// Titanium Signature panel.
+		panelPolaritySwitchTitaniumSignature = new SvgPanel();
+		panelPolaritySwitchTitaniumSignature->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/Polarity_Switch_Titanium_Signature.svg")));
+		panelPolaritySwitchTitaniumSignature->visible = false;
+		addChild(panelPolaritySwitchTitaniumSignature);
 		// Using four screws configuration (even for 2 HP module), due to mechanical constraints on connectors... :-)
 		// Top-left golden screw.
 		topLeftScrewGold = createWidget<Torx_Gold>(Vec(0, 0));
@@ -425,35 +430,36 @@ struct PolaritySwitchWidget : ModuleWidget {
 	void step() override {
 		PolaritySwitchModule *module = dynamic_cast<PolaritySwitchModule*>(this->module);
 		if (module) {
-			// Possible alternate panel themes (GUIs).
-			panelPolaritySwitchClassic->visible = (module->Theme == 0);
-			panelPolaritySwitchStageRepro->visible = (module->Theme == 1);
-			panelPolaritySwitchAbsoluteNight->visible = (module->Theme == 2);
-			panelPolaritySwitchDarkSignature->visible = (module->Theme == 3);
-			panelPolaritySwitchDeepBlueSignature->visible = (module->Theme == 4);
-			panelPolaritySwitchCarbonSignature->visible = (module->Theme == 5);
+			// Possible panels.
+			panelPolaritySwitchCreamy->visible = (module->Model == 0);
+			panelPolaritySwitchStageRepro->visible = (module->Model == 1);
+			panelPolaritySwitchAbsoluteNight->visible = (module->Model == 2);
+			panelPolaritySwitchDarkSignature->visible = (module->Model == 3);
+			panelPolaritySwitchDeepBlueSignature->visible = (module->Model == 4);
+			panelPolaritySwitchTitaniumSignature->visible = (module->Model == 5);
 			// Torx screws metal (silver, gold) are visible or hidden, depending selected model (from module's context-menu).
-			// Silver Torx screws are visible only for non-"Signature" modules (Classic, Stage Repro or Absolute Night).
-			topLeftScrewSilver->visible = (module->Theme < 3);
-			topRightScrewSilver->visible = (module->Theme < 3);
-			bottomLeftScrewSilver->visible = (module->Theme < 3);
-			bottomRightScrewSilver->visible = (module->Theme < 3);
-			// Gold Torx screws are visible only for "Signature" modules (Dark Signature, Deepblue Signature or Carbon Signature).
-			topLeftScrewGold->visible = (module->Theme > 2);
-			topRightScrewGold->visible = (module->Theme > 2);
-			bottomLeftScrewGold->visible = (module->Theme > 2);
-			bottomRightScrewGold->visible = (module->Theme > 2);
+			// Silver Torx screws are visible only for non-"Signature" modules (Creamy, Stage Repro or Absolute Night).
+			topLeftScrewSilver->visible = (module->Model < 3);
+			topRightScrewSilver->visible = (module->Model < 3);
+			bottomLeftScrewSilver->visible = (module->Model < 3);
+			bottomRightScrewSilver->visible = (module->Model < 3);
+			// Gold Torx screws are visible only for "Signature" modules (Dark Signature, Deepblue Signature or Titanium Signature).
+			topLeftScrewGold->visible = (module->Model > 2);
+			topRightScrewGold->visible = (module->Model > 2);
+			bottomLeftScrewGold->visible = (module->Model > 2);
+			bottomRightScrewGold->visible = (module->Model > 2);
 		}
 		else {
-			// Default panel theme is always "Classic" (beige, using silver screws, using silver button, LCD).
+			// !module - probably from module browser.
+			// Default model is always "Creamy" or "Absolute Night" (depending "Use dark panels if available" option, from "View" menu).
 			// Other panels are, of course, hidden.
-			panelPolaritySwitchClassic->visible = true;
+			panelPolaritySwitchCreamy->visible = !rack::settings::preferDarkPanels;
 			panelPolaritySwitchStageRepro->visible = false;
-			panelPolaritySwitchAbsoluteNight->visible = false;
+			panelPolaritySwitchAbsoluteNight->visible = rack::settings::preferDarkPanels;
 			panelPolaritySwitchDarkSignature->visible = false;
 			panelPolaritySwitchDeepBlueSignature->visible = false;
-			panelPolaritySwitchCarbonSignature->visible = false;
-			// By default, silver screws are visible for default beige Classic panel...
+			panelPolaritySwitchTitaniumSignature->visible = false;
+			// By default, silver screws are visible by default ("Creamy" or "Absolute Night" panel).
 			topLeftScrewSilver->visible = true;
 			topRightScrewSilver->visible = true;
 			bottomLeftScrewSilver->visible = true;
