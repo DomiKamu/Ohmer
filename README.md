@@ -79,6 +79,8 @@ Obviously, all settings you've defined via SETUP are automatically saved along y
 
 Please take a look on [RKD / RKD with "Break" User's Manual (PDF)](res/Manuals/RKD_BRK_Manual.pdf).
 
+Please notice both RKD and BRK modules support **Use dark panels if available** feature since VCV Rack v2.4.
+
 ------
 ## Metriks
 
