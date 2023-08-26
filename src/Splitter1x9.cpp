@@ -105,6 +105,7 @@ struct SplitterModule : Module {
 				if (ModelJ)
 					Model = json_integer_value(ModelJ);
 			}
+		portMetal = Model / 3; // first three use silver (0), last three use gold (1) - the int division by 3 is useful ;)
 	}
 
 };
