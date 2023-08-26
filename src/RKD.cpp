@@ -989,7 +989,8 @@ struct RKDViewPCBItem : MenuItem {
 
 struct RKDWidget : ModuleWidget {
 	// Panels (RKD production, PCB/jumpers access).
-	SvgPanel *panelRKD;
+	SvgPanel *panelRKDlight;
+	SvgPanel *panelRKDdark;
 	SvgPanel *panelPCB;
 	// Silver Torx screws.
 	SvgScrew *topScrewSilver;
@@ -1005,11 +1006,16 @@ struct RKDWidget : ModuleWidget {
 	RKDWidget(RKD *module) {
 		setModule(module);
 		box.size = Vec(4 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
-		// Main RKD panel (visible by default).
-		panelRKD = new SvgPanel();
-		panelRKD->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/RKD.svg")));
-		panelRKD->visible = true;
-		addChild(panelRKD);
+		// Main RKD light panels.
+		panelRKDlight = new SvgPanel();
+		panelRKDlight->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/RKD_light.svg")));
+		panelRKDlight->visible = !rack::settings::preferDarkPanels; // Light panel.
+		addChild(panelRKDlight);
+		// Main RKD dark panel.
+		panelRKDdark = new SvgPanel();
+		panelRKDdark->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/RKD_dark.svg")));
+		panelRKDdark->visible = rack::settings::preferDarkPanels;
+		addChild(panelRKDdark);
 		// RKD module (viewing PCB to access/change jumpers).
 		panelPCB = new SvgPanel();
 		panelPCB->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/RKD_PCB.svg")));
@@ -1106,10 +1112,12 @@ struct RKDWidget : ModuleWidget {
 			jumperSpread->visible = module->bViewPCB;
 			jumperAutoReset->visible = module->bViewPCB;
 			// Is main RKD panel visible, or PCB/jumpers?
-			panelRKD->visible = !module->bViewPCB;
+			panelRKDlight->visible = !module->bViewPCB && !rack::settings::preferDarkPanels;
+			panelRKDdark->visible = !module->bViewPCB && rack::settings::preferDarkPanels;
 			panelPCB->visible = module->bViewPCB;
 		}
 		else {
+			// !module - probably view from module browser.
 			// By default, main panel is visible: screws are also visible.
 			topScrewSilver->visible = true;
 			bottomScrewSilver->visible = true;
@@ -1120,8 +1128,10 @@ struct RKDWidget : ModuleWidget {
 			jumperMaxDivRange32->visible = false;
 			jumperSpread->visible = false;
 			jumperAutoReset->visible = false;
-			// Main RKD panel is visible by default (PCB is hidden).
-			panelRKD->visible = true;
+			// Main RKD panel is visible by default.
+			panelRKDlight->visible = !rack::settings::preferDarkPanels; // Light panel.
+			panelRKDdark->visible = rack::settings::preferDarkPanels; // Dark panel.
+			// PCB is hidden.
 			panelPCB->visible = false;
 		}
 		ModuleWidget::step();
@@ -1129,7 +1139,8 @@ struct RKDWidget : ModuleWidget {
 
 	void appendContextMenu(Menu *menu) override {
 		RKD *module = dynamic_cast<RKD*>(this->module);
-		menu->addChild(new MenuEntry);
+
+		menu->addChild(new MenuSeparator);
 
 		RKDViewPCBItem *pcbItem = createMenuItem<RKDViewPCBItem>("Access jumpers (located on PCB)", CHECKMARK(module->bViewPCB));
 		pcbItem->module = module;
