@@ -2,6 +2,17 @@
 CHANGELOG
 ================================================================================================================================
 
+Release v2.4.1 (August 26th, 2023) for VCV Rack v2.
+
+- Packages made against VCV Rack v2.4.1 SDK.
+- RKD and BRK modules now support "Use dark panels if available" feature (from "View" menu, since VCV Rack v2.4).
+- When "Use dark panels if available" feature is enabled, default presented model for all modules, is "Absolute Night".
+- All classic beige models (GUI themes) become "Creamy", also Carbon "Signature" becomes Titanium "Signature", for all modules.
+- KlokSpid: rollback concerning saw waveforms, now "Saw Up" (indicated as "SWU" in mini display along output #4), or "Saw Down"
+  (indicated as "SWD" in mini display along output #4). "Ramp" term isn't longer mentioned (to avoid possible confusions).
+
+--------------------------------------------------------------------------------------------------------------------------------
+
 Release v2.4.0 (August 9th, 2023) for VCV Rack v2.
 
 - Packages made against VCV Rack v2.4.0 SDK.
