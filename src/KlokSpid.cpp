@@ -114,7 +114,7 @@ struct KlokSpidModule : Module {
 	//// MODEL (GUI THEME).
 
 	// Current selected KlokSpid model (GUI theme).
-	int Theme = 0; // 0 = Classic (default), 1 = Stage Repro, 2 = Absolute Night, 3 = Dark Signature, 4 = Deepblue Signature, 5 = Carbon Signature.
+	int Model; // 0 = Creamy, 1 = Stage Repro, 2 = Absolute Night, 3 = Dark Signature, 4 = Deepblue Signature, 5 = Titanium Signature.
 	int portMetal = 0; // 0 = silver connector (default), 1 = gold connector used by "Signature"-line models only.
 
 	//// Main DMD and small displays (near output jacks).
@@ -312,7 +312,7 @@ struct KlokSpidModule : Module {
 	std::string _tmpString; // Dummy string.
 
 	KlokSpidModule() {
-		// Constructor...
+		// Module constructor.
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 		configInput(INPUT_CLOCK, "Master clock");
 		configInput(INPUT_CV_TRIG, "CV-Ratio / trigger");
@@ -327,6 +327,7 @@ struct KlokSpidModule : Module {
 		configBypass(INPUT_CLOCK, OUTPUT_2);
 		configBypass(INPUT_CLOCK, OUTPUT_3);
 		configBypass(INPUT_CLOCK, OUTPUT_4);
+		Model = rack::settings::preferDarkPanels ? 2 : 0; // Model: assuming default is "Creamy" or "Absolute Night" (depending "Use dark panels if available" option, from "View" menu).
 		onSampleRateChange();
 	}
 
@@ -401,10 +402,10 @@ struct KlokSpidModule : Module {
 									strcpy(dmdTextMainOut4, "TRI");
 									break;
 								case 5:
-									strcpy(dmdTextMainOut4, "RMP");
+									strcpy(dmdTextMainOut4, "SWU");
 									break;
 								case 6:
-									strcpy(dmdTextMainOut4, "SAW");
+									strcpy(dmdTextMainOut4, "SWD");
 							}
 						}
 						else {
@@ -852,9 +853,9 @@ struct KlokSpidModule : Module {
 			setupParamXOffset[SETUP_OUT4LFO][3] = 2;
 			setupParamName[SETUP_OUT4LFO][4] = "Inv. Tri.";
 			setupParamXOffset[SETUP_OUT4LFO][4] = 2;
-			setupParamName[SETUP_OUT4LFO][5] = "Ramp";
+			setupParamName[SETUP_OUT4LFO][5] = "Saw Up";
 			setupParamXOffset[SETUP_OUT4LFO][5] = 2;
-			setupParamName[SETUP_OUT4LFO][6] = "Sawtooth";
+			setupParamName[SETUP_OUT4LFO][6] = "Saw Down";
 			setupParamXOffset[SETUP_OUT4LFO][6] = 2;
 			for (int i = 7; i < 22; i++) {
 				setupParamName[SETUP_OUT4LFO][i] = ""; // Unused (useless) strings are set to empty.
@@ -1510,7 +1511,7 @@ struct KlokSpidModule : Module {
 
 	json_t *dataToJson() override {
 		json_t *rootJ = json_object();
-		json_object_set_new(rootJ, "Theme", json_integer(Theme));
+		json_object_set_new(rootJ, "Model", json_integer(Model));
 		json_object_set_new(rootJ, "bipolarCV", json_boolean(bipolarCV));
 		json_object_set_new(rootJ, "pulseDurationExt", json_integer(pulseDurationExt));
 		json_object_set_new(rootJ, "outVoltage", json_real(outVoltage));
@@ -1530,11 +1531,16 @@ struct KlokSpidModule : Module {
 
 	void dataFromJson(json_t *rootJ) override {
 		// Retrieving module theme/variation (when loading .vcv and cloning module).
-		json_t *ThemeJ = json_object_get(rootJ, "Theme");
-		if (ThemeJ) {
-			Theme = json_integer_value(ThemeJ);
-			portMetal = Theme / 3; // first three use silver (0), last three use gold (1) - the int division by 3 is useful ;)
-		}
+		json_t *ModelJ = json_object_get(rootJ, "Model");
+		if (ModelJ)
+			Model = json_integer_value(ModelJ);
+			else {
+				// Used to migrate to "Model" (instead of "Theme") in json (compatibility).
+				json_t *ModelJ = json_object_get(rootJ, "Theme");
+				if (ModelJ)
+					Model = json_integer_value(ModelJ);
+			}
+		portMetal = Model / 3; // first three use silver (0), last three use gold (1) - the int division by 3 is useful ;)
 		// Retrieving bipolar or unipolar mode (for CV when running as clock multiplier/divider).
 		json_t *bipolarCVJ = json_object_get(rootJ, "bipolarCV");
 		if (bipolarCVJ)
@@ -1610,7 +1616,7 @@ struct KlokSpidDMD : TransparentWidget {
 			if (!(font = APP->window->loadFont(fontPath)))
 				return;
 			if (module) {
-				if ((module->Theme == 2) && (!module->isBypassed())) {
+				if ((module->Model == 2) && (!module->isBypassed())) {
 					// Yellow rounded rectangle to simulate yellow backlit of (LCD) dot-matrix display ("Absolute Night" model only, and not bypassed).
 					// Main DMD.
 					nvgBeginPath(args.vg);
@@ -1632,7 +1638,7 @@ struct KlokSpidDMD : TransparentWidget {
 			nvgTextLetterSpacing(args.vg, -2);
 			Vec textPos = Vec(14, box.size.y - 174);
 			if (module) {
-				nvgFillColor(args.vg, nvgTransRGBA(tblDMDtextColor[module->Theme], 0xff)); // Using current color for DMD.
+				nvgFillColor(args.vg, nvgTransRGBA(tblDMDtextColor[module->Model], 0xff)); // Using current color for DMD.
 				if (!module->isBypassed())
 					nvgText(args.vg, textPos.x, textPos.y, module->dmdTextMain1, NULL); // Main DMD, upper line.
 			}
@@ -1682,18 +1688,18 @@ struct KlokSpidDMD : TransparentWidget {
 
 ///////////////////////////////////////////////////// CONTEXT-MENU //////////////////////////////////////////////////////
 
-struct KlokSpidClassicMenu : MenuItem {
+struct KlokSpidCreamyMenu : MenuItem {
 	KlokSpidModule *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 0; // Model: default Classic (beige).
-		module->portMetal = 0; // Silver connectors for Classic.
+		module->Model = 0; // Model: Creamy.
+		module->portMetal = 0; // Silver connectors for Creamy.
 	}
 };
 
 struct KlokSpidStageReproMenu : MenuItem {
 	KlokSpidModule *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 1; // Model: Stage Repro.
+		module->Model = 1; // Model: Stage Repro.
 		module->portMetal = 0; // Silver connectors for Stage Repro.
 	}
 };
@@ -1701,7 +1707,7 @@ struct KlokSpidStageReproMenu : MenuItem {
 struct KlokSpidAbsoluteNightMenu : MenuItem {
 	KlokSpidModule *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 2; // Model: Absolute Night.
+		module->Model = 2; // Model: Absolute Night.
 		module->portMetal = 0; // Silver connectors for Absolute Night.
 	}
 };
@@ -1709,7 +1715,7 @@ struct KlokSpidAbsoluteNightMenu : MenuItem {
 struct KlokSpidDarkSignatureMenu : MenuItem {
 	KlokSpidModule *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 3; // Model: Dark Signature.
+		module->Model = 3; // Model: Dark Signature.
 		module->portMetal = 1; // Gold connectors for Dark Signature.
 	}
 };
@@ -1717,16 +1723,16 @@ struct KlokSpidDarkSignatureMenu : MenuItem {
 struct KlokSpidDeepblueSignatureMenu : MenuItem {
 	KlokSpidModule *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 4; // Model: Deepblue Signature.
+		module->Model = 4; // Model: Deepblue Signature.
 		module->portMetal = 1; // Gold connectors for Deepblue Signature.
 	}
 };
 
-struct KlokSpidCarbonSignatureMenu : MenuItem {
+struct KlokSpidTitaniumSignatureMenu : MenuItem {
 	KlokSpidModule *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 5; // Model: Carbon Signature.
-		module->portMetal = 1; // Gold connectors for Carbon Signature.
+		module->Model = 5; // Model: Titanium Signature.
+		module->portMetal = 1; // Gold connectors for Titanium Signature.
 	}
 };
 
@@ -1735,41 +1741,41 @@ struct KlokSpidSubMenuItems : MenuItem {
 	Menu *createChildMenu() override {
 		Menu *menu = new Menu;
 
-		KlokSpidClassicMenu *klokspidmenuitem1 = new KlokSpidClassicMenu;
-		klokspidmenuitem1->text = "Classic (default)";
-		klokspidmenuitem1->rightText = CHECKMARK(module->Theme == 0);
-		klokspidmenuitem1->module = module;
-		menu->addChild(klokspidmenuitem1);
+		KlokSpidCreamyMenu *klokspidcreamymenu = new KlokSpidCreamyMenu;
+		klokspidcreamymenu->text = "Creamy";
+		klokspidcreamymenu->rightText = CHECKMARK(module->Model == 0);
+		klokspidcreamymenu->module = module;
+		menu->addChild(klokspidcreamymenu);
 
-		KlokSpidStageReproMenu *klokspidmenuitem2 = new KlokSpidStageReproMenu;
-		klokspidmenuitem2->text = "Stage Repro";
-		klokspidmenuitem2->rightText = CHECKMARK(module->Theme == 1);
-		klokspidmenuitem2->module = module;
-		menu->addChild(klokspidmenuitem2);
+		KlokSpidStageReproMenu *klokspidstagerepromenu = new KlokSpidStageReproMenu;
+		klokspidstagerepromenu->text = "Stage Repro";
+		klokspidstagerepromenu->rightText = CHECKMARK(module->Model == 1);
+		klokspidstagerepromenu->module = module;
+		menu->addChild(klokspidstagerepromenu);
 
-		KlokSpidAbsoluteNightMenu *klokspidmenuitem3 = new KlokSpidAbsoluteNightMenu;
-		klokspidmenuitem3->text = "Absolute Night";
-		klokspidmenuitem3->rightText = CHECKMARK(module->Theme == 2);
-		klokspidmenuitem3->module = module;
-		menu->addChild(klokspidmenuitem3);
+		KlokSpidAbsoluteNightMenu *klokspidabsolutenightmenu = new KlokSpidAbsoluteNightMenu;
+		klokspidabsolutenightmenu->text = "Absolute Night";
+		klokspidabsolutenightmenu->rightText = CHECKMARK(module->Model == 2);
+		klokspidabsolutenightmenu->module = module;
+		menu->addChild(klokspidabsolutenightmenu);
 
-		KlokSpidDarkSignatureMenu *klokspidmenuitem4 = new KlokSpidDarkSignatureMenu;
-		klokspidmenuitem4->text = "Dark \"Signature\"";
-		klokspidmenuitem4->rightText = CHECKMARK(module->Theme == 3);
-		klokspidmenuitem4->module = module;
-		menu->addChild(klokspidmenuitem4);
+		KlokSpidDarkSignatureMenu *klokspiddarksignaturemenu = new KlokSpidDarkSignatureMenu;
+		klokspiddarksignaturemenu->text = "Dark \"Signature\"";
+		klokspiddarksignaturemenu->rightText = CHECKMARK(module->Model == 3);
+		klokspiddarksignaturemenu->module = module;
+		menu->addChild(klokspiddarksignaturemenu);
 
-		KlokSpidDeepblueSignatureMenu *klokspidmenuitem5 = new KlokSpidDeepblueSignatureMenu;
-		klokspidmenuitem5->text = "Deepblue \"Signature\"";
-		klokspidmenuitem5->rightText = CHECKMARK(module->Theme == 4);
-		klokspidmenuitem5->module = module;
-		menu->addChild(klokspidmenuitem5);
+		KlokSpidDeepblueSignatureMenu *klokspiddeepbluesignaturemenu = new KlokSpidDeepblueSignatureMenu;
+		klokspiddeepbluesignaturemenu->text = "Deepblue \"Signature\"";
+		klokspiddeepbluesignaturemenu->rightText = CHECKMARK(module->Model == 4);
+		klokspiddeepbluesignaturemenu->module = module;
+		menu->addChild(klokspiddeepbluesignaturemenu);
 
-		KlokSpidCarbonSignatureMenu *klokspidmenuitem6 = new KlokSpidCarbonSignatureMenu;
-		klokspidmenuitem6->text = "Carbon \"Signature\"";
-		klokspidmenuitem6->rightText = CHECKMARK(module->Theme == 5);
-		klokspidmenuitem6->module = module;
-		menu->addChild(klokspidmenuitem6);
+		KlokSpidTitaniumSignatureMenu *klokspidtitaniumsignaturemenu = new KlokSpidTitaniumSignatureMenu;
+		klokspidtitaniumsignaturemenu->text = "Titanium \"Signature\"";
+		klokspidtitaniumsignaturemenu->rightText = CHECKMARK(module->Model == 5);
+		klokspidtitaniumsignaturemenu->module = module;
+		menu->addChild(klokspidtitaniumsignaturemenu);
 
 		return menu;
 	}
@@ -1778,13 +1784,13 @@ struct KlokSpidSubMenuItems : MenuItem {
 ///////////////////////////////////////////////// MODULE WIDGET SECTION /////////////////////////////////////////////////
 
 struct KlokSpidWidget : ModuleWidget {
-	// Panels (one per "Theme").
-	SvgPanel *panelKlokSpidClassic;
+	// Panels.
+	SvgPanel *panelKlokSpidCreamy;
 	SvgPanel *panelKlokSpidStageRepro;
 	SvgPanel *panelKlokSpidAbsoluteNight;
 	SvgPanel *panelKlokSpidDarkSignature;
 	SvgPanel *panelKlokSpidDeepBlueSignature;
-	SvgPanel *panelKlokSpidCarbonSignature;
+	SvgPanel *panelKlokSpidTitaniumSignature;
 	// Silver Torx screws.
 	SvgScrew *topLeftScrewSilver;
 	SvgScrew *topRightScrewSilver;
@@ -1803,11 +1809,11 @@ struct KlokSpidWidget : ModuleWidget {
 	KlokSpidWidget(KlokSpidModule *module) {
 		setModule(module);
 		box.size = Vec(8 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
-		// Classic (default) beige panel.
-		panelKlokSpidClassic = new SvgPanel();
-		panelKlokSpidClassic->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/KlokSpid_Classic.svg")));
-		panelKlokSpidClassic->visible = true;
-		addChild(panelKlokSpidClassic);
+		// Creamy panel.
+		panelKlokSpidCreamy = new SvgPanel();
+		panelKlokSpidCreamy->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/KlokSpid_Creamy.svg")));
+		panelKlokSpidCreamy->visible = !rack::settings::preferDarkPanels;
+		addChild(panelKlokSpidCreamy);
 		// Stage Repro panel.
 		panelKlokSpidStageRepro = new SvgPanel();
 		panelKlokSpidStageRepro->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/KlokSpid_Stage_Repro.svg")));
@@ -1816,7 +1822,7 @@ struct KlokSpidWidget : ModuleWidget {
 		// Absolute Night panel.
 		panelKlokSpidAbsoluteNight = new SvgPanel();
 		panelKlokSpidAbsoluteNight->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/KlokSpid_Absolute_Night.svg")));
-		panelKlokSpidAbsoluteNight->visible = false;
+		panelKlokSpidAbsoluteNight->visible = rack::settings::preferDarkPanels;
 		addChild(panelKlokSpidAbsoluteNight);
 		// Dark Signature panel.
 		panelKlokSpidDarkSignature = new SvgPanel();
@@ -1828,11 +1834,11 @@ struct KlokSpidWidget : ModuleWidget {
 		panelKlokSpidDeepBlueSignature->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/KlokSpid_Deepblue_Signature.svg")));
 		panelKlokSpidDeepBlueSignature->visible = false;
 		addChild(panelKlokSpidDeepBlueSignature);
-		// Deepblue Signature panel.
-		panelKlokSpidCarbonSignature = new SvgPanel();
-		panelKlokSpidCarbonSignature->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/KlokSpid_Carbon_Signature.svg")));
-		panelKlokSpidCarbonSignature->visible = false;
-		addChild(panelKlokSpidCarbonSignature);
+		// Titanium Signature panel.
+		panelKlokSpidTitaniumSignature = new SvgPanel();
+		panelKlokSpidTitaniumSignature->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/KlokSpid_Titanium_Signature.svg")));
+		panelKlokSpidTitaniumSignature->visible = false;
+		addChild(panelKlokSpidTitaniumSignature);
 		// The DMD display.
 		{
 			KlokSpidDMD *display = new KlokSpidDMD();
@@ -1895,37 +1901,38 @@ struct KlokSpidWidget : ModuleWidget {
 		KlokSpidModule *module = dynamic_cast<KlokSpidModule*>(this->module);
 		if (module) {
 			// Possible alternate panel themes (GUIs).
-			panelKlokSpidClassic->visible = (module->Theme == 0);
-			panelKlokSpidStageRepro->visible = (module->Theme == 1);
-			panelKlokSpidAbsoluteNight->visible = (module->Theme == 2);
-			panelKlokSpidDarkSignature->visible = (module->Theme == 3);
-			panelKlokSpidDeepBlueSignature->visible = (module->Theme == 4);
-			panelKlokSpidCarbonSignature->visible = (module->Theme == 5);
+			panelKlokSpidCreamy->visible = (module->Model == 0);
+			panelKlokSpidStageRepro->visible = (module->Model == 1);
+			panelKlokSpidAbsoluteNight->visible = (module->Model == 2);
+			panelKlokSpidDarkSignature->visible = (module->Model == 3);
+			panelKlokSpidDeepBlueSignature->visible = (module->Model == 4);
+			panelKlokSpidTitaniumSignature->visible = (module->Model == 5);
 			// Torx screws metal (silver, gold) are visible or hidden, depending selected model (from module's context-menu).
-			// Silver Torx screws are visible only for non-"Signature" modules (Classic, Stage Repro or Absolute Night).
-			topLeftScrewSilver->visible = (module->Theme < 3);
-			topRightScrewSilver->visible = (module->Theme < 3);
-			bottomLeftScrewSilver->visible = (module->Theme < 3);
-			bottomRightScrewSilver->visible = (module->Theme < 3);
-			// Gold Torx screws are visible only for "Signature" modules (Dark Signature, Deepblue Signature or Carbon Signature).
-			topLeftScrewGold->visible = (module->Theme > 2);
-			topRightScrewGold->visible = (module->Theme > 2);
-			bottomLeftScrewGold->visible = (module->Theme > 2);
-			bottomRightScrewGold->visible = (module->Theme > 2);
+			// Silver Torx screws are visible only for non-"Signature" modules (Creamy, Stage Repro or Absolute Night).
+			topLeftScrewSilver->visible = (module->Model < 3);
+			topRightScrewSilver->visible = (module->Model < 3);
+			bottomLeftScrewSilver->visible = (module->Model < 3);
+			bottomRightScrewSilver->visible = (module->Model < 3);
+			// Gold Torx screws are visible only for "Signature" modules (Dark Signature, Deepblue Signature or Titanium Signature).
+			topLeftScrewGold->visible = (module->Model > 2);
+			topRightScrewGold->visible = (module->Model > 2);
+			bottomLeftScrewGold->visible = (module->Model > 2);
+			bottomRightScrewGold->visible = (module->Model > 2);
 			// Silver or gold button is visible at once (opposite is, obvisouly, hidden).
-			buttonSilver->visible = (module->Theme < 3);
-			buttonGold->visible = (module->Theme > 2);
+			buttonSilver->visible = (module->Model < 3);
+			buttonGold->visible = (module->Model > 2);
 		}
 		else {
-			// Default panel theme is always "Classic" (beige, using silver screws, using silver button, LCD).
+			// !module - probably from module browser.
+			// Default model is always "Creamy" or "Absolute Night" (depending "Use dark panels if available" option, from "View" menu).
 			// Other panels are, of course, hidden.
-			panelKlokSpidClassic->visible = true;
+			panelKlokSpidCreamy->visible = !rack::settings::preferDarkPanels;
 			panelKlokSpidStageRepro->visible = false;
-			panelKlokSpidAbsoluteNight->visible = false;
+			panelKlokSpidAbsoluteNight->visible = rack::settings::preferDarkPanels;
 			panelKlokSpidDarkSignature->visible = false;
 			panelKlokSpidDeepBlueSignature->visible = false;
-			panelKlokSpidCarbonSignature->visible = false;
-			// By default, silver screws are visible for default beige Classic panel...
+			panelKlokSpidTitaniumSignature->visible = false;
+			// By default, silver screws are visible by default ("Creamy" or "Absolute Night" panel).
 			topLeftScrewSilver->visible = true;
 			topRightScrewSilver->visible = true;
 			bottomLeftScrewSilver->visible = true;
@@ -1935,7 +1942,7 @@ struct KlokSpidWidget : ModuleWidget {
 			topRightScrewGold->visible = false;
 			bottomLeftScrewGold->visible = false;
 			bottomRightScrewGold->visible = false;
-			// Silver button is used for default Classic...
+			// Silver button is used as default (Creamy or Absolute Night panel).
 			buttonSilver->visible = true;
 			// ...and, of course, golden button is hidden.
 			buttonGold->visible = false;

@@ -43,8 +43,8 @@ struct MetriksModule : Module {
 	//
 	bool b_dspIsRunning = false; // Will be set true as soon as DSP is running.
 
-	// Current selected Metriks model (GUI theme).
-	int Theme = 0;
+	// Current selected Metriks model (GUI theme variation).
+	int Model;
 	int portMetal = 0; // used to select silver or gold jacks.
 
 	// Mode (0: voltmeter, 1: CV Tuner, 2: frequency counter, 2: BPM meter, 4: peak counter).
@@ -210,7 +210,7 @@ struct MetriksModule : Module {
 	int i_InopMsgCycling = 0;
 
 	MetriksModule() {
-		// Constructor...
+		// Module constructor.
 		b_dspIsRunning = false; // Will be set true as soon as DSP is running.
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 		configParam(PARAM_ENCODER, -INFINITY, INFINITY, 0.0f, "");
@@ -378,6 +378,8 @@ struct MetriksModule : Module {
 		tb_OptParameter[METRIKS_PEAKCOUNTER][3][1] = ""; // Not used.
 		tb_OptParameter[METRIKS_PEAKCOUNTER][3][2] = ""; // Not used.
 		tb_OptParameter[METRIKS_PEAKCOUNTER][3][3] = ""; // Not used.
+		// Model.
+		Model = rack::settings::preferDarkPanels ? 2 : 0; // Model: assuming default is "Creamy" or "Absolute Night" (depending "Use dark panels if available" option, from "View" menu).
 		// Get current engine sample rate.
 		onSampleRateChange();
 		// Set up frequencies tables for CV Tuner mode.
@@ -385,7 +387,6 @@ struct MetriksModule : Module {
 	}
 
 	// Invoked (as event) from Initialize command via module's context menu (also Ctrl+I, Command+I on Macinthosh) to reset the module.
-	// Model (Theme) isn't affected by module reset, however.
 	void onReset() override {
 		// Current parameters (and their old/previous states) reset to default values (0).
 		for (int i = 0; i < METRIKS_NUM_MODES; i++)
@@ -1216,7 +1217,7 @@ struct MetriksModule : Module {
 
 	json_t *dataToJson() override {
 		json_t *rootJ = json_object();
-		json_object_set_new(rootJ, "Theme", json_integer(Theme)); // Save selected module theme (GUI).
+		json_object_set_new(rootJ, "Model", json_integer(Model)); // Model.
 		json_object_set_new(rootJ, "Mode", json_integer(Mode)); // Save current mode.
 		json_object_set_new(rootJ, "lastVMin", json_real(f_VoltageMin)); // Save lastest min. voltage.
 		json_object_set_new(rootJ, "lastVMax", json_real(f_VoltageMax)); // Save lastest max. voltage.
@@ -1244,13 +1245,16 @@ struct MetriksModule : Module {
 
 	void dataFromJson(json_t *rootJ) override {
 		// Retrieving saved theme (model) when loading .vcv, .vcvm or cloning module.
-		json_t *ThemeJ = json_object_get(rootJ, "Theme");
-		if (ThemeJ) {
-			Theme = json_integer_value(ThemeJ);
-			if ((Theme < 0) || (Theme > 5))
-				Theme = 0; // Set to Classic model if not compliant.
-		}
-		else Theme = 0; // Default Classic model.
+		json_t *ModelJ = json_object_get(rootJ, "Model");
+		if (ModelJ)
+			Model = json_integer_value(ModelJ);
+			else {
+				// Used to migrate to "Model" (instead of "Theme") in json (compatibility).
+				json_t *ModelJ = json_object_get(rootJ, "Theme");
+				if (ModelJ)
+					Model = json_integer_value(ModelJ);
+			}
+		portMetal = Model / 3; // first three use silver (0), last three use gold (1) - the int division by 3 is useful ;)
 		// Retrieving saved measuring mode.
 		json_t *ModeJ = json_object_get(rootJ, "Mode");
 		if (ModeJ) {
@@ -1317,7 +1321,7 @@ struct MetriksDMD : TransparentWidget {
 			if (!(font = APP->window->loadFont(fontPath)))
 				return;
 			if (module) {
-				if ((module->Theme == 2) && (!module->isBypassed())) {
+				if ((module->Model == 2) && (!module->isBypassed())) {
 					// Yellow rounded rectangle to simulate yellow backlit of (LCD) dot-matrix display ("Absolute Night" model only, and not bypassed).
 					// Main DMD.
 					nvgBeginPath(args.vg);
@@ -1344,7 +1348,7 @@ struct MetriksDMD : TransparentWidget {
 				nvgText(args.vg, textPos.x + 26, textPos.y, "+3.14V", NULL); // Default message on second line (display fictious voltage).
 				return; // Exit method immediatly (code below will be ignored).
 			}
-			nvgFillColor(args.vg, nvgTransRGBA(tblDMDtextColor[module->Theme], 0xff)); // Using current color for DMD.
+			nvgFillColor(args.vg, nvgTransRGBA(tblDMDtextColor[module->Model], 0xff)); // Using current color for DMD.
 			if (!module->isBypassed())
 				nvgText(args.vg, textPos.x, textPos.y, module->dmdTextMain1, NULL); // Proceeding module->dmdTextMain2 string (second line).
 			// Main DMD, lower line.
@@ -1374,18 +1378,18 @@ struct MetriksDMD : TransparentWidget {
 
 ///////////////////////////////////////////////////// CONTEXT-MENU //////////////////////////////////////////////////////
 
-struct MetriksClassicMenu : MenuItem {
+struct MetriksCreamyMenu : MenuItem {
 	MetriksModule *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 0; // Model: default Classic (beige).
-		module->portMetal = 0; // Silver connectors for Classic.
+		module->Model = 0; // Model: Creamy.
+		module->portMetal = 0; // Silver connectors for Creamy.
 	}
 };
 
 struct MetriksStageReproMenu : MenuItem {
 	MetriksModule *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 1; // Model: Stage Repro.
+		module->Model = 1; // Model: Stage Repro.
 		module->portMetal = 0; // Silver connectors for Stage Repro.
 	}
 };
@@ -1393,7 +1397,7 @@ struct MetriksStageReproMenu : MenuItem {
 struct MetriksAbsoluteNightMenu : MenuItem {
 	MetriksModule *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 2; // Model: Absolute Night.
+		module->Model = 2; // Model: Absolute Night.
 		module->portMetal = 0; // Silver connectors for Absolute Night.
 	}
 };
@@ -1401,7 +1405,7 @@ struct MetriksAbsoluteNightMenu : MenuItem {
 struct MetriksDarkSignatureMenu : MenuItem {
 	MetriksModule *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 3; // Model: Dark Signature.
+		module->Model = 3; // Model: Dark Signature.
 		module->portMetal = 1; // Gold connectors for Dark Signature.
 	}
 };
@@ -1409,16 +1413,16 @@ struct MetriksDarkSignatureMenu : MenuItem {
 struct MetriksDeepblueSignatureMenu : MenuItem {
 	MetriksModule *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 4; // Model: Deepblue Signature.
+		module->Model = 4; // Model: Deepblue Signature.
 		module->portMetal = 1; // Gold connectors for Deepblue Signature.
 	}
 };
 
-struct MetriksCarbonSignatureMenu : MenuItem {
+struct MetriksTitaniumSignatureMenu : MenuItem {
 	MetriksModule *module;
 	void onAction(const event::Action &e) override {
-		module->Theme = 5; // Model: Carbon Signature.
-		module->portMetal = 1; // Gold connectors for Carbon Signature.
+		module->Model = 5; // Model: Titanium Signature.
+		module->portMetal = 1; // Gold connectors for Titanium Signature.
 	}
 };
 
@@ -1427,41 +1431,41 @@ struct MetriksSubMenuItems : MenuItem {
 	Menu *createChildMenu() override {
 		Menu *menu = new Menu;
 
-		MetriksClassicMenu *metriksmenuitem1 = new MetriksClassicMenu;
-		metriksmenuitem1->text = "Classic (default)";
-		metriksmenuitem1->rightText = CHECKMARK(module->Theme == 0);
-		metriksmenuitem1->module = module;
-		menu->addChild(metriksmenuitem1);
+		MetriksCreamyMenu *metrikscreamymenu = new MetriksCreamyMenu;
+		metrikscreamymenu->text = "Creamy";
+		metrikscreamymenu->rightText = CHECKMARK(module->Model == 0);
+		metrikscreamymenu->module = module;
+		menu->addChild(metrikscreamymenu);
 
-		MetriksStageReproMenu *metriksmenuitem2 = new MetriksStageReproMenu;
-		metriksmenuitem2->text = "Stage Repro";
-		metriksmenuitem2->rightText = CHECKMARK(module->Theme == 1);
-		metriksmenuitem2->module = module;
-		menu->addChild(metriksmenuitem2);
+		MetriksStageReproMenu *metriksstagerepromenu = new MetriksStageReproMenu;
+		metriksstagerepromenu->text = "Stage Repro";
+		metriksstagerepromenu->rightText = CHECKMARK(module->Model == 1);
+		metriksstagerepromenu->module = module;
+		menu->addChild(metriksstagerepromenu);
 
-		MetriksAbsoluteNightMenu *metriksmenuitem3 = new MetriksAbsoluteNightMenu;
-		metriksmenuitem3->text = "Absolute Night";
-		metriksmenuitem3->rightText = CHECKMARK(module->Theme == 2);
-		metriksmenuitem3->module = module;
-		menu->addChild(metriksmenuitem3);
+		MetriksAbsoluteNightMenu *metriksabsolutenightmenu = new MetriksAbsoluteNightMenu;
+		metriksabsolutenightmenu->text = "Absolute Night";
+		metriksabsolutenightmenu->rightText = CHECKMARK(module->Model == 2);
+		metriksabsolutenightmenu->module = module;
+		menu->addChild(metriksabsolutenightmenu);
 
-		MetriksDarkSignatureMenu *metriksmenuitem4 = new MetriksDarkSignatureMenu;
-		metriksmenuitem4->text = "Dark \"Signature\"";
-		metriksmenuitem4->rightText = CHECKMARK(module->Theme == 3);
-		metriksmenuitem4->module = module;
-		menu->addChild(metriksmenuitem4);
+		MetriksDarkSignatureMenu *metriksdarksignaturemenu = new MetriksDarkSignatureMenu;
+		metriksdarksignaturemenu->text = "Dark \"Signature\"";
+		metriksdarksignaturemenu->rightText = CHECKMARK(module->Model == 3);
+		metriksdarksignaturemenu->module = module;
+		menu->addChild(metriksdarksignaturemenu);
 
-		MetriksDeepblueSignatureMenu *metriksmenuitem5 = new MetriksDeepblueSignatureMenu;
-		metriksmenuitem5->text = "Deepblue \"Signature\"";
-		metriksmenuitem5->rightText = CHECKMARK(module->Theme == 4);
-		metriksmenuitem5->module = module;
-		menu->addChild(metriksmenuitem5);
+		MetriksDeepblueSignatureMenu *metriksdeepbluesignaturemenu = new MetriksDeepblueSignatureMenu;
+		metriksdeepbluesignaturemenu->text = "Deepblue \"Signature\"";
+		metriksdeepbluesignaturemenu->rightText = CHECKMARK(module->Model == 4);
+		metriksdeepbluesignaturemenu->module = module;
+		menu->addChild(metriksdeepbluesignaturemenu);
 
-		MetriksCarbonSignatureMenu *metriksmenuitem6 = new MetriksCarbonSignatureMenu;
-		metriksmenuitem6->text = "Carbon \"Signature\"";
-		metriksmenuitem6->rightText = CHECKMARK(module->Theme == 5);
-		metriksmenuitem6->module = module;
-		menu->addChild(metriksmenuitem6);
+		MetriksTitaniumSignatureMenu *metrikstitaniumsignaturemenu = new MetriksTitaniumSignatureMenu;
+		metrikstitaniumsignaturemenu->text = "Titanium \"Signature\"";
+		metrikstitaniumsignaturemenu->rightText = CHECKMARK(module->Model == 5);
+		metrikstitaniumsignaturemenu->module = module;
+		menu->addChild(metrikstitaniumsignaturemenu);
 
 		return menu;
 	}
@@ -1471,13 +1475,13 @@ struct MetriksSubMenuItems : MenuItem {
 ///////////////////////////////////////////////// MODULE WIDGET SECTION /////////////////////////////////////////////////
 
 struct MetriksWidget : ModuleWidget {
-	// Panels (one per "Theme").
-	SvgPanel *panelMetriksClassic;
+	// Panels.
+	SvgPanel *panelMetriksCreamy;
 	SvgPanel *panelMetriksStageRepro;
 	SvgPanel *panelMetriksAbsoluteNight;
 	SvgPanel *panelMetriksDarkSignature;
 	SvgPanel *panelMetriksDeepBlueSignature;
-	SvgPanel *panelMetriksCarbonSignature;
+	SvgPanel *panelMetriksTitaniumSignature;
 	// Silver Torx screws.
 	SvgScrew *topLeftScrewSilver;
 	SvgScrew *topRightScrewSilver;
@@ -1500,11 +1504,11 @@ struct MetriksWidget : ModuleWidget {
 	MetriksWidget(MetriksModule *module) {
 		setModule(module);
 		box.size = Vec(8 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
-		// Classic (default) beige panel.
-		panelMetriksClassic = new SvgPanel();
-		panelMetriksClassic->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/Metriks_Classic.svg")));
-		panelMetriksClassic->visible = true;
-		addChild(panelMetriksClassic);
+		// Creamy panel.
+		panelMetriksCreamy = new SvgPanel();
+		panelMetriksCreamy->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/Metriks_Creamy.svg")));
+		panelMetriksCreamy->visible = !rack::settings::preferDarkPanels;
+		addChild(panelMetriksCreamy);
 		// Stage Repro panel.
 		panelMetriksStageRepro = new SvgPanel();
 		panelMetriksStageRepro->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/Metriks_Stage_Repro.svg")));
@@ -1513,7 +1517,7 @@ struct MetriksWidget : ModuleWidget {
 		// Absolute Night panel.
 		panelMetriksAbsoluteNight = new SvgPanel();
 		panelMetriksAbsoluteNight->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/Metriks_Absolute_Night.svg")));
-		panelMetriksAbsoluteNight->visible = false;
+		panelMetriksAbsoluteNight->visible = rack::settings::preferDarkPanels;
 		addChild(panelMetriksAbsoluteNight);
 		// Dark Signature panel.
 		panelMetriksDarkSignature = new SvgPanel();
@@ -1525,11 +1529,11 @@ struct MetriksWidget : ModuleWidget {
 		panelMetriksDeepBlueSignature->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/Metriks_Deepblue_Signature.svg")));
 		panelMetriksDeepBlueSignature->visible = false;
 		addChild(panelMetriksDeepBlueSignature);
-		// Deepblue Signature panel.
-		panelMetriksCarbonSignature = new SvgPanel();
-		panelMetriksCarbonSignature->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/Metriks_Carbon_Signature.svg")));
-		panelMetriksCarbonSignature->visible = false;
-		addChild(panelMetriksCarbonSignature);
+		// Titanium Signature panel.
+		panelMetriksTitaniumSignature = new SvgPanel();
+		panelMetriksTitaniumSignature->setBackground(APP->window->loadSvg(asset::plugin(pluginInstance, "res/Metriks_Titanium_Signature.svg")));
+		panelMetriksTitaniumSignature->visible = false;
+		addChild(panelMetriksTitaniumSignature);
 		// The DMD display.
 		{
 			MetriksDMD *display = new MetriksDMD();
@@ -1598,42 +1602,43 @@ struct MetriksWidget : ModuleWidget {
 		MetriksModule *module = dynamic_cast<MetriksModule*>(this->module);
 		if (module) {
 			// Possible alternate panel themes (GUIs).
-			panelMetriksClassic->visible = (module->Theme == 0);
-			panelMetriksStageRepro->visible = (module->Theme == 1);
-			panelMetriksAbsoluteNight->visible = (module->Theme == 2);
-			panelMetriksDarkSignature->visible = (module->Theme == 3);
-			panelMetriksDeepBlueSignature->visible = (module->Theme == 4);
-			panelMetriksCarbonSignature->visible = (module->Theme == 5);
+			panelMetriksCreamy->visible = (module->Model == 0);
+			panelMetriksStageRepro->visible = (module->Model == 1);
+			panelMetriksAbsoluteNight->visible = (module->Model == 2);
+			panelMetriksDarkSignature->visible = (module->Model == 3);
+			panelMetriksDeepBlueSignature->visible = (module->Model == 4);
+			panelMetriksTitaniumSignature->visible = (module->Model == 5);
 			// Torx screws metal (silver, gold) are visible or hidden, depending selected model (from module's context-menu).
-			// Silver Torx screws are visible only for non-"Signature" modules (Classic, Stage Repro or Absolute Night).
-			topLeftScrewSilver->visible = (module->Theme < 3);
-			topRightScrewSilver->visible = (module->Theme < 3);
-			bottomLeftScrewSilver->visible = (module->Theme < 3);
-			bottomRightScrewSilver->visible = (module->Theme < 3);
-			// Gold Torx screws are visible only for "Signature" modules (Dark Signature, Deepblue Signature or Carbon Signature).
-			topLeftScrewGold->visible = (module->Theme > 2);
-			topRightScrewGold->visible = (module->Theme > 2);
-			bottomLeftScrewGold->visible = (module->Theme > 2);
-			bottomRightScrewGold->visible = (module->Theme > 2);
+			// Silver Torx screws are visible only for non-"Signature" modules (Creamy, Stage Repro or Absolute Night).
+			topLeftScrewSilver->visible = (module->Model < 3);
+			topRightScrewSilver->visible = (module->Model < 3);
+			bottomLeftScrewSilver->visible = (module->Model < 3);
+			bottomRightScrewSilver->visible = (module->Model < 3);
+			// Gold Torx screws are visible only for "Signature" modules (Dark Signature, Deepblue Signature or Titanium Signature).
+			topLeftScrewGold->visible = (module->Model > 2);
+			topRightScrewGold->visible = (module->Model > 2);
+			bottomLeftScrewGold->visible = (module->Model > 2);
+			bottomRightScrewGold->visible = (module->Model > 2);
 			// Silver buttons are visible for first three models (themes) non-Signature.
-			buttonOptionsSilver->visible = (module->Theme < 3);
-			buttonPlayPauseSilver->visible = (module->Theme < 3);
-			buttonResetSilver->visible = (module->Theme < 3);
+			buttonOptionsSilver->visible = (module->Model < 3);
+			buttonPlayPauseSilver->visible = (module->Model < 3);
+			buttonResetSilver->visible = (module->Model < 3);
 			// Gold buttons are visible for last three models (themes) aka "Signature"-line.
-			buttonOptionsGold->visible = (module->Theme > 2);
-			buttonPlayPauseGold->visible = (module->Theme > 2);
-			buttonResetGold->visible = (module->Theme > 2);
+			buttonOptionsGold->visible = (module->Model > 2);
+			buttonPlayPauseGold->visible = (module->Model > 2);
+			buttonResetGold->visible = (module->Model > 2);
 		}
 		else {
-			// Default panel theme is always "Classic" (beige, using silver screws, silver button, silver jacks, black LCD).
+			// !module - probably from module browser.
+			// Default model is always "Creamy" or "Absolute Night" (depending "Use dark panels if available" option, from "View" menu).
 			// Other panels are, of course, hidden.
-			panelMetriksClassic->visible = true;
+			panelMetriksCreamy->visible = !rack::settings::preferDarkPanels;
 			panelMetriksStageRepro->visible = false;
-			panelMetriksAbsoluteNight->visible = false;
+			panelMetriksAbsoluteNight->visible = rack::settings::preferDarkPanels;
 			panelMetriksDarkSignature->visible = false;
 			panelMetriksDeepBlueSignature->visible = false;
-			panelMetriksCarbonSignature->visible = false;
-			// By default, silver screws are visible for default beige Classic panel...
+			panelMetriksTitaniumSignature->visible = false;
+			// By default, silver screws are visible...
 			topLeftScrewSilver->visible = true;
 			topRightScrewSilver->visible = true;
 			bottomLeftScrewSilver->visible = true;
@@ -1643,7 +1648,7 @@ struct MetriksWidget : ModuleWidget {
 			topRightScrewGold->visible = false;
 			bottomLeftScrewGold->visible = false;
 			bottomRightScrewGold->visible = false;
-			// By default Classic, silver buttons are visible...
+			// By default, silver buttons are visible...
 			buttonOptionsSilver->visible = true;
 			buttonPlayPauseSilver->visible = true;
 			buttonResetSilver->visible = true;
@@ -1657,7 +1662,9 @@ struct MetriksWidget : ModuleWidget {
 
 	void appendContextMenu(Menu *menu) override {
 		MetriksModule *module = dynamic_cast<MetriksModule*>(this->module);
-		menu->addChild(new MenuEntry);
+
+		menu->addChild(new MenuSeparator);
+
 		MetriksSubMenuItems *metrikssubmenuitems = new MetriksSubMenuItems;
 		metrikssubmenuitems->text = "Model";
 		metrikssubmenuitems->rightText = RIGHT_ARROW;
