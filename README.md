@@ -13,7 +13,7 @@ Flagship of *Ohmer* plugin is **KlokSpid** (pronunciation of "clock speed"), a m
 
 Available as six models (aka... GUI themes), can be changed anytime you want, via context-menu (right-click menu).
 
-**Creamy**, **Stage Repro** and **Absolute Night** models embed LCD dot-matrix displays (DMD) and silver parts (button, screws and jacks). The Absolute Night model embeds a yellow-backlit LCD DMD.
+**Creamy**, **Stage Repro** and **Absolute Night** models embed LCD dot-matrix displays (DMD) and silver parts (button, screws and jacks). Please notice the *Absolute Night* model embeds a **yellow-backlit** LCD DMD.
 
 **Dark "Signature"**, **Deepblue "Signature"** and **Titanium "Signature"** models embed a plasma-gas dot-matrix displays, and luxury golden button, screws, and jacks, instead.
 
