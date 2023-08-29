@@ -13,9 +13,11 @@ Flagship of *Ohmer* plugin is **KlokSpid** (pronunciation of "clock speed"), a m
 
 Available as six models (aka... GUI themes), can be changed anytime you want, via context-menu (right-click menu).
 
-**Creamy** (default beige), **Stage Repro** and **Absolute Night** models embed LCD dot-matrix displays (DMD) and silver parts (button, screws and jacks). The Absolute Night model embeds a yellow-backlit LCD DMD, however.
+**Creamy**, **Stage Repro** and **Absolute Night** models embed LCD dot-matrix displays (DMD) and silver parts (button, screws and jacks). The Absolute Night model embeds a yellow-backlit LCD DMD.
 
 **Dark "Signature"**, **Deepblue "Signature"** and **Titanium "Signature"** models embed a plasma-gas dot-matrix displays, and luxury golden button, screws, and jacks, instead.
+
+Since VCV Rack v2.4.0, depending **Use dark panels if available** option (from **View** menu) is enabled or not, the presented model from module browser (and the model added as new module in your rack) may be *Absolute Night* (as default dark panel, when enabled) or *Creamy* (as default light panel). When added on your rack, the model doesn't change (even if you change **Use dark panels if available** setting) until you select another one from context menu.
 
 Basically, KlokSpid module provides two modes:
 
@@ -79,7 +81,7 @@ Obviously, all settings you've defined via SETUP are automatically saved along y
 
 Please take a look on [RKD / RKD with "Break" User's Manual (PDF)](res/Manuals/RKD_BRK_Manual.pdf).
 
-Please notice both RKD and BRK modules support **Use dark panels if available** feature since VCV Rack v2.4.
+Please notice both RKD and BRK modules support **Use dark panels if available** feature (from **View** menu) since VCV Rack v2.4.0. Depending the setting, the panels are dark or light, automatically.
 
 ------
 ## Metriks
@@ -89,6 +91,8 @@ Please notice both RKD and BRK modules support **Use dark panels if available** 
 [Metriks - Quick Guide **is here!**](doc/Metriks.md) please notice **this Metriks module remains in development**.
 
 ![Metriks module](doc/images/Metriks.png)
+
+Since VCV Rack v2.4.0, depending **Use dark panels if available** option (from **View** menu) is enabled or not, the presented model from module browser (and the model added as new module in your rack) may be *Absolute Night* (as default dark panel, when enabled) or *Creamy* (as default light panel). When added on your rack, the model doesn't change (even if you change **Use dark panels if available** setting) until you select another one from context menu.
 
 ------
 ## Polarity Switch
@@ -112,6 +116,8 @@ Polarity Switch against polyphony (using lower part of module only):
 
 **NOTE:** as upper and lower parts are totally independent (like "two modules in one"), both module parts may have different polyphony settings.
 
+Since VCV Rack v2.4.0, depending **Use dark panels if available** option (from **View** menu) is enabled or not, the presented model from module browser (and the model added as new module in your rack) may be *Absolute Night* (as default dark panel, when enabled) or *Creamy* (as default light panel). When added on your rack, the model doesn't change (even if you change **Use dark panels if available** setting) until you select another one from context menu.
+
 ------
 ## Splitter 1x9
 
@@ -119,6 +125,8 @@ Polarity Switch against polyphony (using lower part of module only):
 It supports both monophonic or polyphonic cables.
 
 ![Splitter 1x9 module](doc/images/Splitter.png)
+
+Since VCV Rack v2.4.0, depending **Use dark panels if available** option (from **View** menu) is enabled or not, the presented model from module browser (and the model added as new module in your rack) may be *Absolute Night* (as default dark panel, when enabled) or *Creamy* (as default light panel). When added on your rack, the model doesn't change (even if you change **Use dark panels if available** setting) until you select another one from context menu.
 
 ------
 ## Blank panels
@@ -128,6 +136,8 @@ It supports both monophonic or polyphonic cables.
 Please notice the 2 HP blank panel have an extra context-menu, in order to customize **screws disposal**:
 
 ![Blank_2HP_Screws_Opt](doc/images/Blank_2HP_Screws_Opts.png)
+
+Since VCV Rack v2.4.0, depending **Use dark panels if available** option (from **View** menu) is enabled or not, the presented model from module browser (and the model added as new module in your rack) may be *Absolute Night* (as default dark panel, when enabled) or *Creamy* (as default light panel). When added on your rack, the model doesn't change (even if you change **Use dark panels if available** setting) until you select another one from context menu.
 
 ------
 ## **Various images:**
@@ -147,7 +157,7 @@ All modules included in Ohmer plugin (*Creamy* beige GUI themes):
 
 Releases for Windows, MacOS (Intel), MacOS (ARM64) and Linux platforms are available either from VCV Rack 2 [Plugin Library](https://vcvrack.com/plugins.html), and from [my GitHub "releases" page](https://github.com/DomiKamu/Ohmer/releases) (each platform have its .vcvplugin file).
 
-**Current release**: v2.4.0 (August 9th, 2023), vs. Rack-SDK-2 v2.4.0:
+**Current release**: v2.4.1 (August 26th, 2023), vs. Rack-SDK-2 v2.4.1:
 
 All bug-fixes, new features/modules and enhancements are described in details into [CHANGELOG.TXT](doc/CHANGELOG.txt).
 
@@ -181,6 +191,6 @@ Feature requests, suggestions, and bug reports are welcome on [GitHub repository
 ------
 ## Who am I?
 
-My name is Dominique CAMUS, 59-years old French guy, my job is networks and systems admin (but at the moment, I'm unemployed). I'm living now in south of France, near Nîmes (Gard - 30). Mine hobbies are mainly C.M. experimentations (as curious guy I am), playing keyboard (live performance at home, in my living room, using Native Instruments KOMPLETE KONTROL S61 MK2 keyboard, and Arturia BeatStep Pro controller), flight simulation (Prepar3D v5, flying mainly airliners such Airbus A319/A320, Boeing 737-800, Boeing 777-200/-300), Kerbal Space Program, Elite: Dangerous Horizons, videogame emulators (for sure, I'm a nostalgic guy) such M.A.M.E, pinball games, infiltration games (HITMAN series, Metal Gear, Sniper Ghost Warrior), homemade developments, friends, family, swimming pool, my lovely village...
+My name is Dominique CAMUS, 59-years old French guy, my job is networks and systems admin (but at the moment, I'm unemployed). I'm living now in south of France, near Nîmes (Gard - 30). Mine hobbies are mainly C.M. experimentations (as curious guy I am), playing keyboard (live performance at home, in my living room, using Native Instruments KOMPLETE KONTROL S61 MK2 keyboard, and Arturia BeatStep Pro controller), flight simulation (Prepar3D v5, flying mainly airliners such Airbus A319/A320, Boeing 737-800, Boeing 777-200/-300), Kerbal Space Program, Elite: Dangerous Horizons, videogame emulators (for sure, I'm a nostalgic guy) such M.A.M.E, pinball games, infiltration games (HITMAN franchise, Metal Gear, Sniper Ghost Warrior), homemade developments, friends, family, swimming pool, my lovely village...
 
 ### Enjoy Ohmer modules!
