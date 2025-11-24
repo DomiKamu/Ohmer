@@ -157,7 +157,7 @@ All modules included in Ohmer plugin (*Creamy* beige GUI themes):
 
 Releases for Windows, MacOS (Intel), MacOS (ARM64) and Linux platforms are available either from VCV Rack 2 [Plugin Library](https://vcvrack.com/plugins.html), and from [my GitHub "releases" page](https://github.com/DomiKamu/Ohmer/releases) (each platform have its .vcvplugin file).
 
-**Current release**: v2.4.1 (August 26th, 2023), vs. Rack-SDK-2 v2.4.1:
+**Current release**: v2.6.6 (November 24th, 2025), vs. Rack-SDK-2 v2.6.6:
 
 All bug-fixes, new features/modules and enhancements are described in details into [CHANGELOG.TXT](doc/CHANGELOG.txt).
 
