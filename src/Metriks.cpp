@@ -1101,8 +1101,8 @@ struct MetriksModule : Module {
 					bPeakCounterIsPlaying = false;
 					if (f_InVoltage != _f_InVoltage) {
 						// Display voltage, but if it was changed only! Also, if number of decimal(s) option was changed.
-						float vFloor;
-						float vCeiling;
+						float vFloor = -99999.0f;
+						float vCeiling = 99999.0f;
 						std::string vSign = "+";
 						std::string vMask = "";
 						float currentVoltage = 0.0f;
