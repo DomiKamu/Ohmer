@@ -4,7 +4,8 @@ CHANGELOG
 
 Release v2.4.1 (November 24th, 2025) for VCV Rack v2.
 
-- No plugin change, just built to be compliant vs. Rack SDK v2.6.6 (lastest in date).
+- Metriks: fix a "Warning" during build about vFloor and vCeiling variables, possibly uninitialized.
+- No major plugin change, just built to be compliant vs. Rack SDK v2.6.6 (lastest in date).
 
 --------------------------------------------------------------------------------------------------------------------------------
 
