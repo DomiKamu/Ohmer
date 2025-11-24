@@ -2,6 +2,12 @@
 CHANGELOG
 ================================================================================================================================
 
+Release v2.4.1 (November 24th, 2025) for VCV Rack v2.
+
+- No plugin change, just built to be compliant vs. Rack SDK v2.6.6 (lastest in date).
+
+--------------------------------------------------------------------------------------------------------------------------------
+
 Release v2.4.1 (August 26th, 2023) for VCV Rack v2.
 
 - Packages made against VCV Rack v2.4.1 SDK.
