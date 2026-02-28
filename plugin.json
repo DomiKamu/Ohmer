@@ -1,7 +1,7 @@
 {
   "slug": "Ohmer",
   "name": "Ohmer",
-  "version": "2.6.6",
+  "version": "2.6.11",
   "license": "BSD-3-Clause",
   "author": "Dominique Camus",
   "brand": "Ohmer Modules",
@@ -13,77 +13,80 @@
   "donateUrl": "",
   "modules": [
     {
-      "slug": "KlokSpid",
-      "name": "KlokSpid",
-      "description": "CPU-controlled clock generator or clock modulator",
-      "tags": ["Clock generator", "Clock modulator"]
-    },
-    {
       "slug": "RKD",
       "name": "RKD (Rotate Klok Divider)",
       "description": "Rotate Klok Divider (RKD) module (inspired from 4ms RCD hardware)",
-  		"manualUrl": "https://github.com/DomiKamu/Ohmer/blob/v2/res/Manuals/RKD_BRK_Manual.pdf",
+			"manualUrl": "https://github.com/DomiKamu/Ohmer/blob/v2/doc/modules/RKD/User_Manual.pdf",
       "tags": ["Clock modulator", "Sequencer"]
     },
     {
       "slug": "BRK",
       "name": "BRK (\"Break\") expander for RKD",
       "description": "BRK (\"Break\") expander to setup RKD jumpers (inspired from 4ms BO hardware)",
-  		"manualUrl": "https://github.com/DomiKamu/Ohmer/blob/v2/res/Manuals/RKD_BRK_Manual.pdf",
+			"manualUrl": "https://github.com/DomiKamu/Ohmer/blob/v2/doc/modules/RKD/User_Manual.pdf",
       "tags": ["Clock modulator", "Sequencer", "Expander"]
     },
     {
       "slug": "Metriks",
       "name": "Metriks",
-      "description": "Voltmeter and CV tuner",
+      "description": "Voltmeter",
+			"manualUrl": "https://github.com/DomiKamu/Ohmer/blob/v2/docs/modules/Metriks/Manual.md",
       "tags": ["Visual"]
     },
     {
       "slug": "PolaritySwitch",
       "name": "Polarity Switch",
-      "description": "Signal is routed to \"P\" if its voltage is positive. Otherwise, it's routed to \"N\" (but as positive equivalent / absolute value)",
+      "description": "Signal is routed to \"P\" if its input voltage is positive. Otherwise, it will be routed to \"N\" (but as positive equivalent, as absolute value)",
+			"manualUrl": "https://github.com/DomiKamu/Ohmer/blob/v2/docs/modules/Polarity_Switch/Manual.md",
       "tags": ["Dual", "Switch", "Polyphonic"]
     },
     {
       "slug": "SplitterModule",
       "name": "Splitter 1x9",
-      "description": "Spread incoming monophonic or polyphonic signal upto 9 outputs",
+      "description": "Spread incoming monophonic/polyphonic signal upto 9 outputs",
+			"manualUrl": "https://github.com/DomiKamu/Ohmer/blob/v2/docs/modules/Splitter_1x9/Manual.md",
       "tags": ["Multiple", "Utility", "Polyphonic"]
     },
     {
       "slug": "OhmerBlank1",
-      "name": "Blank 1 HP",
+      "name": "Ohmer Modules 1 HP Blank",
       "description": "1 HP blank panel (uses 2 screws)",
+			"manualUrl": "https://github.com/DomiKamu/Ohmer/blob/v2/docs/modules/Blank_Panels/Manual.md",
       "tags": ["Blank"]
     },
     {
       "slug": "OhmerBlank2",
-      "name": "Blank 2 HP",
+      "name": "Ohmer Modules 2 HP Blank",
       "description": "2 HP blank panel (customizable screws disposal)",
+			"manualUrl": "https://github.com/DomiKamu/Ohmer/blob/v2/docs/modules/Blank_Panels/Manual.md",
       "tags": ["Blank"]
     },
     {
       "slug": "OhmerBlank4",
-      "name": "Blank 4 HP",
+      "name": "Ohmer Modules 4 HP Blank",
       "description": "4 HP blank panel",
+			"manualUrl": "https://github.com/DomiKamu/Ohmer/blob/v2/docs/modules/Blank_Panels/Manual.md",
       "tags": ["Blank"]
     },
     {
       "slug": "OhmerBlank8",
-      "name": "Blank 8 HP",
+      "name": "Ohmer Modules 8 HP Blank",
       "description": "8 HP blank panel",
+			"manualUrl": "https://github.com/DomiKamu/Ohmer/blob/v2/docs/modules/Blank_Panels/Manual.md",
       "tags": ["Blank"]
     },
     {
       "slug": "OhmerBlank16",
-      "name": "Blank 16 HP",
+      "name": "Ohmer Modules 16 HP Blank",
       "description": "16 HP blank panel",
+			"manualUrl": "https://github.com/DomiKamu/Ohmer/blob/v2/docs/modules/Blank_Panels/Manual.md",
       "tags": ["Blank"]
     },
     {
       "slug": "OhmerBlank32",
-      "name": "Blank 32 HP",
+      "name": "Ohmer Modules 32 HP Blank",
       "description": "32 HP blank panel",
+			"manualUrl": "https://github.com/DomiKamu/Ohmer/blob/v2/docs/modules/Blank_Panels/Manual.md",
       "tags": ["Blank"]
     }
   ]
