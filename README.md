@@ -2,7 +2,7 @@
 
 ### ***"DEDICATED" MANUALS:***
 
-[RKD / RKD with "Break" User's Manual (PDF)](res/Manuals/RKD_BRK_Manual.pdf).
+[RKD / RKD with "Break" User's Manual (PDF)](doc/modules/RKD/User_Manual.pdf).
 
 [Metriks - Quick User's Guide](doc/Metriks.md) (module still in development, thanks - again - for your patience!)
 
@@ -23,7 +23,7 @@ Despite OhmerPrems is a commercial plugin (for certain modules), **KlokSpid MkII
 
 **BRK** is basically an additional panel (4 HP, must be placed alongside RKD) providing six deported switches. By this way, it's more comfortable to change module's settings "on-the-fly", without need to access PCB to change jumpers. When RKD module was set correctly, you'll can remove its BRK expander.
 
-Please take a look on [RKD / RKD with "Break" User's Manual (PDF)](res/Manuals/RKD_BRK_Manual.pdf).
+Please take a look on [RKD / RKD with "Break" User's Manual (PDF)](doc/modules/RKD/User_Manual.pdf).
 
 Please notice both RKD and BRK modules support **Use dark panels if available** feature (from **View** menu) since VCV Rack v2.4.0. Depending the setting, the panels are dark or light, automatically.
 
@@ -37,6 +37,8 @@ Please notice both RKD and BRK modules support **Use dark panels if available** 
 ![Metriks module](doc/images/Metriks.png)
 
 Since VCV Rack v2.4.0, depending **Use dark panels if available** option (from **View** menu) is enabled or not, the presented model from module browser (and the model added as new module in your rack) may be *Absolute Night* (as default dark panel, when enabled) or *Creamy* (as default light panel). When added on your rack, the model doesn't change (even if you change **Use dark panels if available** setting) until you select another one from ual menu.
+
+As v2.6.11 update, for voltmeter now you'll can select **Auto** for number of displayed decimals (this is now the default factory setting).
 
 ------
 ## Polarity Switch
@@ -88,9 +90,7 @@ Since VCV Rack v2.4.0, depending **Use dark panels if available** option (from *
 
 Releases for Windows, MacOS (Intel), MacOS (ARM64) and Linux platforms are available either from VCV Rack 2 [Plugin Library](https://vcvrack.com/plugins.html), and from [my GitHub "releases" page](https://github.com/DomiKamu/Ohmer/releases) (each platform have its .vcvplugin file).
 
-**Current release**: v2.6.6 (November 24th, 2025), vs. Rack-SDK-2 v2.6.6:
-
-All bug-fixes, new features/modules and enhancements are described in details into [CHANGELOG.TXT](doc/CHANGELOG.txt).
+**Current release**: v2.6.11 (February 28th, 2026), compatible vs. SDK v2.6.6:
 
 ------
 ## License Clauses
