@@ -9,8 +9,8 @@
 ------
 ## KlokSpid
 
-This module is removed (it was as deprecated during... two years), replaced by the more powerful **KlokSpid MkII** from [OhmerPrems plugin](https://github.com/DomiKamu/OhmerPrems).
-Despite OhmerPrems is a commercial plugin (for certain modules), **KlokSpid MkII** is absolutely free to everyone, without any limitation!
+This module is removed (it was as *deprecated* status since... two years!), this module is replaced by the more powerful **KlokSpid MkII**, from [OhmerPrems plugin](https://github.com/DomiKamu/OhmerPrems).
+Despite OhmerPrems is a commercial plugin (for certain modules), **KlokSpid MkII** is absolutely free to everyone, it works without any limitation!
 
 ------
 ## RKD (Rotate Klok Divider) and BRK (expander)
