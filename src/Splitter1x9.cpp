@@ -40,7 +40,7 @@ struct SplitterModule : Module {
 	int portMetal = 0; // 0 = silver connector (default), 1 = gold connector used by "Signature"-line models only.
 
 	// Sample rate (from Rack engine).
-	float sampleRate = 0.0f;
+	float sampleRate = 48000.f;
 
 	SplitterModule() {
 		// Module constructor.
@@ -57,13 +57,14 @@ struct SplitterModule : Module {
 		configOutput(OUTPUT_9, "8th");
 		// Model.
 		Model = rack::settings::preferDarkPanels ? 2 : 0; // Model: assuming default is "Creamy" or "Absolute Night" (depending "Use dark panels if available" option, from "View" menu).
-		// Get current engine sample rate.
-		onSampleRateChange();
+		// Get engine sample rate.
+		sampleRate = APP->engine->getSampleRate();
 	}
 
-	void onSampleRateChange() override {
+	// Invoked (as event) when Engine's Sample rate is changed from VCV Rack menu.
+	void onSampleRateChange(const SampleRateChangeEvent& e) override {
 		sampleRate = APP->engine->getSampleRate();
-	}		
+	}
 
 	void process(const ProcessArgs &args) override {
 		if (inputs[MAIN_INPUT].isConnected()) {
@@ -105,16 +106,16 @@ struct SplitterModule : Module {
 				if (ModelJ)
 					Model = json_integer_value(ModelJ);
 			}
-		portMetal = Model / 3; // first three use silver (0), last three use gold (1) - the int division by 3 is useful ;)
+		portMetal = (Model > 2) ? 1 : 0; // first three models are use silver (0), last three as "Signature" are using gold (1), instead.
 	}
 
 };
 
-///////////////////////////////////////////////////// CONTEXT-MENU //////////////////////////////////////////////////////
+///////////////////////////////////////////////////// CONTEXTUAL MENU //////////////////////////////////////////////////////
 
 struct SplitterCreamyMenu : MenuItem {
 	SplitterModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 0; // Model: Creamy.
 		module->portMetal = 0; // Silver connectors for Creamy.
 	}
@@ -122,7 +123,7 @@ struct SplitterCreamyMenu : MenuItem {
 
 struct SplitterStageReproMenu : MenuItem {
 	SplitterModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 1; // Model: Stage Repro.
 		module->portMetal = 0; // Silver connectors for Stage Repro.
 	}
@@ -130,7 +131,7 @@ struct SplitterStageReproMenu : MenuItem {
 
 struct SplitterAbsoluteNightMenu : MenuItem {
 	SplitterModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 2; // Model: Absolute Night.
 		module->portMetal = 0; // Silver connectors for Absolute Night.
 	}
@@ -138,7 +139,7 @@ struct SplitterAbsoluteNightMenu : MenuItem {
 
 struct SplitterDarkSignatureMenu : MenuItem {
 	SplitterModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 3; // Model: Dark Signature.
 		module->portMetal = 1; // Gold connectors for Dark Signature.
 	}
@@ -146,7 +147,7 @@ struct SplitterDarkSignatureMenu : MenuItem {
 
 struct SplitterDeepblueSignatureMenu : MenuItem {
 	SplitterModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 4; // Model: Deepblue Signature.
 		module->portMetal = 1; // Gold connectors for Deepblue Signature.
 	}
@@ -154,7 +155,7 @@ struct SplitterDeepblueSignatureMenu : MenuItem {
 
 struct SplitterTitaniumSignatureMenu : MenuItem {
 	SplitterModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 5; // Model: Titanium Signature.
 		module->portMetal = 1; // Gold connectors for Titanium Signature.
 	}
@@ -300,29 +301,9 @@ struct SplitterWidget : ModuleWidget {
 
 	void step() override {
 		SplitterModule *module = dynamic_cast<SplitterModule*>(this->module);
-		if (module) {
-			// Possible panels.
-			panelSplitterCreamy->visible = (module->Model == 0);
-			panelSplitterStageRepro->visible = (module->Model == 1);
-			panelSplitterAbsoluteNight->visible = (module->Model == 2);
-			panelSplitterDarkSignature->visible = (module->Model == 3);
-			panelSplitterDeepBlueSignature->visible = (module->Model == 4);
-			panelSplitterTitaniumSignature->visible = (module->Model == 5);
-			// Torx screws metal (silver, gold) are visible or hidden, depending selected model (from module's context-menu).
-			// Silver Torx screws are visible only for non-"Signature" modules (Creamy, Stage Repro or Absolute Night).
-			topLeftScrewSilver->visible = (module->Model < 3);
-			topRightScrewSilver->visible = (module->Model < 3);
-			bottomLeftScrewSilver->visible = (module->Model < 3);
-			bottomRightScrewSilver->visible = (module->Model < 3);
-			// Gold Torx screws are visible only for "Signature" modules (Dark Signature, Deepblue Signature or Titanium Signature).
-			topLeftScrewGold->visible = (module->Model > 2);
-			topRightScrewGold->visible = (module->Model > 2);
-			bottomLeftScrewGold->visible = (module->Model > 2);
-			bottomRightScrewGold->visible = (module->Model > 2);
-		}
-		else {
-			// !module - probably from module browser.
-			// Default model is always "Creamy" or "Absolute Night" (depending "Use dark panels if available" option, from "View" menu).
+		if (!module) {
+			// !module: the module is not instanciated (probably from module browser).
+			// Default model is always "Creamy" or "Absolute Night" (depending the "Use dark panels if available" option, from "View" menu).
 			// Other panels are, of course, hidden.
 			panelSplitterCreamy->visible = !rack::settings::preferDarkPanels;
 			panelSplitterStageRepro->visible = false;
@@ -340,6 +321,27 @@ struct SplitterWidget : ModuleWidget {
 			topRightScrewGold->visible = false;
 			bottomLeftScrewGold->visible = false;
 			bottomRightScrewGold->visible = false;
+			return;
+		}
+		else {
+			// Possible panels.
+			panelSplitterCreamy->visible = (module->Model == 0);
+			panelSplitterStageRepro->visible = (module->Model == 1);
+			panelSplitterAbsoluteNight->visible = (module->Model == 2);
+			panelSplitterDarkSignature->visible = (module->Model == 3);
+			panelSplitterDeepBlueSignature->visible = (module->Model == 4);
+			panelSplitterTitaniumSignature->visible = (module->Model == 5);
+			// Torx screws metal (silver, gold) are visible or hidden, depending selected model (from module's contextual menu).
+			// Silver Torx screws are visible only for non-"Signature" modules (Creamy, Stage Repro or Absolute Night).
+			topLeftScrewSilver->visible = (module->Model < 3);
+			topRightScrewSilver->visible = (module->Model < 3);
+			bottomLeftScrewSilver->visible = (module->Model < 3);
+			bottomRightScrewSilver->visible = (module->Model < 3);
+			// Gold Torx screws are visible only for "Signature" modules (Dark Signature, Deepblue Signature or Titanium Signature).
+			topLeftScrewGold->visible = (module->Model > 2);
+			topRightScrewGold->visible = (module->Model > 2);
+			bottomLeftScrewGold->visible = (module->Model > 2);
+			bottomRightScrewGold->visible = (module->Model > 2);
 		}
 		ModuleWidget::step();
 	}

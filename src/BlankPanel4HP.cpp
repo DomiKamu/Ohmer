@@ -22,7 +22,7 @@ struct OhmerBlank4 : Module {
 	int Model; // 0 = Creamy, 1 = Stage Repro, 2 = Absolute Night, 3 = Dark Signature, 4 = Deepblue Signature, 5 = Titanium Signature.
 
 	// Panel color (default is Creamy).
-	NVGcolor panelBackgroundColor = nvgRGB(0xd2, 0xd2, 0xcd);
+	NVGcolor panelBgColor = nvgRGB(0xd2, 0xd2, 0xcd);
 
 	OhmerBlank4() {
 		// Module constructor.
@@ -30,10 +30,20 @@ struct OhmerBlank4 : Module {
 		Model = rack::settings::preferDarkPanels ? 2 : 0; // Model: assuming default is "Creamy" or "Absolute Night" (depending "Use dark panels if available" option, from "View" menu).
 	}
 
+	void processBypass(const ProcessArgs &args) override {
+		// DSP processing while the module is bypassed...
+		// Depending current model, set the relevant background color for panel.
+
+		// Model update.
+		panelBgColor = tblpanelBgColor[Model];
+	}
+
 	void process(const ProcessArgs &args) override {
 		// DSP processing...
 		// Depending current model, set the relevant background color for panel.
-		panelBackgroundColor = tblPanelBackgroundColor[Model];
+
+		// Model update.
+		panelBgColor = tblpanelBgColor[Model];
 	}
 
 	json_t *dataToJson() override {
@@ -56,46 +66,46 @@ struct OhmerBlank4 : Module {
 
 };
 
-///////////////////////////////////////////////////// CONTEXT-MENU //////////////////////////////////////////////////////
+///////////////////////////////////////////////////// CONTEXTUAL MENU //////////////////////////////////////////////////////
 
 struct OhmerBlank4CreamyMenu : MenuItem {
 	OhmerBlank4 *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 0; // Model: Creamy.
 	}
 };
 
 struct OhmerBlank4StageReproMenu : MenuItem {
 	OhmerBlank4 *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 1; // Model: Stage Repro.
 	}
 };
 
 struct OhmerBlank4AbsoluteNightMenu : MenuItem {
 	OhmerBlank4 *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 2; // Model: Absolute Night.
 	}
 };
 
 struct OhmerBlank4DarkSignatureMenu : MenuItem {
 	OhmerBlank4 *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 3; // Model: Dark Signature.
 	}
 };
 
 struct OhmerBlank4DeepblueSignatureMenu : MenuItem {
 	OhmerBlank4 *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 4; // Model: Deepblue Signature.
 	}
 };
 
 struct OhmerBlank4TitaniumSignatureMenu : MenuItem {
 	OhmerBlank4 *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 5; // Model: Titanium Signature.
 	}
 };
@@ -150,14 +160,11 @@ struct OhmerBlank4SubMenuItems : MenuItem {
 struct OhmerBlank4Background : TransparentWidget {
 	OhmerBlank4 *module;
 
-	OhmerBlank4Background() {
-	}
-
 	void draw(const DrawArgs &args) override {
 		nvgBeginPath(args.vg);
 		nvgRect(args.vg, 0.0, 0.0, box.size.x, box.size.y);
 		if (module)
-			nvgFillColor(args.vg, module->panelBackgroundColor);
+			nvgFillColor(args.vg, module->panelBgColor);
 			else nvgFillColor(args.vg, rack::settings::preferDarkPanels ? nvgRGB(0x00, 0x00, 0x00) : nvgRGB(0xd2, 0xd2, 0xcd));
 		nvgFill(args.vg);
 	}
@@ -220,21 +227,8 @@ struct OhmerBlank4Widget : ModuleWidget {
 
 	void step() override {
 		OhmerBlank4 *module = dynamic_cast<OhmerBlank4*>(this->module);
-		if (module) {
-			// Torx screws metal (silver, gold) are visible or hidden, depending selected model (from module's context-menu).
-			// Silver Torx screws are visible only for non-"Signature" modules (Creamy, Stage Repro or Absolute Night).
-			topLeftScrewGold->visible = (module->Model > 2);
-			topRightScrewGold->visible = (module->Model > 2);
-			bottomLeftScrewGold->visible = (module->Model > 2);
-			bottomRightScrewGold->visible = (module->Model > 2);
-			// Silver Torx screws are visible only for non-"Signature" modules (Creamy, Stage Repro or Absolute Night).
-			topLeftScrewSilver->visible = (module->Model < 3);
-			topRightScrewSilver->visible = (module->Model < 3);
-			bottomLeftScrewSilver->visible = (module->Model < 3);
-			bottomRightScrewSilver->visible = (module->Model < 3);
-		}
-		else {
-			// !module - probably from module browser.
+		if (!module) {
+			// !module: the module isn't instanciated (probably as preview from module browser).
 			// By default, silver screws are visible for default Creamy or Absolute Night...
 			// ...and, of course, golden screws are hidden.
 			topLeftScrewGold->visible = false;
@@ -246,6 +240,20 @@ struct OhmerBlank4Widget : ModuleWidget {
 			topRightScrewSilver->visible = true;
 			bottomLeftScrewSilver->visible = true;
 			bottomRightScrewSilver->visible = true;
+			return;
+		}
+		else {
+			// Torx screws metal (silver, gold) are visible or hidden, depending selected model (from module's context-menu).
+			// Silver Torx screws are visible only for non-"Signature" modules (Creamy, Stage Repro or Absolute Night).
+			topLeftScrewGold->visible = (module->Model > 2);
+			topRightScrewGold->visible = (module->Model > 2);
+			bottomLeftScrewGold->visible = (module->Model > 2);
+			bottomRightScrewGold->visible = (module->Model > 2);
+			// Silver Torx screws are visible only for non-"Signature" modules (Creamy, Stage Repro or Absolute Night).
+			topLeftScrewSilver->visible = (module->Model < 3);
+			topRightScrewSilver->visible = (module->Model < 3);
+			bottomLeftScrewSilver->visible = (module->Model < 3);
+			bottomRightScrewSilver->visible = (module->Model < 3);
 		}
 		ModuleWidget::step();
 	}

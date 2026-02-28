@@ -38,9 +38,8 @@ struct MetriksModule : Module {
 	};
 
 	// SAMPLE RATE / SAMPLE TIME.
-	float sampleRate = 44100.0f;
+	float sampleRate = 48000.f;
 
-	//
 	bool b_dspIsRunning = false; // Will be set true as soon as DSP is running.
 
 	// Current selected Metriks model (GUI theme variation).
@@ -75,8 +74,8 @@ struct MetriksModule : Module {
 	const int tb_OptionNumPerMode[METRIKS_NUM_MODES] = {2, 2, 1, 0, 1}; // For each mode, number of possible option(s). BPM meter doesn't have option.
 	std::string tb_OptionID[METRIKS_NUM_MODES][4]; // Will be initialized later (from module constructor).
 	int tb_ParamNumPerOpt[METRIKS_NUM_MODES][4]; // Will be initialized later (from module constructor).
-	std::string tb_OptParameter[METRIKS_NUM_MODES][4][4]; // Will be initialized later (from module constructor).
-	float tb_OptParameterXPos[METRIKS_NUM_MODES][4][4]; // Message positions (on line 2 of DMD). Will be initialized later (from module constructor).
+	std::string tb_OptParameter[METRIKS_NUM_MODES][4][5]; // Will be initialized later (from module constructor).
+	float tb_OptParameterXPos[METRIKS_NUM_MODES][4][5]; // Message positions (on line 2 of DMD). Will be initialized later (from module constructor).
 	int currentParameter[METRIKS_NUM_MODES][4] = {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {17, 0, 0, 0}}; // Must be initialized here, to avoid potential crash on instanciate!
 	int _currentParameter[METRIKS_NUM_MODES][4] = {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {17, 0, 0, 0}}; // Must be initialized here, to avoid potential crash on instanciate!
 
@@ -156,13 +155,13 @@ struct MetriksModule : Module {
 	bool bUpdateNotesTable = true;
 	std::string tunerNote[132];
 	char dmdTunerMarker[3] = ""; // CV Tuner only, to display the below/above marker(s).
-	float dmdTunerMarkerPos = 0.0f;
+	float dmdTunerMarkerPos = 0.f;
 	bool b_tunrMarkerVisible = false;
 
 	// Messages displayed on DMD (dot-matrix display), using two lines..
 	char dmdTextMain1[20] = ""; // 20 chars for upper (1st) line.
 	char dmdTextMain2[20] = ""; // 20 chars for lower (2nd) line.
-	float dmdOffsetTextMain2 = 0.0f; // Horizontal offset on DMD to display for lower (2nd) line.
+	float dmdOffsetTextMain2 = 0.f; // Horizontal offset on DMD to display for lower (2nd) line.
 
 	// Encoder (registered position to be used on next step for relative move).
 	int encoderParam = 0; // Encoder parameter.
@@ -174,12 +173,12 @@ struct MetriksModule : Module {
 	// IN (INput) jack.
 	bool bActiveINjack = false;
 	bool _bActiveINjack = false; // Old/previous IN jack state.
-	float f_InVoltage = 0.0f;
-	float _f_InVoltage = -1.0f; // Old/previous voltage on IN jack.
+	float f_InVoltage = 0.f;
+	float _f_InVoltage = -1.f; // Old/previous voltage on IN jack.
 	// Used for mix, max, and median.
-	float f_VoltageMin = 99999.0f;
-	float f_VoltageMax = -99999.0f;
-	float f_VoltageMed = 0.0f;
+	float f_VoltageMin = 99999.f;
+	float f_VoltageMax = -99999.f;
+	float f_VoltageMed = 0.f;
 
 	// PLAY/STOP button and related (trigger) port (PLAY/STOP is used for "Pulse Counter" mode only).
 	dsp::SchmittTrigger playButton;
@@ -191,8 +190,8 @@ struct MetriksModule : Module {
 	dsp::SchmittTrigger resetPort;
 
 	// Number of decimals can be displayed by voltmeter.
-	int vltmDecimals = 2; // Number of decimals used by Voltmeter
-	int _vltmDecimals = -1; // Old/previous number of decimals.
+	int vltmDecimals = 4; // Number of decimals used by Voltmeter (default is "Auto").
+	int _vltmDecimals = -1; // Old/previous number of decimals (to detect value change).
 
 	// Schmitt trigger used to determine frequency. Also used for peak counter mode.
 	dsp::SchmittTrigger inputPort;
@@ -213,10 +212,10 @@ struct MetriksModule : Module {
 		// Module constructor.
 		b_dspIsRunning = false; // Will be set true as soon as DSP is running.
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
-		configParam(PARAM_ENCODER, -INFINITY, INFINITY, 0.0f, "");
-		configParam(BUTTON_OPTIONS, 0.0f, 1.0f, 0.0f, "");
-		configParam(BUTTON_PLAYPAUSE, 0.0f, 1.0f, 0.0f, "");
-		configParam(BUTTON_RESET, 0.0f, 1.0f, 0.0f, "");
+		configParam(PARAM_ENCODER, -INFINITY, INFINITY, 0.f, "");
+		configParam(BUTTON_OPTIONS, 0.f, 1.f, 0.f, "");
+		configParam(BUTTON_PLAYPAUSE, 0.f, 1.f, 0.f, "");
+		configParam(BUTTON_RESET, 0.f, 1.f, 0.f, "");
 		configButton(BUTTON_OPTIONS, "Options");
 		configButton(BUTTON_PLAYPAUSE, "Play/Pause");
 		configButton(BUTTON_RESET, "Reset");
@@ -236,7 +235,7 @@ struct MetriksModule : Module {
 		for (int i = 0; i < METRIKS_NUM_MODES; i++)
 			for (int j = 0; j < 4; j++)
 				for (int k = 0; k < 4; k++)
-					tb_OptParameterXPos[i][j][k] = 0.0f; // Horizontal positions (display on line 2 of DMD). Default 0.0f, used will are set just below.
+					tb_OptParameterXPos[i][j][k] = 0.f; // Horizontal positions (display on line 2 of DMD). Default 0.f, used will are set just below.
 		// Tables used by Voltmeter mode.
 		tb_OptionID[METRIKS_VOLTMETER][0] = "Metering";
 		tb_ParamNumPerOpt[METRIKS_VOLTMETER][0] = 4;
@@ -245,19 +244,23 @@ struct MetriksModule : Module {
 		tb_OptParameter[METRIKS_VOLTMETER][0][1] = "Minimum";
 		tb_OptParameterXPos[METRIKS_VOLTMETER][0][1] = 12.94f;
 		tb_OptParameter[METRIKS_VOLTMETER][0][2] = "Maximum";
-		tb_OptParameterXPos[METRIKS_VOLTMETER][0][2] = 12.0f;
+		tb_OptParameterXPos[METRIKS_VOLTMETER][0][2] = 12.f;
 		tb_OptParameter[METRIKS_VOLTMETER][0][3] = "Median";
 		tb_OptParameterXPos[METRIKS_VOLTMETER][0][3] = 18.6f;
+
 		tb_OptionID[METRIKS_VOLTMETER][1] = "Decimals";
-		tb_ParamNumPerOpt[METRIKS_VOLTMETER][1] = 4;
-		tb_OptParameter[METRIKS_VOLTMETER][1][0] = "2";
-		tb_OptParameterXPos[METRIKS_VOLTMETER][1][0] = 41.19f;
-		tb_OptParameter[METRIKS_VOLTMETER][1][1] = "3";
+		tb_ParamNumPerOpt[METRIKS_VOLTMETER][1] = 5;
+		tb_OptParameter[METRIKS_VOLTMETER][1][0] = "Auto";
+		tb_OptParameterXPos[METRIKS_VOLTMETER][1][0] = 29.5f;
+		tb_OptParameter[METRIKS_VOLTMETER][1][1] = "2";
 		tb_OptParameterXPos[METRIKS_VOLTMETER][1][1] = 41.19f;
-		tb_OptParameter[METRIKS_VOLTMETER][1][2] = "0";
+		tb_OptParameter[METRIKS_VOLTMETER][1][2] = "3";
 		tb_OptParameterXPos[METRIKS_VOLTMETER][1][2] = 41.19f;
-		tb_OptParameter[METRIKS_VOLTMETER][1][3] = "1";
+		tb_OptParameter[METRIKS_VOLTMETER][1][3] = "0";
 		tb_OptParameterXPos[METRIKS_VOLTMETER][1][3] = 41.19f;
+		tb_OptParameter[METRIKS_VOLTMETER][1][4] = "1";
+		tb_OptParameterXPos[METRIKS_VOLTMETER][1][4] = 41.19f;
+
 		tb_OptionID[METRIKS_VOLTMETER][2] = ""; // Not used.
 		tb_ParamNumPerOpt[METRIKS_VOLTMETER][2] = 0;
 		tb_OptParameter[METRIKS_VOLTMETER][2][0] = ""; // Not used.
@@ -380,14 +383,14 @@ struct MetriksModule : Module {
 		tb_OptParameter[METRIKS_PEAKCOUNTER][3][3] = ""; // Not used.
 		// Model.
 		Model = rack::settings::preferDarkPanels ? 2 : 0; // Model: assuming default is "Creamy" or "Absolute Night" (depending "Use dark panels if available" option, from "View" menu).
-		// Get current engine sample rate.
-		onSampleRateChange();
+		// Get engine sample rate.
+		sampleRate = APP->engine->getSampleRate();
 		// Set up frequencies tables for CV Tuner mode.
 		setTunerFreqTables();
 	}
 
 	// Invoked (as event) from Initialize command via module's context menu (also Ctrl+I, Command+I on Macinthosh) to reset the module.
-	void onReset() override {
+	void onReset(const ResetEvent& e) override {
 		// Current parameters (and their old/previous states) reset to default values (0).
 		for (int i = 0; i < METRIKS_NUM_MODES; i++)
 			for (int j = 0; j < 4; j++) {
@@ -409,7 +412,7 @@ struct MetriksModule : Module {
 		currentOptionID = -1; // Option ID (-1 while not option edit).
 		ct_OptionTimeout = 0; // Used as timer for current option (as time out).
 		ct_OptionBlinkTimer = 0;
-		lights[LED_OPTIONS].setBrightness(0.0f);
+		lights[LED_OPTIONS].setBrightness(0.f);
 		// Peak Counter isn't running.
 		bPeakCounterIsPlaying = false;
 		// Reset minimum, maximum and median voltages (voltmeter mode).
@@ -417,11 +420,11 @@ struct MetriksModule : Module {
 		f_VoltageMax = f_InVoltage;
 		f_VoltageMed = f_InVoltage;
 		// By doing this, the second line of DMD will be refreshed.
-		_f_InVoltage = f_InVoltage + 1.0f;
+		_f_InVoltage = f_InVoltage + 1.f;
 	}
 
 	// Invoked (as event) when Engine's Sample rate is changed from VCV Rack menu.
-	void onSampleRateChange() override {
+	void onSampleRateChange(const SampleRateChangeEvent& e) override {
 		sampleRate = APP->engine->getSampleRate();
 	}
 
@@ -441,11 +444,11 @@ struct MetriksModule : Module {
 			currentOptionID = -1; // Option ID (-1 while not option edit).
 			ct_OptionTimeout = 0; // Used as timer for current option (as time out).
 			ct_OptionBlinkTimer = 0;
-			lights[LED_OPTIONS].setBrightness(0.0f);
+			lights[LED_OPTIONS].setBrightness(0.f);
 			// Peak Counter isn't running.
 			bPeakCounterIsPlaying = false;
 			// By doing this, the second line of DMD will be refreshed.
-			_f_InVoltage = f_InVoltage + 1.0f;
+			_f_InVoltage = f_InVoltage + 1.f;
 			// Mirror current parameter to its backup.
 			_currentParameter[i_Mode][i_Opt] = currentParameter[i_Mode][i_Opt];
 		}
@@ -456,18 +459,22 @@ struct MetriksModule : Module {
 					// Decimals...
 					switch (currentParameter[METRIKS_VOLTMETER][1]) {
 						case 0:
-							 // 2 decimals (default).
-							 vltmDecimals = 2;
-						break;
+							 // Auto (default).
+							 vltmDecimals = 4;
+							break;
 						case 1:
+							 // 2 decimals.
+							 vltmDecimals = 2;
+							break;
+						case 2:
 							 // 3 decimals.
 							 vltmDecimals = 3;
-						break;
-						case 2:
-							 // 0 decimal.
-							 vltmDecimals = 0;
-						break;
+							break;
 						case 3:
+							 // No decimal.
+							 vltmDecimals = 0;
+							break;
+						case 4:
 							 // 1 decimal.
 							 vltmDecimals = 1;
 					}
@@ -489,7 +496,7 @@ struct MetriksModule : Module {
 					pcntTresholdVoltage = 2; // Set to minimum treshold voltage (0.2V) if below compliant.
 					else if (pcntTresholdVoltage > 117)
 						pcntTresholdVoltage = 117; // Set to maximum allowed treshold voltage (11.7V) if above compliant.
-				f_pcntTresholdVoltage = (float)(pcntTresholdVoltage) / 10.0f;
+				f_pcntTresholdVoltage = (float)(pcntTresholdVoltage) / 10.f;
 		}
 	}
 
@@ -587,10 +594,10 @@ struct MetriksModule : Module {
 
 	// Custom method to prepare threshold voltage for display (2nd line).
 	void setDisplayThresholdVoltage() {
-		f_pcntTresholdVoltage = (float)(pcntTresholdVoltage / 10.0f);
+		f_pcntTresholdVoltage = (float)(pcntTresholdVoltage / 10.f);
 		if (pcntTresholdVoltage < 100)
-			dmdOffsetTextMain2 = 36.0f;
-			else dmdOffsetTextMain2 = 24.0f;
+			dmdOffsetTextMain2 = 36.f;
+			else dmdOffsetTextMain2 = 24.f;
 		snprintf(dmdTextMain2, sizeof(dmdTextMain2), "%2.1fV", f_pcntTresholdVoltage);
 	}
 
@@ -599,7 +606,7 @@ struct MetriksModule : Module {
 		int aPos = -1;
 		int startPos = 0;
 		bool b_IsAbove = false;
-		if (freq > 369.0f)
+		if (freq > 369.f)
 			startPos = 66; // Start the table scans from... middle (F#4 / Gb4).
 		if ((freq >= tb_FreqNote_LP_LimL[0]) && (freq < tb_FreqNote_LP_LimH[131])) {
 			// Doing search only if input frequency is in allowed limits (C-1 to B9).
@@ -612,7 +619,7 @@ struct MetriksModule : Module {
 					if ((freq >= tb_FreqNote_HP_LimL[aPos]) && (freq < tb_FreqNote_HP_LimH[aPos])) {
  						// High precision: don't display left/right marker(s).
 						b_tunrMarkerVisible = false;
-						dmdTunerMarkerPos = 0.0f;
+						dmdTunerMarkerPos = 0.f;
 						strcpy(dmdTunerMarker, " ");
 					}
 					else if ((freq >= tb_FreqNote_MP_LimL[aPos]) && (freq < tb_FreqNote_MP_LimH[aPos])) {
@@ -623,7 +630,7 @@ struct MetriksModule : Module {
 							strcpy(dmdTunerMarker, "<");
 						}
 						else {
-							dmdTunerMarkerPos = 90.0f;
+							dmdTunerMarkerPos = 90.f;
 							strcpy(dmdTunerMarker, ">");
 						}
 					}
@@ -635,7 +642,7 @@ struct MetriksModule : Module {
 							strcpy(dmdTunerMarker, "<<");
 						}
 						else {
-							dmdTunerMarkerPos = 84.0f;
+							dmdTunerMarkerPos = 84.f;
 							strcpy(dmdTunerMarker, ">>");
 						}
 					}
@@ -646,7 +653,7 @@ struct MetriksModule : Module {
 		else if (freq < tb_FreqNote_LP_LimL[0]) {
 			// Input frequency is too low (below C-1).
 			b_tunrMarkerVisible = true;
-			dmdTunerMarkerPos = 84.0f;
+			dmdTunerMarkerPos = 84.f;
 			strcpy(dmdTunerMarker, ">>");
 		}
 		else {
@@ -701,7 +708,7 @@ struct MetriksModule : Module {
 				px = px + 6;
 		}
 		px--;
-		return ((105.8f - (11.3f * (float)(px) / 6.0f)) / 2.0f) - 7.0f;
+		return ((105.8f - (11.3f * (float)(px) / 6.f)) / 2.f) - 7.f;
 	}
 
 	// TEMPORARY - used for inoperative mode(s) - MUST BE REMOVED WHEN ALL MODES WORK.
@@ -724,7 +731,7 @@ struct MetriksModule : Module {
 					i_InopMsgCycling = 0;
 			}
 		// Display inoperative message...
-		dmdOffsetTextMain2 = 1.0f;
+		dmdOffsetTextMain2 = 1.f;
 		switch (i_InopMsgCycling) {
 			case 0:
 				strcpy(dmdTextMain2, "This mode");
@@ -758,7 +765,7 @@ struct MetriksModule : Module {
 					_currentParameter[i][j] = currentParameter[i][j];
 				}
 			// By doing this, the second line of DMD will be refreshed.
-			_f_InVoltage = f_InVoltage + 1.0f;
+			_f_InVoltage = f_InVoltage + 1.f;
 			b_dspIsRunning = true; // Yes, DSP is running...
 		}
 
@@ -773,10 +780,10 @@ struct MetriksModule : Module {
 		// Transmit (as passthrough/daisy chain) current voltage on IN jack, to OUT jack. 0V will be sent as long as IN jack remains disconnected!
 		if (bActiveINjack)
 			outputs[OUTPUT_THRU].setVoltage(inputs[INPUT_SOURCE].getVoltage());
-			else outputs[OUTPUT_THRU].setVoltage(0.0f);
+			else outputs[OUTPUT_THRU].setVoltage(0.f);
 
 		// Read if the continuous encoder is moved...
-		encoderParam = (int)roundf(10.0f * params[PARAM_ENCODER].getValue());
+		encoderParam = (int)roundf(10.f * params[PARAM_ENCODER].getValue());
 		if (encoderParam != _encoderParam) {
 			if (abs(encoderParam - _encoderParam) <= 2) {
 				if (encoderParam > _encoderParam) {
@@ -787,11 +794,11 @@ struct MetriksModule : Module {
 						if (Mode > 4)
 							Mode = 0; // Returning to first mode (aka "Voltmeter").
 						_Mode = Mode; // Done by encoder: backup to old/previous state variable.
-						ct_SwitchedMode = (int)(1.0f * sampleRate);
+						ct_SwitchedMode = (int)(1.f * sampleRate);
 						bChangingMode = true;
 					}
 					else {
-						ct_OptionTimeout = (int)(10.0f * sampleRate); // Restart timeout for another 5 seconds when encoder is moved.
+						ct_OptionTimeout = (int)(10.f * sampleRate); // Restart timeout for another 5 seconds when encoder is moved.
 						if (Mode == METRIKS_PEAKCOUNTER) {
 							// Incrementing treshold voltage by 0.1...
 							pcntTresholdVoltage++;
@@ -823,11 +830,11 @@ struct MetriksModule : Module {
 						if (Mode < 0)
 							Mode = 4; // Returning to last mode (aka "Peak Counter").
 						_Mode = Mode; // Done by encoder: backup to old/previous state variable.
-						ct_SwitchedMode = (int)(1.0f * sampleRate);
+						ct_SwitchedMode = (int)(1.f * sampleRate);
 						bChangingMode = true;
 					}
 					else {
-						ct_OptionTimeout = (int)(10.0f * sampleRate); // Restart timeout for another 5 seconds when encoder is moved.
+						ct_OptionTimeout = (int)(10.f * sampleRate); // Restart timeout for another 5 seconds when encoder is moved.
 						if (Mode == METRIKS_PEAKCOUNTER) {
 							// Decrementing treshold voltage by 0.1...
 							pcntTresholdVoltage--;
@@ -898,7 +905,7 @@ struct MetriksModule : Module {
 			else {
 				// Exit point for changing mode.
 				b_tunrMarkerVisible = false; // To avoid "marker(s)" displayed on DMD!
-				_f_InVoltage = f_InVoltage + 1.0f; // By doing this, the second line of DMD will be refreshed.
+				_f_InVoltage = f_InVoltage + 1.f; // By doing this, the second line of DMD will be refreshed.
 				b_InopMode = false; // TEMPORARY - false means the mode is operational (totally or partially) - MUST BE REMOVED WHEN ALL MODES WORK.
 				bChangingMode = false;
 			}
@@ -908,16 +915,16 @@ struct MetriksModule : Module {
 		if (optButton.process(params[BUTTON_OPTIONS].getValue())) {
 			optButton.reset();
 			if (!bChangingMode) {
-				ct_OptionTimeout = (int)(10.0f * sampleRate); // Arming option timer for 5 seconds (or give additional 5 seconds).
+				ct_OptionTimeout = (int)(10.f * sampleRate); // Arming option timer for 5 seconds (or give additional 5 seconds).
 				if (bChangingOption) {
 					currentOptionID++;
 					if (currentOptionID > tb_OptionNumPerMode[Mode] - 1) {
 						// It was the last option, now exit option(s) for current mode.
 						currentOptionID = 0;
-						lights[LED_OPTIONS].setBrightness(0.0f);
+						lights[LED_OPTIONS].setBrightness(0.f);
 						bChangingOption = false; // Exit options.
 						b_InopMode = false; // TEMPORARY - false means the mode is operational (totally or partially) - MUST BE REMOVED WHEN ALL MODES WORK.
-						_f_InVoltage = f_InVoltage + 1.0f; // By doing this, the second line of DMD will be refreshed.
+						_f_InVoltage = f_InVoltage + 1.f; // By doing this, the second line of DMD will be refreshed.
 					}
 					else {
 						_tmpString = tb_OptParameter[Mode][currentOptionID][currentParameter[Mode][currentOptionID]];
@@ -932,7 +939,7 @@ struct MetriksModule : Module {
 						ct_OptionBlinkTimer = (int)(sampleRate); // For LED blink.
 						bChangingOption = true;
 						b_InopMode = false; // TEMPORARY - false means the mode is operational (totally or partially) - MUST BE REMOVED WHEN ALL MODES WORK.
-						lights[LED_OPTIONS].setBrightness(1.0f);
+						lights[LED_OPTIONS].setBrightness(1.f);
 						_tmpString = tb_OptionID[Mode][0];
 						strcpy(dmdTextMain1, _tmpString.c_str());
 						if (Mode == METRIKS_PEAKCOUNTER) {
@@ -955,7 +962,7 @@ struct MetriksModule : Module {
 		// RESET button and/or input jack:
 		// - Voltmeter mode: reset Min, Max and Med voltages.
 		// - Peak Counter: reset the counter. 
-		if (resetButton.process(params[BUTTON_RESET].getValue()) || resetPort.process(rescale(inputs[INPUT_RESET].getVoltage(), 0.2f, 1.7f, 0.0f, 1.0f))) {
+		if (resetButton.process(params[BUTTON_RESET].getValue()) || resetPort.process(rescale(inputs[INPUT_RESET].getVoltage(), 0.2f, 1.7f, 0.f, 1.f))) {
 			resetButton.reset();
 			switch (Mode) {
 				case METRIKS_VOLTMETER:
@@ -963,7 +970,7 @@ struct MetriksModule : Module {
 					f_VoltageMin = f_InVoltage;
 					f_VoltageMax = f_InVoltage;
 					f_VoltageMed = f_InVoltage;
-					_f_InVoltage = f_InVoltage + 1.0f; // By doing this, the second line of DMD will be refreshed.
+					_f_InVoltage = f_InVoltage + 1.f; // By doing this, the second line of DMD will be refreshed.
 //					break;
 //				case METRIKS_PEAKCOUNTER:
 					// ToDo...
@@ -979,16 +986,16 @@ struct MetriksModule : Module {
 				if (ct_OptionBlinkTimer > 0)
 					ct_OptionBlinkTimer--;
 					else ct_OptionBlinkTimer = (int)(sampleRate / kBlinkSpeedFactor);
-				if (ct_OptionTimeout < (int)(sampleRate * 2.0f))
+				if (ct_OptionTimeout < (int)(sampleRate * 2.f))
 					kBlinkSpeedFactor = 5;
 				_tmpString = tb_OptionID[Mode][currentOptionID];
 				strcpy(dmdTextMain1, _tmpString.c_str());
 				if ((ct_OptionBlinkTimer % (int)(sampleRate / kBlinkSpeedFactor)) < (int)(sampleRate / kBlinkSpeedFactor / 2)) {
-					lights[LED_OPTIONS].setBrightness(0.0f);
+					lights[LED_OPTIONS].setBrightness(0.f);
 					strcpy(dmdTextMain2, "");
 				}
 				else {
-					lights[LED_OPTIONS].setBrightness(1.0f);
+					lights[LED_OPTIONS].setBrightness(1.f);
 					if (Mode == METRIKS_PEAKCOUNTER) {
 						// Threshold voltage (Peak Counter mode only).
 						_currentParameter[METRIKS_PEAKCOUNTER][0] = pcntTresholdVoltage; // Done by encoder: to backup first...
@@ -1004,9 +1011,9 @@ struct MetriksModule : Module {
 				}
 			}
 			else {
-				lights[LED_OPTIONS].setBrightness(0.0f);
+				lights[LED_OPTIONS].setBrightness(0.f);
 				b_tunrMarkerVisible = false; // To avoid "marker(s)" displayed on DMD!
-				_f_InVoltage = f_InVoltage + 1.0f; // By doing this, the second line of DMD will be refreshed.
+				_f_InVoltage = f_InVoltage + 1.f; // By doing this, the second line of DMD will be refreshed.
 				currentOptionID = 0;
 				ct_OptionBlinkTimer = 0;
 				bChangingOption = false;
@@ -1054,7 +1061,7 @@ struct MetriksModule : Module {
 		if (bActiveINjack != _bActiveINjack) {
 			// Input jack state was changed from connected to disconnected, and vice-versa).
 			b_tunrMarkerVisible = false; // To avoid "marker(s)" displayed on DMD!
-			_f_InVoltage = f_InVoltage + 1.0f; // By doing this, the second line of DMD will be refreshed.
+			_f_InVoltage = f_InVoltage + 1.f; // By doing this, the second line of DMD will be refreshed.
 			_bActiveINjack = bActiveINjack;
 		}
 
@@ -1064,26 +1071,26 @@ struct MetriksModule : Module {
 				f_VoltageMax = f_InVoltage;
 				else if (f_InVoltage < f_VoltageMin)
 					f_VoltageMin = f_InVoltage;
-			f_VoltageMed = (f_VoltageMax + f_VoltageMin) / 2.0f;
+			f_VoltageMed = (f_VoltageMax + f_VoltageMin) / 2.f;
 			ct_NoInputTimer = 0;
 		}
 		else {
 			// Input jack isn't connected...
-			f_InVoltage = 0.0f;
-			_f_InVoltage = 1.0f;
-			f_VoltageMin = 99999.0f;
-			f_VoltageMax = -99999.0f;
-			f_VoltageMed = 0.0f;
+			f_InVoltage = 0.f;
+			_f_InVoltage = 1.f;
+			f_VoltageMin = 99999.f;
+			f_VoltageMax = -99999.f;
+			f_VoltageMed = 0.f;
 			// Be sure Peak Counter is stopped. Unlit PLAY/PAUSE bi-colored LED.
-			lights[LED_PLAY_GREEN].setBrightness(0.0f);
-			lights[LED_PLAY_RED].setBrightness(0.0f);
+			lights[LED_PLAY_GREEN].setBrightness(0.f);
+			lights[LED_PLAY_RED].setBrightness(0.f);
 			bPeakCounterIsPlaying = false;
 			// Blinking "? Input ?" message on second line of the DMD.
 			if (ct_NoInputTimer > 0)
 				ct_NoInputTimer--;
-				else ct_NoInputTimer = (int)(sampleRate / 5.0f);
-			dmdOffsetTextMain2 = -1.0f;
-			if (ct_NoInputTimer % (int)(sampleRate / 5.0f) < (int)(sampleRate / 10.0f))
+				else ct_NoInputTimer = (int)(sampleRate / 5.f);
+			dmdOffsetTextMain2 = -1.f;
+			if (ct_NoInputTimer % (int)(sampleRate / 5.f) < (int)(sampleRate / 10.f))
 				strcpy(dmdTextMain2, "? Input ?");
 				else strcpy(dmdTextMain2, "");
 		}
@@ -1096,16 +1103,16 @@ struct MetriksModule : Module {
 					b_InopMode = false; // TEMPORARY - false means the mode is operational (totally or partially) - MUST BE REMOVED WHEN ALL MODES WORK.
 					b_tunrMarkerVisible = false; // To avoid "marker(s)" displayed on DMD!
 					// Be sure Peak Counter is stopped. Unlit PLAY/PAUSE bi-colored LED.
-					lights[LED_PLAY_GREEN].setBrightness(0.0f);
-					lights[LED_PLAY_RED].setBrightness(0.0f);
+					lights[LED_PLAY_GREEN].setBrightness(0.f);
+					lights[LED_PLAY_RED].setBrightness(0.f);
 					bPeakCounterIsPlaying = false;
 					if (f_InVoltage != _f_InVoltage) {
 						// Display voltage, but if it was changed only! Also, if number of decimal(s) option was changed.
-						float vFloor = -99999.0f;
-						float vCeiling = 99999.0f;
+						float vFloor = -99999.f;
+						float vCeiling = 99999.f;
 						std::string vSign = "+";
 						std::string vMask = "";
-						float currentVoltage = 0.0f;
+						float currentVoltage = 0.f;
 						_f_InVoltage = f_InVoltage;
 						switch (currentParameter[METRIKS_VOLTMETER][0]) {
 							case 0:
@@ -1124,13 +1131,13 @@ struct MetriksModule : Module {
 								// Voltmeter, median.
 								currentVoltage = roundp((double)f_VoltageMed, vltmDecimals);
 						}
-						if (currentVoltage < 0.0f)
+						if (currentVoltage < 0.f)
 							vSign = "-";
 						currentVoltage = abs(currentVoltage);
 						switch (vltmDecimals) {
 							case 0:
-								vFloor = -99999.0f;
-								vCeiling = 99999.0f;
+								vFloor = -99999.f;
+								vCeiling = 99999.f;
 								break;
 							case 1:
 								vFloor = -9999.99f;
@@ -1141,20 +1148,36 @@ struct MetriksModule : Module {
 								vCeiling = 999.999f;
 								break;
 							case 3:
+							case 4:
 								vFloor = -99.9999f;
 								vCeiling = 99.9999f;
-								break;
 						}
 						if ((currentVoltage >= vFloor) && (currentVoltage <= vCeiling)) {
 							_tmpString = std::to_string(currentVoltage);
 							int vPos = _tmpString.find(".");
-							if (vltmDecimals == 0)
-								vPos--;
-							_tmpString = _tmpString.substr (0, vPos + vltmDecimals + 1);
-							_tmpString = vSign + _tmpString + "V";
-							if (vltmDecimals == 0)
-								dmdOffsetTextMain2 = 96.0f - (_tmpString.length() * 12.0f);
-								else dmdOffsetTextMain2 = 102.0f - (_tmpString.length() * 12.0f);
+							if (vltmDecimals == 4) {
+								// Decimals: Auto
+								if (_tmpString.length() > 6)
+									_tmpString = _tmpString.substr(0, 6);
+								while (_tmpString.at(_tmpString.length() - 1) == 48)
+									_tmpString = _tmpString.substr(0, _tmpString.length() - 1);
+								if (_tmpString.at(_tmpString.length() - 1) == 0x2e)
+									_tmpString = _tmpString.substr(0, _tmpString.length() - 1);
+								_tmpString = vSign + _tmpString + "V";
+								vPos = _tmpString.find(".");
+								if (vPos > 0)
+									dmdOffsetTextMain2 = 102.f - (_tmpString.length() * 12.f);
+									else dmdOffsetTextMain2 = 96.f - (_tmpString.length() * 12.f);
+							}
+							else {
+								if (vltmDecimals == 0)
+									vPos--;
+								_tmpString = _tmpString.substr(0, vPos + vltmDecimals + 1);
+								_tmpString = vSign + _tmpString + "V";
+								if (vltmDecimals == 0)
+									dmdOffsetTextMain2 = 96.f - (_tmpString.length() * 12.f);
+									else dmdOffsetTextMain2 = 102.f - (_tmpString.length() * 12.f);
+							}
 							strcpy(dmdTextMain2, _tmpString.c_str());
 						}
 						else {
@@ -1170,8 +1193,8 @@ struct MetriksModule : Module {
 					// CV Tuner mode implementation.
 					b_InopMode = false; // TEMPORARY - false means the mode is operational (totally or partially) - MUST BE REMOVED WHEN ALL MODES WORK.
 					// Be sure Peak Counter is stopped. Unlit PLAY/PAUSE bi-colored LED.
-					lights[LED_PLAY_GREEN].setBrightness(0.0f);
-					lights[LED_PLAY_RED].setBrightness(0.0f);
+					lights[LED_PLAY_GREEN].setBrightness(0.f);
+					lights[LED_PLAY_RED].setBrightness(0.f);
 					bPeakCounterIsPlaying = false;
 					if (f_InVoltage != _f_InVoltage) {
 						// Doing note search by voltage (CV), but only if voltage has changed!
@@ -1188,8 +1211,8 @@ struct MetriksModule : Module {
 					// Frequency counter mode implementation.
 					b_tunrMarkerVisible = false; // To avoid "marker(s)" displayed on DMD!
 					// Be sure Peak Counter is stopped. Unlit PLAY/PAUSE bi-colored LED.
-					lights[LED_PLAY_GREEN].setBrightness(0.0f);
-					lights[LED_PLAY_RED].setBrightness(0.0f);
+					lights[LED_PLAY_GREEN].setBrightness(0.f);
+					lights[LED_PLAY_RED].setBrightness(0.f);
 					bPeakCounterIsPlaying = false;
 					// TEMPORARY - used for inoperative mode(s) - MUST BE REMOVED WHEN ALL MODES WORK.
 					setInopMode();
@@ -1198,8 +1221,8 @@ struct MetriksModule : Module {
 					// BPM meter mode implementation.
 					b_tunrMarkerVisible = false; // To avoid "marker(s)" displayed on DMD!
 					// Be sure Peak Counter is stopped. Unlit PLAY/PAUSE bi-colored LED.
-					lights[LED_PLAY_GREEN].setBrightness(0.0f);
-					lights[LED_PLAY_RED].setBrightness(0.0f);
+					lights[LED_PLAY_GREEN].setBrightness(0.f);
+					lights[LED_PLAY_RED].setBrightness(0.f);
 					bPeakCounterIsPlaying = false;
 					// TEMPORARY - used for inoperative mode(s) - MUST BE REMOVED WHEN ALL MODES WORK.
 					setInopMode();
@@ -1254,7 +1277,7 @@ struct MetriksModule : Module {
 				if (ModelJ)
 					Model = json_integer_value(ModelJ);
 			}
-		portMetal = Model / 3; // first three use silver (0), last three use gold (1) - the int division by 3 is useful ;)
+		portMetal = (Model > 2) ? 1 : 0; // first three models are use silver (0), last three as "Signature" are using gold (1), instead.
 		// Retrieving saved measuring mode.
 		json_t *ModeJ = json_object_get(rootJ, "Mode");
 		if (ModeJ) {
@@ -1268,15 +1291,15 @@ struct MetriksModule : Module {
 		if (lastVMinJ) {
 			f_VoltageMin = json_real_value(lastVMinJ);
 		}
-		else f_VoltageMin = 99999.0f;
+		else f_VoltageMin = 99999.f;
 		// Retrieving registered last maximum voltage.
 		json_t *lastVMaxJ = json_object_get(rootJ, "lastVMax");
 		if (lastVMaxJ) {
 			f_VoltageMax = json_real_value(lastVMaxJ);
 		}
-		else f_VoltageMax = -99999.0f;
+		else f_VoltageMax = -99999.f;
 		// Now we can define last median voltage (never stored, always computed).
-		f_VoltageMed = (f_VoltageMax + f_VoltageMin) / 2.0f;
+		f_VoltageMed = (f_VoltageMax + f_VoltageMin) / 2.f;
 		// Retrieving all saved options/parameters (per mode) (two-dimension array of integers).
 		json_t *optionsJ = json_object_get(rootJ, "MtrxOptions");
 		if (optionsJ) {
@@ -1316,38 +1339,43 @@ struct MetriksDMD : TransparentWidget {
 		fontPath = std::string(asset::plugin(pluginInstance, "res/fonts/LEDCounter7.ttf"));
 	}
 
+	void draw(const DrawArgs &args) override {
+		if (!(font = APP->window->loadFont(fontPath)))
+			return;
+		if (!module) {
+			Vec textPos = Vec(14, box.size.y - 174);
+			// Required as "module preview" (from VCV Rack modules browser).
+			// Default message on DMD (LCD).
+			nvgFillColor(args.vg, nvgTransRGBA(nvgRGB(0x08, 0x08, 0x08), 0xff)); // Using default black LCD.
+			nvgText(args.vg, textPos.x, textPos.y, "Voltmeter", NULL); // Default message on first line (Voltmeter, the default mode).
+			// Main DMD, lower line.
+			nvgFontSize(args.vg, 20);
+			nvgTextLetterSpacing(args.vg, -1);
+			textPos = Vec(12, box.size.y - 152);
+			nvgText(args.vg, textPos.x + 26, textPos.y, "+3.14V", NULL); // Default message on second line (display fictious voltage).
+		}
+	}
+
 	void drawLayer(const DrawArgs &args, int layer) override {
+		if (!(font = APP->window->loadFont(fontPath)))
+			return;
+		if (!module)
+			return;
 		if (layer == 1) {
-			if (!(font = APP->window->loadFont(fontPath)))
-				return;
-			if (module) {
-				if ((module->Model == 2) && (!module->isBypassed())) {
-					// Yellow rounded rectangle to simulate yellow backlit of (LCD) dot-matrix display ("Absolute Night" model only, and not bypassed).
-					// Main DMD.
-					nvgBeginPath(args.vg);
-					nvgRoundedRect(args.vg, 7.16f, 43.6f, 105.7f, 45.48f, 6.5f);
-					nvgFillColor(args.vg, nvgRGBA(0xc0, 0xe9, 0x10, 0xff));
-					nvgFill(args.vg);
-					nvgClosePath(args.vg);
-				}
+			if ((module->Model == 2) && (!module->isBypassed())) {
+				// Yellow rounded rectangle to simulate yellow backlit of (LCD) dot-matrix display ("Absolute Night" model only, and not bypassed).
+				// Main DMD.
+				nvgBeginPath(args.vg);
+				nvgRoundedRect(args.vg, 7.16f, 43.6f, 105.7f, 45.48f, 6.5f);
+				nvgFillColor(args.vg, nvgRGBA(0xc0, 0xe9, 0x10, 0xff));
+				nvgFill(args.vg);
+				nvgClosePath(args.vg);
 			}
 			// Main DMD, upper line.
 			nvgFontSize(args.vg, 16);
 			nvgFontFaceId(args.vg, font->handle);
 			nvgTextLetterSpacing(args.vg, -2);
 			Vec textPos = Vec(14, box.size.y - 174);
-			if (!module) {
-				// Required as "module preview" (from VCV Rack modules browser).
-				// Default message on DMD (LCD).
-				nvgFillColor(args.vg, nvgTransRGBA(nvgRGB(0x08, 0x08, 0x08), 0xff)); // Using default black LCD.
-				nvgText(args.vg, textPos.x, textPos.y, "Voltmeter", NULL); // Default message on first line (Voltmeter, the default mode).
-				// Main DMD, lower line.
-				nvgFontSize(args.vg, 20);
-				nvgTextLetterSpacing(args.vg, -1);
-				textPos = Vec(12, box.size.y - 152);
-				nvgText(args.vg, textPos.x + 26, textPos.y, "+3.14V", NULL); // Default message on second line (display fictious voltage).
-				return; // Exit method immediatly (code below will be ignored).
-			}
 			nvgFillColor(args.vg, nvgTransRGBA(tblDMDtextColor[module->Model], 0xff)); // Using current color for DMD.
 			if (!module->isBypassed())
 				nvgText(args.vg, textPos.x, textPos.y, module->dmdTextMain1, NULL); // Proceeding module->dmdTextMain2 string (second line).
@@ -1367,7 +1395,7 @@ struct MetriksDMD : TransparentWidget {
 			// Display marker(s) on the DMD.
 			nvgFontSize(args.vg, 14);
 			nvgTextLetterSpacing(args.vg, -1);
-			textPos = Vec(12.0f, box.size.y - 154);
+			textPos = Vec(12.f, box.size.y - 154);
 			if (!module->isBypassed())
 				nvgText(args.vg, textPos.x + module->dmdTunerMarkerPos, textPos.y, module->dmdTunerMarker, NULL);
 		}
@@ -1376,11 +1404,11 @@ struct MetriksDMD : TransparentWidget {
 
 };
 
-///////////////////////////////////////////////////// CONTEXT-MENU //////////////////////////////////////////////////////
+///////////////////////////////////////////////////// CONTEXTUAL MENU //////////////////////////////////////////////////////
 
 struct MetriksCreamyMenu : MenuItem {
 	MetriksModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 0; // Model: Creamy.
 		module->portMetal = 0; // Silver connectors for Creamy.
 	}
@@ -1388,7 +1416,7 @@ struct MetriksCreamyMenu : MenuItem {
 
 struct MetriksStageReproMenu : MenuItem {
 	MetriksModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 1; // Model: Stage Repro.
 		module->portMetal = 0; // Silver connectors for Stage Repro.
 	}
@@ -1396,7 +1424,7 @@ struct MetriksStageReproMenu : MenuItem {
 
 struct MetriksAbsoluteNightMenu : MenuItem {
 	MetriksModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 2; // Model: Absolute Night.
 		module->portMetal = 0; // Silver connectors for Absolute Night.
 	}
@@ -1404,7 +1432,7 @@ struct MetriksAbsoluteNightMenu : MenuItem {
 
 struct MetriksDarkSignatureMenu : MenuItem {
 	MetriksModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 3; // Model: Dark Signature.
 		module->portMetal = 1; // Gold connectors for Dark Signature.
 	}
@@ -1412,7 +1440,7 @@ struct MetriksDarkSignatureMenu : MenuItem {
 
 struct MetriksDeepblueSignatureMenu : MenuItem {
 	MetriksModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 4; // Model: Deepblue Signature.
 		module->portMetal = 1; // Gold connectors for Deepblue Signature.
 	}
@@ -1420,7 +1448,7 @@ struct MetriksDeepblueSignatureMenu : MenuItem {
 
 struct MetriksTitaniumSignatureMenu : MenuItem {
 	MetriksModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 5; // Model: Titanium Signature.
 		module->portMetal = 1; // Gold connectors for Titanium Signature.
 	}
@@ -1600,36 +1628,8 @@ struct MetriksWidget : ModuleWidget {
 
 	void step() override {
 		MetriksModule *module = dynamic_cast<MetriksModule*>(this->module);
-		if (module) {
-			// Possible panels.
-			panelMetriksCreamy->visible = (module->Model == 0);
-			panelMetriksStageRepro->visible = (module->Model == 1);
-			panelMetriksAbsoluteNight->visible = (module->Model == 2);
-			panelMetriksDarkSignature->visible = (module->Model == 3);
-			panelMetriksDeepBlueSignature->visible = (module->Model == 4);
-			panelMetriksTitaniumSignature->visible = (module->Model == 5);
-			// Torx screws metal (silver, gold) are visible or hidden, depending selected model (from module's context-menu).
-			// Silver Torx screws are visible only for non-"Signature" modules (Creamy, Stage Repro or Absolute Night).
-			topLeftScrewSilver->visible = (module->Model < 3);
-			topRightScrewSilver->visible = (module->Model < 3);
-			bottomLeftScrewSilver->visible = (module->Model < 3);
-			bottomRightScrewSilver->visible = (module->Model < 3);
-			// Gold Torx screws are visible only for "Signature" modules (Dark Signature, Deepblue Signature or Titanium Signature).
-			topLeftScrewGold->visible = (module->Model > 2);
-			topRightScrewGold->visible = (module->Model > 2);
-			bottomLeftScrewGold->visible = (module->Model > 2);
-			bottomRightScrewGold->visible = (module->Model > 2);
-			// Silver buttons are visible for first three models (themes) non-Signature.
-			buttonOptionsSilver->visible = (module->Model < 3);
-			buttonPlayPauseSilver->visible = (module->Model < 3);
-			buttonResetSilver->visible = (module->Model < 3);
-			// Gold buttons are visible for last three models (themes) aka "Signature"-line.
-			buttonOptionsGold->visible = (module->Model > 2);
-			buttonPlayPauseGold->visible = (module->Model > 2);
-			buttonResetGold->visible = (module->Model > 2);
-		}
-		else {
-			// !module - probably from module browser.
+		if (!module) {
+			// !module: the module isn't instanciated (probably as preview from module browser).
 			// Default model is always "Creamy" or "Absolute Night" (depending "Use dark panels if available" option, from "View" menu).
 			// Other panels are, of course, hidden.
 			panelMetriksCreamy->visible = !rack::settings::preferDarkPanels;
@@ -1656,6 +1656,35 @@ struct MetriksWidget : ModuleWidget {
 			buttonOptionsGold->visible = false;
 			buttonPlayPauseGold->visible = false;
 			buttonResetGold->visible = false;
+			return;
+		}
+		else {
+			// Possible panels.
+			panelMetriksCreamy->visible = (module->Model == 0);
+			panelMetriksStageRepro->visible = (module->Model == 1);
+			panelMetriksAbsoluteNight->visible = (module->Model == 2);
+			panelMetriksDarkSignature->visible = (module->Model == 3);
+			panelMetriksDeepBlueSignature->visible = (module->Model == 4);
+			panelMetriksTitaniumSignature->visible = (module->Model == 5);
+			// Torx screws metal (silver, gold) are visible or hidden, depending selected model (from module's context-menu).
+			// Silver Torx screws are visible only for non-"Signature" modules (Creamy, Stage Repro or Absolute Night).
+			topLeftScrewSilver->visible = (module->Model < 3);
+			topRightScrewSilver->visible = (module->Model < 3);
+			bottomLeftScrewSilver->visible = (module->Model < 3);
+			bottomRightScrewSilver->visible = (module->Model < 3);
+			// Gold Torx screws are visible only for "Signature" modules (Dark Signature, Deepblue Signature or Titanium Signature).
+			topLeftScrewGold->visible = (module->Model > 2);
+			topRightScrewGold->visible = (module->Model > 2);
+			bottomLeftScrewGold->visible = (module->Model > 2);
+			bottomRightScrewGold->visible = (module->Model > 2);
+			// Silver buttons are visible for first three models (themes) non-Signature.
+			buttonOptionsSilver->visible = (module->Model < 3);
+			buttonPlayPauseSilver->visible = (module->Model < 3);
+			buttonResetSilver->visible = (module->Model < 3);
+			// Gold buttons are visible for last three models (themes) aka "Signature"-line.
+			buttonOptionsGold->visible = (module->Model > 2);
+			buttonPlayPauseGold->visible = (module->Model > 2);
+			buttonResetGold->visible = (module->Model > 2);
 		}
 		ModuleWidget::step();
 	}

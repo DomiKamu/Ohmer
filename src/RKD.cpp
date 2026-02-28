@@ -107,7 +107,7 @@ struct RKD : Module {
 	// Rotation dividers table (as prepared table).
 	// Future dividers table, when rotation is required. Last value of this array will be used as "temp backup/restore", during rotation.
 	int tblDividersRt[NUM_OUTPUTS + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 0};
-	// When set (armed), indicates table have been changed (eg after jumper/switch change/context-menu table).
+	// When set (armed), indicates table have been changed (eg after jumper/switch change/CONTEXTUAL MENU table).
 	bool bTableChange = true;
 	// When set (armed), prepare the rotation (set new dividers table).
 	bool bDoRotation = false;
@@ -211,8 +211,8 @@ struct RKD : Module {
 
 	// Methods (void functions).
 
-	void onSampleRateChange() override {
-		sampleRate = (float)(APP->engine->getSampleRate());
+	void onSampleRateChange(const SampleRateChangeEvent& e) override {
+		sampleRate = APP->engine->getSampleRate();
 	}		
 
 	void ModuleTimeOut() {
@@ -311,12 +311,12 @@ struct RKD : Module {
 			bTableChange = bTableChange || (jmprSpread != _jmprSpread); // Spread concerns manufacturer table only. Have no effect on other tables.
 		_jmprSpread = jmprSpread;
 		jmprAutoReset = (params[JUMPER_AUTORESET].getValue() == 1.0);
-		// Checking if table set was changed via context-menu.
+		// Checking if table set was changed via CONTEXTUAL MENU.
 		if (!bTableChange)
 			bTableChange = (tableSetPrev != tableSet);
 		// Is table change?
 		if (bTableChange) {
-			// Yep! assuming table have been changed (either by jumpers/switches setting, or table set via module's context-menu).
+			// Yep! assuming table have been changed (either by jumpers/switches setting, or table set via module's contextual menu).
 			if (tableSet == 0) {
 				// Define new "Mav Div" amount, regardling current "Max-Div-Range 16", "Max-Div-Range 32" and "Spread" jumpers/switches setting.
 				if (jmprMaxDivRange16 && jmprMaxDivRange32 && jmprSpread)
@@ -866,9 +866,11 @@ struct RKD_Displays : TransparentWidget {
 	}
 
 	void drawLayer(const DrawArgs &args, int layer) override {
+		if (!module)
+			return;
+		if (!(font = APP->window->loadFont(fontPath)))
+			return;
 		if (layer == 1) {
-			if (!(font = APP->window->loadFont(fontPath)))
-				return;
 			nvgFontSize(args.vg, 14);
 			nvgFontFaceId(args.vg, font->handle);
 			nvgTextLetterSpacing(args.vg, -1);
@@ -902,39 +904,39 @@ struct RKD_Displays : TransparentWidget {
 
 };
 
-///////////////////////////////////////////////////// CONTEXT-MENUS //////////////////////////////////////////////////////
+///////////////////////////////////////////////////// CONTEXTUAL MENUS //////////////////////////////////////////////////////
 
 struct RKDManufacturerItem : MenuItem {
 	RKD *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->tableSet = 0; // Table: Manufacturer.
 	}
 };
 
 struct RKDPrimesItem : MenuItem {
 	RKD *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->tableSet = 1; // Table: Prime numbers.
 	}
 };
 
 struct RKDSquaresItem : MenuItem {
 	RKD *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->tableSet = 2; // Table: Perfect squares.
 	}
 };
 
 struct RKDFibonacciItem : MenuItem {
 	RKD *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->tableSet = 3; // Table: Perfect squares.
 	}
 };
 
 struct RKDTripletSixteenthsItem : MenuItem {
 	RKD *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->tableSet = 4; // Table: Perfect squares.
 	}
 };
@@ -980,7 +982,7 @@ struct RKDSubMenuItems : MenuItem {
 
 struct RKDViewPCBItem : MenuItem {
 	RKD *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->bViewPCB = !module->bViewPCB; // Show/hide PCB (access to jumpers).
 	}
 };
@@ -1100,24 +1102,8 @@ struct RKDWidget : ModuleWidget {
 
 	void step() override {
 		RKD *module = dynamic_cast<RKD*>(this->module);
-		if (module) {
-			// Hide screws while PCB is visible.
-			topScrewSilver->visible = !module->bViewPCB;
-			bottomScrewSilver->visible = !module->bViewPCB;
-			// Jumper shunts are visible while PCB is visible.
-			jumperCountingDown->visible = module->bViewPCB;
-			jumperGate->visible = module->bViewPCB;
-			jumperMaxDivRange16->visible = module->bViewPCB;
-			jumperMaxDivRange32->visible = module->bViewPCB;
-			jumperSpread->visible = module->bViewPCB;
-			jumperAutoReset->visible = module->bViewPCB;
-			// Is main RKD panel visible, or PCB/jumpers?
-			panelRKDlight->visible = !module->bViewPCB && !rack::settings::preferDarkPanels;
-			panelRKDdark->visible = !module->bViewPCB && rack::settings::preferDarkPanels;
-			panelPCB->visible = module->bViewPCB;
-		}
-		else {
-			// !module - probably view from module browser.
+		if (!module) {
+			// !module: the module isn't instanciated (probably as preview from module browser).
 			// By default, main panel is visible: screws are also visible.
 			topScrewSilver->visible = true;
 			bottomScrewSilver->visible = true;
@@ -1133,6 +1119,23 @@ struct RKDWidget : ModuleWidget {
 			panelRKDdark->visible = rack::settings::preferDarkPanels; // Dark panel.
 			// PCB is hidden.
 			panelPCB->visible = false;
+			return;
+		}
+		else {
+			// Hide screws while PCB is visible.
+			topScrewSilver->visible = !module->bViewPCB;
+			bottomScrewSilver->visible = !module->bViewPCB;
+			// Jumper shunts are visible while PCB is visible.
+			jumperCountingDown->visible = module->bViewPCB;
+			jumperGate->visible = module->bViewPCB;
+			jumperMaxDivRange16->visible = module->bViewPCB;
+			jumperMaxDivRange32->visible = module->bViewPCB;
+			jumperSpread->visible = module->bViewPCB;
+			jumperAutoReset->visible = module->bViewPCB;
+			// Is main RKD panel visible, or PCB/jumpers?
+			panelRKDlight->visible = !module->bViewPCB && !rack::settings::preferDarkPanels;
+			panelRKDdark->visible = !module->bViewPCB && rack::settings::preferDarkPanels;
+			panelPCB->visible = module->bViewPCB;
 		}
 		ModuleWidget::step();
 	}

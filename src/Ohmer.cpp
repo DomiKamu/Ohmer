@@ -8,7 +8,6 @@ Plugin *pluginInstance;
 
 void init(rack::Plugin *p) {
 	pluginInstance = p;
-	p->addModel(modelKlokSpid); // KloSpid module.
 	p->addModel(modelRKD); // RKD (Rotate Klok Divider) module.
 	p->addModel(modelBRK); // BRK ("Break") expander module for RKD (Rotate Klok Divider).
 	p->addModel(modelMetriks); // Metriks module.

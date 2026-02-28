@@ -39,29 +39,30 @@ struct PolaritySwitchModule : Module {
 	int UpperVoltage = 0; // 0 means unaltered IN voltage, 1 means output voltage(s) is/are forced to +5V, 2 means output voltage(s) is/are forced to +10V.
 	int LowerVoltage = 0; // 0 means unaltered IN voltage, 1 means output voltage(s) is/are forced to +5V, 2 means output voltage(s) is/are forced to +10V.
 
-	// Sample rate (from Rack engine).
-	float sampleRate = 0.0f;
+	// SAMPLE RATE / SAMPLE TIME.
+	float sampleRate = 48000.f;
 
 	PolaritySwitchModule() {
 		// Module constructor.
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
-		configInput(INPUT_1, "IN1 signal");
-		configOutput(OUTPUT_P1, "If IN1 positive: sent to this P1");
-		configOutput(OUTPUT_N1, "If IN1 negative: sent to this N1");
-		configInput(INPUT_2, "IN2 signal");
-		configOutput(OUTPUT_P2, "If IN2 positive: sent to this P2");
-		configOutput(OUTPUT_N2, "If IN2 negative: sent to this N2");
+		configInput(INPUT_1, "IN1 voltage");
+		configOutput(OUTPUT_P1, "IN2 >= 0: sent to this P1");
+		configOutput(OUTPUT_N1, "IN2 < 0: sent (absolute) to this N1");
+		configInput(INPUT_2, "IN2 voltage");
+		configOutput(OUTPUT_P2, "IN2 >= 0: sent to this P2");
+		configOutput(OUTPUT_N2, "IN2 < 0: sent (absolute) to this N2");
 		UpperVoltage = 0;
 		LowerVoltage = 0;
 		// Model.
 		Model = rack::settings::preferDarkPanels ? 2 : 0; // Model: assuming default is "Creamy" or "Absolute Night" (depending "Use dark panels if available" option, from "View" menu).
-		// Get current engine sample rate.
-		onSampleRateChange();
+		// Get engine sample rate.
+		sampleRate = APP->engine->getSampleRate();
 	}
 
-	void onSampleRateChange() override {
+	// Invoked (as event) when Engine's Sample rate is changed from VCV Rack menu.
+	void onSampleRateChange(const SampleRateChangeEvent& e) override {
 		sampleRate = APP->engine->getSampleRate();
-	}		
+	}
 
 	void process(const ProcessArgs &args) override {
 		int nChannels; // Used for number of channels (monophonic or polyphonic).
@@ -184,7 +185,7 @@ struct PolaritySwitchModule : Module {
 				if (ModelJ)
 					Model = json_integer_value(ModelJ);
 			}
-		portMetal = Model / 3; // first three use silver (0), last three use gold (1) - the int division by 3 is useful ;)
+		portMetal = (Model > 2) ? 1 : 0; // first three models are use silver (0), last three as "Signature" are using gold (1), instead.
 		// Retrieving upper module voltage behavior ("P" and "N" outputs).
 		json_t *UpperVoltageJ = json_object_get(rootJ, "UpperVoltage");
 		if (UpperVoltageJ)
@@ -197,11 +198,11 @@ struct PolaritySwitchModule : Module {
 
 };
 
-///////////////////////////////////////////////////// CONTEXT-MENU: MODELS //////////////////////////////////////////////////////
+///////////////////////////////////////////////////// CONTEXTUAL MENU: MODELS //////////////////////////////////////////////////////
 
 struct PolaritySwitchCreamyMenu : MenuItem {
 	PolaritySwitchModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 0; // Model: Creamy.
 		module->portMetal = 0; // Silver connectors for Creamy.
 	}
@@ -209,7 +210,7 @@ struct PolaritySwitchCreamyMenu : MenuItem {
 
 struct PolaritySwitchStageReproMenu : MenuItem {
 	PolaritySwitchModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 1; // Model: Stage Repro.
 		module->portMetal = 0; // Silver connectors for Stage Repro.
 	}
@@ -217,7 +218,7 @@ struct PolaritySwitchStageReproMenu : MenuItem {
 
 struct PolaritySwitchAbsoluteNightMenu : MenuItem {
 	PolaritySwitchModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 2; // Model: Absolute Night.
 		module->portMetal = 0; // Silver connectors for Absolute Night.
 	}
@@ -225,7 +226,7 @@ struct PolaritySwitchAbsoluteNightMenu : MenuItem {
 
 struct PolaritySwitchDarkSignatureMenu : MenuItem {
 	PolaritySwitchModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 3; // Model: Dark Signature.
 		module->portMetal = 1; // Gold connectors for Dark Signature.
 	}
@@ -233,7 +234,7 @@ struct PolaritySwitchDarkSignatureMenu : MenuItem {
 
 struct PolaritySwitchDeepblueSignatureMenu : MenuItem {
 	PolaritySwitchModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 4; // Model: Deepblue Signature.
 		module->portMetal = 1; // Gold connectors for Deepblue Signature.
 	}
@@ -241,7 +242,7 @@ struct PolaritySwitchDeepblueSignatureMenu : MenuItem {
 
 struct PolaritySwitchTitaniumSignatureMenu : MenuItem {
 	PolaritySwitchModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->Model = 5; // Model: Titanium Signature.
 		module->portMetal = 1; // Gold connectors for Titanium Signature.
 	}
@@ -292,48 +293,48 @@ struct PolaritySwitchModelSubMenuItems : MenuItem {
 	}
 };
 
-/////////////////////////////////////////// CONTEXT-MENU: UPPER MODULE //////////////////////////////////////////////////
+/////////////////////////////////////////// CONTEXTUAL MENU: UPPER MODULE //////////////////////////////////////////////////
 
 struct UpperKeepVoltage : MenuItem {
 	PolaritySwitchModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->UpperVoltage = 0; // Keep voltage.
 	}
 };
 
 struct UpperForce5V : MenuItem {
 	PolaritySwitchModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->UpperVoltage = 1; // Force all outputs to +5V.
 	}
 };
 
 struct UpperForce10V : MenuItem {
 	PolaritySwitchModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->UpperVoltage = 2; // Force all outputs to +10V.
 	}
 };
 
-/////////////////////////////////////////// CONTEXT-MENU: LOWER MODULE //////////////////////////////////////////////////
+/////////////////////////////////////////// CONTEXTUAL MENU: LOWER MODULE //////////////////////////////////////////////////
 
 struct LowerKeepVoltage : MenuItem {
 	PolaritySwitchModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->LowerVoltage = 0; // Keep voltage.
 	}
 };
 
 struct LowerForce5V : MenuItem {
 	PolaritySwitchModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->LowerVoltage = 1; // Force all outputs to +5V.
 	}
 };
 
 struct LowerForce10V : MenuItem {
 	PolaritySwitchModule *module;
-	void onAction(const event::Action &e) override {
+	void onAction(const ActionEvent& e) override {
 		module->LowerVoltage = 2; // Force all outputs to +10V.
 	}
 };
@@ -429,28 +430,8 @@ struct PolaritySwitchWidget : ModuleWidget {
 
 	void step() override {
 		PolaritySwitchModule *module = dynamic_cast<PolaritySwitchModule*>(this->module);
-		if (module) {
-			// Possible panels.
-			panelPolaritySwitchCreamy->visible = (module->Model == 0);
-			panelPolaritySwitchStageRepro->visible = (module->Model == 1);
-			panelPolaritySwitchAbsoluteNight->visible = (module->Model == 2);
-			panelPolaritySwitchDarkSignature->visible = (module->Model == 3);
-			panelPolaritySwitchDeepBlueSignature->visible = (module->Model == 4);
-			panelPolaritySwitchTitaniumSignature->visible = (module->Model == 5);
-			// Torx screws metal (silver, gold) are visible or hidden, depending selected model (from module's context-menu).
-			// Silver Torx screws are visible only for non-"Signature" modules (Creamy, Stage Repro or Absolute Night).
-			topLeftScrewSilver->visible = (module->Model < 3);
-			topRightScrewSilver->visible = (module->Model < 3);
-			bottomLeftScrewSilver->visible = (module->Model < 3);
-			bottomRightScrewSilver->visible = (module->Model < 3);
-			// Gold Torx screws are visible only for "Signature" modules (Dark Signature, Deepblue Signature or Titanium Signature).
-			topLeftScrewGold->visible = (module->Model > 2);
-			topRightScrewGold->visible = (module->Model > 2);
-			bottomLeftScrewGold->visible = (module->Model > 2);
-			bottomRightScrewGold->visible = (module->Model > 2);
-		}
-		else {
-			// !module - probably from module browser.
+		if (!module) {
+			// !module: the module isn't instanciated (probably as preview from module browser).
 			// Default model is always "Creamy" or "Absolute Night" (depending "Use dark panels if available" option, from "View" menu).
 			// Other panels are, of course, hidden.
 			panelPolaritySwitchCreamy->visible = !rack::settings::preferDarkPanels;
@@ -469,6 +450,27 @@ struct PolaritySwitchWidget : ModuleWidget {
 			topRightScrewGold->visible = false;
 			bottomLeftScrewGold->visible = false;
 			bottomRightScrewGold->visible = false;
+			return;
+		}
+		else {
+			// Possible panels.
+			panelPolaritySwitchCreamy->visible = (module->Model == 0);
+			panelPolaritySwitchStageRepro->visible = (module->Model == 1);
+			panelPolaritySwitchAbsoluteNight->visible = (module->Model == 2);
+			panelPolaritySwitchDarkSignature->visible = (module->Model == 3);
+			panelPolaritySwitchDeepBlueSignature->visible = (module->Model == 4);
+			panelPolaritySwitchTitaniumSignature->visible = (module->Model == 5);
+			// Torx screws metal (silver, gold) are visible or hidden, depending selected model (from module's contextual menu).
+			// Silver Torx screws are visible only for non-"Signature" modules (Creamy, Stage Repro or Absolute Night).
+			topLeftScrewSilver->visible = (module->Model < 3);
+			topRightScrewSilver->visible = (module->Model < 3);
+			bottomLeftScrewSilver->visible = (module->Model < 3);
+			bottomRightScrewSilver->visible = (module->Model < 3);
+			// Gold Torx screws are visible only for "Signature" modules (Dark Signature, Deepblue Signature or Titanium Signature).
+			topLeftScrewGold->visible = (module->Model > 2);
+			topRightScrewGold->visible = (module->Model > 2);
+			bottomLeftScrewGold->visible = (module->Model > 2);
+			bottomRightScrewGold->visible = (module->Model > 2);
 		}
 		ModuleWidget::step();
 	}

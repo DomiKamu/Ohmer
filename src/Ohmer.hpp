@@ -5,7 +5,6 @@ using namespace rack;
 
 extern Plugin *pluginInstance;
 
-extern Model *modelKlokSpid;
 extern Model *modelRKD;
 extern Model *modelBRK;
 extern Model *modelMetriks;
@@ -19,7 +18,7 @@ extern Model *modelBlankPanel16;
 extern Model *modelBlankPanel32;
 
 
-//// COLOR TABLE USED FOR DOT-MATRIX DISPLAY (REGARDLING SELECTED MODEL) - KLOKSPID & METRIKS MODULES.
+//// COLOR TABLE USED FOR DOT-MATRIX DISPLAY (REGARDLING SELECTED MODEL) - METRIKS MODULES.
 
 static const NVGcolor tblDMDtextColor[6] = {
 	nvgRGB(0x08, 0x08, 0x08), // LCD-like for Classic.
@@ -32,7 +31,7 @@ static const NVGcolor tblDMDtextColor[6] = {
 
 //// BACKGROUND COLOR TABLES USED FOR BLANK PANELS.
 
-static const NVGcolor tblPanelBackgroundColor[6] = {
+static const NVGcolor tblpanelBgColor[6] = {
 	nvgRGB(0xd2, 0xd2, 0xcd), // Classic blank panel.
 	nvgRGB(0x70, 0x00, 0x00), // Stage Repro blank panel.
 	nvgRGB(0x00, 0x00, 0x00), // Absolute Night blank panel.
