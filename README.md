@@ -26,7 +26,11 @@ Please notice both RKD and BRK modules support **Use dark panels if available** 
 
 **Metriks**, a 8 HP metering module, for now providing **voltmeter** and **CV tuner** modes only (please notice other modes, such *BPM Meter*, *Frequency Counter* and *Peak Counter* are temporary disabled, like a "scrolling message" says on the dot-matrix display when you select one of these unavailable modes). 
 
-[Metriks - Quick Guide **is here!**](docs/modules/Metriks/Manual.md) please notice **Metriks module remains in development!**.
+![Metriks module](docs/modules/Metriks/_img/Metriks.png)
+
+[Manual](docs/modules/Metriks/Manual.md)
+
+Please consider Metriks module **remains in development!**
 
 ------
 ## Polarity Switch
