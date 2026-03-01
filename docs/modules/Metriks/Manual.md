@@ -100,10 +100,10 @@ This mode provides two options:
 - Notation: may be standard English **C D E... B** notation (default), or latin **Do Re Mi... Si** notation.
 - Sharps/Flats: using sharp (#) - default - or flat (b) note name, if you prefer.
 
-Press OPT. button once to change notation, then press OPT. again to change sharps/flats. Third press will return to production (all bink stop, unlit LED).
+Press **OPT.** button once to change notation, then press it again to change sharps/flats. Third press will return to production (no more blinking, **OPT.** LED is off).
 
 The **<<** / **<** / **>** or **>>** indicator alongside the displayed note name/octave:
 
 - Two indicators (**<<** or **>>**) means **coarse tuning** is required. Left **<<** means the note is far "below": in this case, decrease the voltage (from voltage source). On the same way, right **>>** means the note is far "above", in this case, increase the voltage to reach the voltage corresponding to the displayed note.
 - One indicator (**<** or **>**) means **fine tuning** is required (left **<** is meaning the note is a bit "below", just **decrease the voltage a bit** (from voltage source). On the same way, right **>** means the note is a bit "above", in this case, **increase the voltage a bit** to reach the voltage corresponding to the displayed note.
-- When the voltage is perfect, direction indicators disappear, you've found the precise voltage for desired note!
+- When the voltage is perfect, "direction" indicators disappear, you've found the precise voltage for desired note!
