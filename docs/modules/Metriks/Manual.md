@@ -20,16 +20,15 @@ First three models (non-Signature line) use "cheap" silver metal jacks, buttons 
 
 Last three models (*Signature* line) use *expensive* golden jacks, buttons and screws, and embed a plasma-gas dot-matrix display (DMD), instead.
 
-Below the dot-matrix display (DMD), it is the **continuous encoder** (unlike knob, it doesn't have min./max. limits). Its main goal is to select next mode (when turned clockwise) or previous mode (when turned counter-clockwise). Also, as will be explained later, the continous encoder is used to select next or previous possible parameter while you're changing an option, for current mode.
+Below the dot-matrix display (DMD), this is the **continuous encoder** (unlike knob, it doesn't have min./max. limits). Its main goal is to select next mode (when turned clockwise) or previous mode (when turned counter-clockwise). Also, as will be explained later, the continous encoder is used to select next or previous possible parameter while you're changing an option, for current mode.
 
-At bottom-right side of continuous encoder, you can find **OPT.** button, and its related LED (unlit, or red). This button is useful to change some options for current mode.
+At rightmost side of the module, this is the **OPT.** (option) button, and its related LED (may be unlit, or red). This button is useful to change some options for current mode.
 
-Just below, the PLAY/PAUSE and RESET buttons and jacks, are actually unused (they will be used for future *Peak Counter* mode).
+Just below, the PLAY/PAUSE and RESET buttons, and jacks (but actually unused - they will be used for future reworked *Peak Counter* mode).
 
-At the bottom of module, the **IN** jack is... the input, used for signal metering.
+At the bottom of module, the **IN** jack is... the input, used for signal to be measured.
 
-The **OUT** jack is a "replica" of INput jack: it's useful to insert one (or many) Metriks module(s) in chain.
-
+The **OUT** jack is a "replica" of INput jack: it's useful to insert one (or many) module(s) as daisy-chain.
 
 
 #### **QUICK USAGE GUIDE**
