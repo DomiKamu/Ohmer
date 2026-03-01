@@ -14,7 +14,7 @@ Please notice other features (aka "modes") such **BPM Meter**, **Peak Counter** 
 
 Like other Ohmer Modules (except RKD and his BRK modules), Metriks exists in six models (theme variations), shown above.
 
-These are **Creamy**, **Stage Repro**, **Absolute Night**, **Dark "Signature"**, Deepblue "Signature" and **Titanium "Signature"**. You'll can select any model you'll want, via contextual menu.
+These are **Creamy**, **Stage Repro**, **Absolute Night**, **Dark "Signature"**, **Deepblue "Signature"** and **Titanium "Signature"**. You'll can select any model you'll want, via contextual menu.
 
 First three models (non-Signature line) use "cheap" silver metal jacks, buttons and screws, and embed a black LCD dot-matrix display (DMD). However, *Absolute Night* model uses a yellow-backlit DMD as retrofit.
 
