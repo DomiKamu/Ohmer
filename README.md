@@ -1,6 +1,6 @@
 # ![Ohmer Modules logo](docs/modules/Metriks/_img/Logo_Ohmer.png)Ohmer Modules for VCV Rack 2 (Open Source)
 
-------
+-----
 ## KlokSpid
 
 This module is removed (it was as *deprecated* status since... two years!), this module is replaced by the more powerful **KlokSpid MkII**, from [OhmerPrems plugin](https://github.com/DomiKamu/OhmerPrems).
