@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////
 //// Metriks is a 8 HP measuring/visual module:                    /////
 //// - Voltmeter.                                                  /////
-//// - CV Tuner.                                                   /////
+//// - CV Pitch.                                                   /////
 //// - Frequency Counter.                                          /////
 //// - BPM Meter.                                                  /////
 //// - Peak Counter (aka pulse counter).                           /////
@@ -46,7 +46,7 @@ struct MetriksModule : Module {
 	int Model;
 	int portMetal = 0; // used to select silver or gold jacks.
 
-	// Mode (0: voltmeter, 1: CV Tuner, 2: frequency counter, 2: BPM meter, 4: peak counter).
+	// Mode (0: voltmeter, 1: CV Pitch, 2: frequency counter, 2: BPM meter, 4: peak counter).
 	bool bChangingMode = false; // true during mode transition, false otherwise.
 	int Mode = 0; // Current mode.
 	int _Mode = 0; // Its old/previous state (required for Preset management).
@@ -64,7 +64,7 @@ struct MetriksModule : Module {
 	// Tables (arrays) used for options/parameters.
 	enum en_Modes {
 		METRIKS_VOLTMETER,
-		METRIKS_CVTUNER,
+		METRIKS_CVPITCH,
 		METRIKS_FREQCOUNTER,
 		METRIKS_BPMMETER,
 		METRIKS_PEAKCOUNTER,
@@ -79,7 +79,7 @@ struct MetriksModule : Module {
 	int currentParameter[METRIKS_NUM_MODES][4] = {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {17, 0, 0, 0}}; // Must be initialized here, to avoid potential crash on instanciate!
 	int _currentParameter[METRIKS_NUM_MODES][4] = {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {17, 0, 0, 0}}; // Must be initialized here, to avoid potential crash on instanciate!
 
-	// Frequencies tables used by CV Tuner feature. Will are initialized later (from module constructor).
+	// Frequencies tables used by CV Pitch feature. Will are initialized later (from module constructor).
 	double tb_FreqNote_Center[132] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
 																		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
 																		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
@@ -150,13 +150,13 @@ struct MetriksModule : Module {
 																		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
 																		0.0, 0.0, 0.0, 0.0};
 
-	// CV Tuner variables.
-	std::string tunerBaseNoteName[12] = {"", "", "", "", "", "", "", "", "", "", "", ""}; // Base note names, for now empty, filled later...
+	// CV Pitch variables.
+	std::string pitchBaseNoteName[12] = {"", "", "", "", "", "", "", "", "", "", "", ""}; // Base note names, for now empty, filled later...
 	bool bUpdateNotesTable = true;
-	std::string tunerNote[132];
-	char dmdTunerMarker[3] = ""; // CV Tuner only, to display the below/above marker(s).
-	float dmdTunerMarkerPos = 0.f;
-	bool b_tunrMarkerVisible = false;
+	std::string cvpitchNote[132];
+	float dmdCVPitchMarkerPos = 0.f;
+	char dmdCVPitchMarker[3] = ""; // CV Pitch only, to display the below/above marker(s).
+	bool b_cvpitchMarkerVisible = false;
 
 	// Messages displayed on DMD (dot-matrix display), using two lines..
 	char dmdTextMain1[20] = ""; // 20 chars for upper (1st) line.
@@ -273,35 +273,35 @@ struct MetriksModule : Module {
 		tb_OptParameter[METRIKS_VOLTMETER][3][1] = ""; // Not used.
 		tb_OptParameter[METRIKS_VOLTMETER][3][2] = ""; // Not used.
 		tb_OptParameter[METRIKS_VOLTMETER][3][3] = ""; // Not used.
-		// Tables used by CV Tuner mode.
-		tb_OptionID[METRIKS_CVTUNER][0] = "Notation";
-		tb_ParamNumPerOpt[METRIKS_CVTUNER][0] = 2;
-		tb_OptParameter[METRIKS_CVTUNER][0][0] = "C-D-E...B";
-		tb_OptParameterXPos[METRIKS_CVTUNER][0][0] = 4.466f;
-		tb_OptParameter[METRIKS_CVTUNER][0][1] = "Do-Re-Mi";
-		tb_OptParameterXPos[METRIKS_CVTUNER][0][1] = 5.408f;
-		tb_OptParameter[METRIKS_CVTUNER][0][2] = ""; // Not used.
-		tb_OptParameter[METRIKS_CVTUNER][0][3] = ""; // Not used.
-		tb_OptionID[METRIKS_CVTUNER][1] = "Sharps/Flats";
-		tb_ParamNumPerOpt[METRIKS_CVTUNER][1] = 2;
-		tb_OptParameter[METRIKS_CVTUNER][1][0] = "Sharps #";
-		tb_OptParameterXPos[METRIKS_CVTUNER][1][0] = 6.35f;
-		tb_OptParameter[METRIKS_CVTUNER][1][1] = "Flats b";
-		tb_OptParameterXPos[METRIKS_CVTUNER][1][1] = 12.94f;
-		tb_OptParameter[METRIKS_CVTUNER][1][2] = ""; // Not used.
-		tb_OptParameter[METRIKS_CVTUNER][1][3] = ""; // Not used.
-		tb_OptionID[METRIKS_CVTUNER][2] = ""; // Not used.
-		tb_ParamNumPerOpt[METRIKS_CVTUNER][2] = 1; // Not used.
-		tb_OptParameter[METRIKS_CVTUNER][2][0] = ""; // Not used.
-		tb_OptParameter[METRIKS_CVTUNER][2][1] = ""; // Not used.
-		tb_OptParameter[METRIKS_CVTUNER][2][2] = ""; // Not used.
-		tb_OptParameter[METRIKS_CVTUNER][2][3] = ""; // Not used.
-		tb_OptionID[METRIKS_CVTUNER][3] = ""; // Not used.
-		tb_ParamNumPerOpt[METRIKS_CVTUNER][3] = 0;
-		tb_OptParameter[METRIKS_CVTUNER][3][0] = ""; // Not used.
-		tb_OptParameter[METRIKS_CVTUNER][3][1] = ""; // Not used.
-		tb_OptParameter[METRIKS_CVTUNER][3][2] = ""; // Not used.
-		tb_OptParameter[METRIKS_CVTUNER][3][3] = ""; // Not used.
+		// Tables used by CV Pitch mode.
+		tb_OptionID[METRIKS_CVPITCH][0] = "Notation";
+		tb_ParamNumPerOpt[METRIKS_CVPITCH][0] = 2;
+		tb_OptParameter[METRIKS_CVPITCH][0][0] = "C-D-E...B";
+		tb_OptParameterXPos[METRIKS_CVPITCH][0][0] = 4.466f;
+		tb_OptParameter[METRIKS_CVPITCH][0][1] = "Do-Re-Mi";
+		tb_OptParameterXPos[METRIKS_CVPITCH][0][1] = 5.408f;
+		tb_OptParameter[METRIKS_CVPITCH][0][2] = ""; // Not used.
+		tb_OptParameter[METRIKS_CVPITCH][0][3] = ""; // Not used.
+		tb_OptionID[METRIKS_CVPITCH][1] = "Sharps/Flats";
+		tb_ParamNumPerOpt[METRIKS_CVPITCH][1] = 2;
+		tb_OptParameter[METRIKS_CVPITCH][1][0] = "Sharps #";
+		tb_OptParameterXPos[METRIKS_CVPITCH][1][0] = 6.35f;
+		tb_OptParameter[METRIKS_CVPITCH][1][1] = "Flats b";
+		tb_OptParameterXPos[METRIKS_CVPITCH][1][1] = 12.94f;
+		tb_OptParameter[METRIKS_CVPITCH][1][2] = ""; // Not used.
+		tb_OptParameter[METRIKS_CVPITCH][1][3] = ""; // Not used.
+		tb_OptionID[METRIKS_CVPITCH][2] = ""; // Not used.
+		tb_ParamNumPerOpt[METRIKS_CVPITCH][2] = 1; // Not used.
+		tb_OptParameter[METRIKS_CVPITCH][2][0] = ""; // Not used.
+		tb_OptParameter[METRIKS_CVPITCH][2][1] = ""; // Not used.
+		tb_OptParameter[METRIKS_CVPITCH][2][2] = ""; // Not used.
+		tb_OptParameter[METRIKS_CVPITCH][2][3] = ""; // Not used.
+		tb_OptionID[METRIKS_CVPITCH][3] = ""; // Not used.
+		tb_ParamNumPerOpt[METRIKS_CVPITCH][3] = 0;
+		tb_OptParameter[METRIKS_CVPITCH][3][0] = ""; // Not used.
+		tb_OptParameter[METRIKS_CVPITCH][3][1] = ""; // Not used.
+		tb_OptParameter[METRIKS_CVPITCH][3][2] = ""; // Not used.
+		tb_OptParameter[METRIKS_CVPITCH][3][3] = ""; // Not used.
 		// Tables used by Frequency Counter mode.
 		tb_OptionID[METRIKS_FREQCOUNTER][0] = "Analys. Mode";
 		tb_ParamNumPerOpt[METRIKS_FREQCOUNTER][0] = 4;
@@ -385,8 +385,20 @@ struct MetriksModule : Module {
 		Model = rack::settings::preferDarkPanels ? 2 : 0; // Model: assuming default is "Creamy" or "Absolute Night" (depending "Use dark panels if available" option, from "View" menu).
 		// Get engine sample rate.
 		sampleRate = APP->engine->getSampleRate();
-		// Set up frequencies tables for CV Tuner mode.
-		setTunerFreqTables();
+		// Set up frequencies tables for CV Pitch mode (precomputed frequencies tables, used by CV Pitch mode).
+		for (int i = 0; i < 132; i++) {
+			// Central frequencies (frequency of each note).
+			tb_FreqNote_Center[i] = 440.0 * (double)(pow(2, ((i - 69.0) / 12)));
+			// Low precision ranges tables, also used for initial note detection.
+			tb_FreqNote_LP_LimL[i] = 440.0 * (double)(pow(2, ((i - 69.5) / 12)));
+			tb_FreqNote_LP_LimH[i] = 440.0 * (double)(pow(2, ((i - 68.5) / 12)));
+			// Medium precision ranges tables.
+			tb_FreqNote_MP_LimL[i] = 440.0 * (double)(pow(2, ((i - 69.2) / 12)));
+			tb_FreqNote_MP_LimH[i] = 440.0 * (double)(pow(2, ((i - 68.8) / 12)));
+			// High precision ranges tables.
+			tb_FreqNote_HP_LimL[i] = 440.0 * (double)(pow(2, ((i - 69.02) / 12)));
+			tb_FreqNote_HP_LimH[i] = 440.0 * (double)(pow(2, ((i - 68.98) / 12)));
+		}
 	}
 
 	// Invoked (as event) from Initialize command via module's context menu (also Ctrl+I, Command+I on Macinthosh) to reset the module.
@@ -480,8 +492,8 @@ struct MetriksModule : Module {
 					}
 				}
 				break;
-			case METRIKS_CVTUNER:
-				// CV Tuner mode.
+			case METRIKS_CVPITCH:
+				// CV Pitch mode.
 				// Notation or sharps/flats: update notes tables.
 				makeNotesTables();
 				break;
@@ -500,96 +512,79 @@ struct MetriksModule : Module {
 		}
 	}
 
-	// Custom method to make current notes table, depending "Notation" and "Sharps/Flats" parameters (CV Tuner mode).
+	// Custom method to make current notes table, depending "Notation" and "Sharps/Flats" parameters (CV Pitch mode).
 	void makeNotesTables() {
-		if (currentParameter[METRIKS_CVTUNER][0] == 0) {
+		if (currentParameter[METRIKS_CVPITCH][0] == 0) {
 			// English (international) notation (C, D, E,...B).
-			tb_OptionID[METRIKS_CVTUNER][2] = "A4 Pitch";
-			if (currentParameter[METRIKS_CVTUNER][1] == 0) {
+			tb_OptionID[METRIKS_CVPITCH][2] = "A4 Pitch";
+			if (currentParameter[METRIKS_CVPITCH][1] == 0) {
 				// Sharps.
-				tunerBaseNoteName[0] = "C";
-				tunerBaseNoteName[1] = "C#";
-				tunerBaseNoteName[2] = "D";
-				tunerBaseNoteName[3] = "D#";
-				tunerBaseNoteName[4] = "E";
-				tunerBaseNoteName[5] = "F";
-				tunerBaseNoteName[6] = "F#";
-				tunerBaseNoteName[7] = "G";
-				tunerBaseNoteName[8] = "G#";
-				tunerBaseNoteName[9] = "A";
-				tunerBaseNoteName[10] = "A#";
-				tunerBaseNoteName[11] = "B";
+				pitchBaseNoteName[0] = "C";
+				pitchBaseNoteName[1] = "C#";
+				pitchBaseNoteName[2] = "D";
+				pitchBaseNoteName[3] = "D#";
+				pitchBaseNoteName[4] = "E";
+				pitchBaseNoteName[5] = "F";
+				pitchBaseNoteName[6] = "F#";
+				pitchBaseNoteName[7] = "G";
+				pitchBaseNoteName[8] = "G#";
+				pitchBaseNoteName[9] = "A";
+				pitchBaseNoteName[10] = "A#";
+				pitchBaseNoteName[11] = "B";
 			}
 			else {
 				// Flats.
-				tunerBaseNoteName[0] = "C";
-				tunerBaseNoteName[1] = "Db";
-				tunerBaseNoteName[2] = "D";
-				tunerBaseNoteName[3] = "Eb";
-				tunerBaseNoteName[4] = "E";
-				tunerBaseNoteName[5] = "F";
-				tunerBaseNoteName[6] = "Gb";
-				tunerBaseNoteName[7] = "G";
-				tunerBaseNoteName[8] = "Ab";
-				tunerBaseNoteName[9] = "A";
-				tunerBaseNoteName[10] = "Bb";
-				tunerBaseNoteName[11] = "B";
+				pitchBaseNoteName[0] = "C";
+				pitchBaseNoteName[1] = "Db";
+				pitchBaseNoteName[2] = "D";
+				pitchBaseNoteName[3] = "Eb";
+				pitchBaseNoteName[4] = "E";
+				pitchBaseNoteName[5] = "F";
+				pitchBaseNoteName[6] = "Gb";
+				pitchBaseNoteName[7] = "G";
+				pitchBaseNoteName[8] = "Ab";
+				pitchBaseNoteName[9] = "A";
+				pitchBaseNoteName[10] = "Bb";
+				pitchBaseNoteName[11] = "B";
 			}
 		}
 		else {
 			// Do-Re-Mi (French/Italian) notation.
-			tb_OptionID[METRIKS_CVTUNER][2] = "La4 Pitch";
-			if (currentParameter[METRIKS_CVTUNER][1] == 0) {
+			tb_OptionID[METRIKS_CVPITCH][2] = "La4 Pitch";
+			if (currentParameter[METRIKS_CVPITCH][1] == 0) {
 				// Sharps.
-				tunerBaseNoteName[0] = "Do";
-				tunerBaseNoteName[1] = "Do#";
-				tunerBaseNoteName[2] = "Re";
-				tunerBaseNoteName[3] = "Re#";
-				tunerBaseNoteName[4] = "Mi";
-				tunerBaseNoteName[5] = "Fa";
-				tunerBaseNoteName[6] = "Fa#";
-				tunerBaseNoteName[7] = "Sol";
-				tunerBaseNoteName[8] = "Sol#";
-				tunerBaseNoteName[9] = "La";
-				tunerBaseNoteName[10] = "La#";
-				tunerBaseNoteName[11] = "Si";
+				pitchBaseNoteName[0] = "Do";
+				pitchBaseNoteName[1] = "Do#";
+				pitchBaseNoteName[2] = "Re";
+				pitchBaseNoteName[3] = "Re#";
+				pitchBaseNoteName[4] = "Mi";
+				pitchBaseNoteName[5] = "Fa";
+				pitchBaseNoteName[6] = "Fa#";
+				pitchBaseNoteName[7] = "Sol";
+				pitchBaseNoteName[8] = "Sol#";
+				pitchBaseNoteName[9] = "La";
+				pitchBaseNoteName[10] = "La#";
+				pitchBaseNoteName[11] = "Si";
 			}
 			else {
 				// Flats.
-				tunerBaseNoteName[0] = "Do";
-				tunerBaseNoteName[1] = "Reb";
-				tunerBaseNoteName[2] = "Re";
-				tunerBaseNoteName[3] = "Mib";
-				tunerBaseNoteName[4] = "Mi";
-				tunerBaseNoteName[5] = "Fa";
-				tunerBaseNoteName[6] = "Solb";
-				tunerBaseNoteName[7] = "Sol";
-				tunerBaseNoteName[8] = "Lab";
-				tunerBaseNoteName[9] = "La";
-				tunerBaseNoteName[10] = "Sib";
-				tunerBaseNoteName[11] = "Si";
+				pitchBaseNoteName[0] = "Do";
+				pitchBaseNoteName[1] = "Reb";
+				pitchBaseNoteName[2] = "Re";
+				pitchBaseNoteName[3] = "Mib";
+				pitchBaseNoteName[4] = "Mi";
+				pitchBaseNoteName[5] = "Fa";
+				pitchBaseNoteName[6] = "Solb";
+				pitchBaseNoteName[7] = "Sol";
+				pitchBaseNoteName[8] = "Lab";
+				pitchBaseNoteName[9] = "La";
+				pitchBaseNoteName[10] = "Sib";
+				pitchBaseNoteName[11] = "Si";
 			}
 		}
 		// Final table construction, including octave.
 		for (int i = 0; i < 132; i++)
-			tunerNote[i] = tunerBaseNoteName[i % 12] + std::to_string((i / 12) - 1);
-	}
-
-	// This method prepares (precompute) frequencies tables, used by CV Tuner mode.
-	void setTunerFreqTables() {
-		for (int i = 0; i < 132; i++) {
-			// Central frequencies (frequency of each note).
-			tb_FreqNote_Center[i] = 440.0 * (double)(pow(2, ((i - 69.0) / 12)));
-			// Low precision ranges tables, also used for initial note detection.
-			tb_FreqNote_LP_LimL[i] = 440.0 * (double)(pow(2, ((i - 69.5) / 12)));
-			tb_FreqNote_LP_LimH[i] = 440.0 * (double)(pow(2, ((i - 68.5) / 12)));
-			// Medium precision ranges tables.
-			tb_FreqNote_MP_LimL[i] = 440.0 * (double)(pow(2, ((i - 69.2) / 12)));
-			tb_FreqNote_MP_LimH[i] = 440.0 * (double)(pow(2, ((i - 68.8) / 12)));
-			// High precision ranges tables.
-			tb_FreqNote_HP_LimL[i] = 440.0 * (double)(pow(2, ((i - 69.02) / 12)));
-			tb_FreqNote_HP_LimH[i] = 440.0 * (double)(pow(2, ((i - 68.98) / 12)));
-		}
+			cvpitchNote[i] = pitchBaseNoteName[i % 12] + std::to_string((i / 12) - 1);
 	}
 
 	// Custom method to prepare threshold voltage for display (2nd line).
@@ -618,32 +613,32 @@ struct MetriksModule : Module {
 					b_IsAbove = (freq >= tb_FreqNote_Center[aPos]); // true if the frequency is above "center" frequency/note...
 					if ((freq >= tb_FreqNote_HP_LimL[aPos]) && (freq < tb_FreqNote_HP_LimH[aPos])) {
  						// High precision: don't display left/right marker(s).
-						b_tunrMarkerVisible = false;
-						dmdTunerMarkerPos = 0.f;
-						strcpy(dmdTunerMarker, " ");
+						b_cvpitchMarkerVisible = false;
+						dmdCVPitchMarkerPos = 0.f;
+						strcpy(dmdCVPitchMarker, " ");
 					}
 					else if ((freq >= tb_FreqNote_MP_LimL[aPos]) && (freq < tb_FreqNote_MP_LimH[aPos])) {
  						// Medium precision: display one marker only, either "<" or ">".
-						b_tunrMarkerVisible = true;
+						b_cvpitchMarkerVisible = true;
 						if (b_IsAbove) {
-							dmdTunerMarkerPos = 2.6f;
-							strcpy(dmdTunerMarker, "<");
+							dmdCVPitchMarkerPos = 2.6f;
+							strcpy(dmdCVPitchMarker, "<");
 						}
 						else {
-							dmdTunerMarkerPos = 90.f;
-							strcpy(dmdTunerMarker, ">");
+							dmdCVPitchMarkerPos = 90.f;
+							strcpy(dmdCVPitchMarker, ">");
 						}
 					}
 					else {
  						// Near bounds (aka bad precision): display three markers, either "<<<" or ">>>", because frequency is near bound.
-						b_tunrMarkerVisible = true;
+						b_cvpitchMarkerVisible = true;
 						if (b_IsAbove) {
-							dmdTunerMarkerPos = 2.6f;
-							strcpy(dmdTunerMarker, "<<");
+							dmdCVPitchMarkerPos = 2.6f;
+							strcpy(dmdCVPitchMarker, "<<");
 						}
 						else {
-							dmdTunerMarkerPos = 84.f;
-							strcpy(dmdTunerMarker, ">>");
+							dmdCVPitchMarkerPos = 84.f;
+							strcpy(dmdCVPitchMarker, ">>");
 						}
 					}
 					i = 132; // Exit note scan loop.
@@ -652,15 +647,15 @@ struct MetriksModule : Module {
 		}
 		else if (freq < tb_FreqNote_LP_LimL[0]) {
 			// Input frequency is too low (below C-1).
-			b_tunrMarkerVisible = true;
-			dmdTunerMarkerPos = 84.f;
-			strcpy(dmdTunerMarker, ">>");
+			b_cvpitchMarkerVisible = true;
+			dmdCVPitchMarkerPos = 84.f;
+			strcpy(dmdCVPitchMarker, ">>");
 		}
 		else {
 			// Input frequency is too high (above B9).
-			b_tunrMarkerVisible = true;
-			dmdTunerMarkerPos = 2.6f;
-			strcpy(dmdTunerMarker, "<<");
+			b_cvpitchMarkerVisible = true;
+			dmdCVPitchMarkerPos = 2.6f;
+			strcpy(dmdCVPitchMarker, "<<");
 		}
 		return aPos;
 	}
@@ -870,7 +865,7 @@ struct MetriksModule : Module {
 				ct_OptionTimeout = 0;
 				ct_OptionBlinkTimer = 0;
 				currentOptionID = 0;
-				b_tunrMarkerVisible = false; // To avoid "marker(s)" displayed on DMD!
+				b_cvpitchMarkerVisible = false; // To avoid "marker(s)" displayed on DMD!
 				// Display new mode for a given delay.
 				strcpy(dmdTextMain1, "Switch to...");
 				switch (Mode) {
@@ -880,9 +875,9 @@ struct MetriksModule : Module {
 						strcpy(dmdTextMain2, "Voltmeter");
 						break;
 					case 1:
-						// CV tuner.
+						// CV Pitch.
 						dmdOffsetTextMain2 = 5.408f; // Centered "CV Tun." message on second line of DMD.
-						strcpy(dmdTextMain2, "CV Tuner");
+						strcpy(dmdTextMain2, "CV Pitch");
 						break;
 					case 2:
 						// Frequency counter.
@@ -904,7 +899,7 @@ struct MetriksModule : Module {
 			}
 			else {
 				// Exit point for changing mode.
-				b_tunrMarkerVisible = false; // To avoid "marker(s)" displayed on DMD!
+				b_cvpitchMarkerVisible = false; // To avoid "marker(s)" displayed on DMD!
 				_f_InVoltage = f_InVoltage + 1.f; // By doing this, the second line of DMD will be refreshed.
 				b_InopMode = false; // TEMPORARY - false means the mode is operational (totally or partially) - MUST BE REMOVED WHEN ALL MODES WORK.
 				bChangingMode = false;
@@ -1012,7 +1007,7 @@ struct MetriksModule : Module {
 			}
 			else {
 				lights[LED_OPTIONS].setBrightness(0.f);
-				b_tunrMarkerVisible = false; // To avoid "marker(s)" displayed on DMD!
+				b_cvpitchMarkerVisible = false; // To avoid "marker(s)" displayed on DMD!
 				_f_InVoltage = f_InVoltage + 1.f; // By doing this, the second line of DMD will be refreshed.
 				currentOptionID = 0;
 				ct_OptionBlinkTimer = 0;
@@ -1045,7 +1040,7 @@ struct MetriksModule : Module {
 					}
 					break;
 				case 1:
-					strcpy(dmdTextMain1, "CV Tuner");
+					strcpy(dmdTextMain1, "CV Pitch");
 					break;
 				case 2:
 					strcpy(dmdTextMain1, "Freq. Counter");
@@ -1060,7 +1055,7 @@ struct MetriksModule : Module {
 
 		if (bActiveINjack != _bActiveINjack) {
 			// Input jack state was changed from connected to disconnected, and vice-versa).
-			b_tunrMarkerVisible = false; // To avoid "marker(s)" displayed on DMD!
+			b_cvpitchMarkerVisible = false; // To avoid "marker(s)" displayed on DMD!
 			_f_InVoltage = f_InVoltage + 1.f; // By doing this, the second line of DMD will be refreshed.
 			_bActiveINjack = bActiveINjack;
 		}
@@ -1101,7 +1096,7 @@ struct MetriksModule : Module {
 				case METRIKS_VOLTMETER:
 					// Voltmeter mode implementation.
 					b_InopMode = false; // TEMPORARY - false means the mode is operational (totally or partially) - MUST BE REMOVED WHEN ALL MODES WORK.
-					b_tunrMarkerVisible = false; // To avoid "marker(s)" displayed on DMD!
+					b_cvpitchMarkerVisible = false; // To avoid "marker(s)" displayed on DMD!
 					// Be sure Peak Counter is stopped. Unlit PLAY/PAUSE bi-colored LED.
 					lights[LED_PLAY_GREEN].setBrightness(0.f);
 					lights[LED_PLAY_RED].setBrightness(0.f);
@@ -1189,8 +1184,8 @@ struct MetriksModule : Module {
 						f_InVoltage = _f_InVoltage;
 					}
 					break;
-				case METRIKS_CVTUNER:
-					// CV Tuner mode implementation.
+				case METRIKS_CVPITCH:
+					// CV Pitch mode implementation.
 					b_InopMode = false; // TEMPORARY - false means the mode is operational (totally or partially) - MUST BE REMOVED WHEN ALL MODES WORK.
 					// Be sure Peak Counter is stopped. Unlit PLAY/PAUSE bi-colored LED.
 					lights[LED_PLAY_GREEN].setBrightness(0.f);
@@ -1201,7 +1196,7 @@ struct MetriksModule : Module {
 						_f_InVoltage = f_InVoltage;
 						int x = getNotebyFreq(dsp::FREQ_C4 * (double)(pow(2.0, f_InVoltage)));
 						if (x != -1)
-							_tmpString = tunerNote[x];
+							_tmpString = cvpitchNote[x];
 							else _tmpString = "?";
 						dmdOffsetTextMain2 = getCenteredDMD(_tmpString); // Centered display on second line.
 						strcpy(dmdTextMain2, _tmpString.c_str());
@@ -1209,7 +1204,7 @@ struct MetriksModule : Module {
 					break;
 				case METRIKS_FREQCOUNTER:
 					// Frequency counter mode implementation.
-					b_tunrMarkerVisible = false; // To avoid "marker(s)" displayed on DMD!
+					b_cvpitchMarkerVisible = false; // To avoid "marker(s)" displayed on DMD!
 					// Be sure Peak Counter is stopped. Unlit PLAY/PAUSE bi-colored LED.
 					lights[LED_PLAY_GREEN].setBrightness(0.f);
 					lights[LED_PLAY_RED].setBrightness(0.f);
@@ -1219,7 +1214,7 @@ struct MetriksModule : Module {
 					break;
 				case METRIKS_BPMMETER:
 					// BPM meter mode implementation.
-					b_tunrMarkerVisible = false; // To avoid "marker(s)" displayed on DMD!
+					b_cvpitchMarkerVisible = false; // To avoid "marker(s)" displayed on DMD!
 					// Be sure Peak Counter is stopped. Unlit PLAY/PAUSE bi-colored LED.
 					lights[LED_PLAY_GREEN].setBrightness(0.f);
 					lights[LED_PLAY_RED].setBrightness(0.f);
@@ -1229,7 +1224,7 @@ struct MetriksModule : Module {
 					break;
 				case METRIKS_PEAKCOUNTER:
 					// Peak counter mode implementation.
-					b_tunrMarkerVisible = false; // To avoid "marker(s)" displayed on DMD!
+					b_cvpitchMarkerVisible = false; // To avoid "marker(s)" displayed on DMD!
 					// TEMPORARY - used for inoperative mode(s) - MUST BE REMOVED WHEN ALL MODES WORK.
 					setInopMode();
 					break;
@@ -1385,19 +1380,19 @@ struct MetriksDMD : TransparentWidget {
 			textPos = Vec(12, box.size.y - 152);
 			if (!module->isBypassed())
 				nvgText(args.vg, textPos.x + module->dmdOffsetTextMain2, textPos.y, module->dmdTextMain2, NULL); // Displaying module->dmdTextMain2 string (second line). The second line may have an horizontal offset.
-			// CV Tuner (Mode = 1) only from this point.
+			// CV Pitch (Mode = 1) only from this point.
 			if (module->Mode != 1)
-				return; // Exit immediatly (code below will be ignored) if current mode isn't "CV Tuner".
+				return; // Exit immediatly (code below will be ignored) if current mode isn't "CV Pitch".
 			if (module->bChangingMode || module->bChangingOption)
 				return; // Exit immediatly if currently changing mode or changing option.
-			if (!module->b_tunrMarkerVisible)
-				return; // Flag "module->b_tunrMarkerVisible" is false, don't display marker(s): exit method immediatly.
+			if (!module->b_cvpitchMarkerVisible)
+				return; // Flag "module->b_cvpitchMarkerVisible" is false, don't display marker(s): exit method immediatly.
 			// Display marker(s) on the DMD.
 			nvgFontSize(args.vg, 14);
 			nvgTextLetterSpacing(args.vg, -1);
 			textPos = Vec(12.f, box.size.y - 154);
 			if (!module->isBypassed())
-				nvgText(args.vg, textPos.x + module->dmdTunerMarkerPos, textPos.y, module->dmdTunerMarker, NULL);
+				nvgText(args.vg, textPos.x + module->dmdCVPitchMarkerPos, textPos.y, module->dmdCVPitchMarker, NULL);
 		}
 		Widget::drawLayer(args, layer);
 	}

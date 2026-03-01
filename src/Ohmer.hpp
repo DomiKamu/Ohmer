@@ -18,15 +18,15 @@ extern Model *modelBlankPanel16;
 extern Model *modelBlankPanel32;
 
 
-//// COLOR TABLE USED FOR DOT-MATRIX DISPLAY (REGARDLING SELECTED MODEL) - METRIKS MODULES.
+//// COLOR TABLE USED FOR DOT-MATRIX DISPLAY (REGARDLING SELECTED MODEL) - METRIKS MODULE.
 
 static const NVGcolor tblDMDtextColor[6] = {
 	nvgRGB(0x08, 0x08, 0x08), // LCD-like for Classic.
 	nvgRGB(0x08, 0x08, 0x08), // LCD-like for Stage Repro.
 	nvgRGB(0x08, 0x08, 0x08), // LCD-like for Absolute Night.
-	nvgRGB(0xe0, 0xe0, 0xff), // Blue plasma-like for Dark "Signature".
-	nvgRGB(0xff, 0x8a, 0x00), // Orange plasma-like for Deepblue "Signature".
-	nvgRGB(0xb0, 0xff, 0xff) // Light cyan plasma-like for Carbon "Signature".
+	nvgRGB(0xe0, 0xe0, 0xff), // Blue plasma-gas for Dark "Signature".
+	nvgRGB(0xff, 0x8a, 0x00), // Orange plasma-gas for Deepblue "Signature".
+	nvgRGB(0xb0, 0xff, 0xff) // Light cyan plasma-gas for Carbon "Signature".
 };
 
 //// BACKGROUND COLOR TABLES USED FOR BLANK PANELS.
@@ -143,14 +143,6 @@ struct KS_Encoder : SvgKnob {
 		ParamWidget::step();
 	}
 
-};
-
-// Custom orange color used by two small LEDs (CV-RATIO, start/stop), KlokSpid module.
-// Also, this color is used for medium LED located below CV/TRIG port (KlokSpid module).
-struct KlokSpidOrangeLight : GrayModuleLightWidget {
-	KlokSpidOrangeLight() {
-		addBaseColor(nvgRGB(0xe8, 0xad, 0x10));
-	}
 };
 
 // White LED color for RKD & RKD-BRK modules (used for CLK and output 8).
