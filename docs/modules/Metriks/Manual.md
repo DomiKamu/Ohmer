@@ -29,7 +29,7 @@ At the bottom of module, the **IN** jack is... the input, used for signal to be 
 
 The **OUT** jack is a "replica" of INput jack: it's useful to insert one (or many) module(s) as daisy-chain.
 
-#### **QUICK USAGE GUIDE**
+#### **QUICK USAGE GUIDE / THE VOLTMETER MODE**
 
 When you bring a new instance of Metriks module (from Rack's modules browser), the module is:
 
