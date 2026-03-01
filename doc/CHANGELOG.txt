@@ -2,6 +2,22 @@
 CHANGELOG
 ================================================================================================================================
 
+W.I.P. (for next release)
+
+- Metriks: "CV Tuner" mode becomes "CV Pitch", instead (now more explicit).
+- Reoganizing all documentation on GitHub repository (links was changed for v2.6.11 "plugin.json", also per module documents).
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Release v2.6.11 (February 28th, 2026) for VCV Rack v2.
+
+- KlokSpid module is definitively removed from the plugin.
+- Links to documents was changed inside plugin.json (also per module).
+- Metriks: added "Auto" for Decimals option ("Voltmeter" mode), "Auto" is the default decimals option.
+- All modules: changed "if (module)" by "if (!module)", added "return;" inside "if (!module)" sections to avoid possible crash.
+
+--------------------------------------------------------------------------------------------------------------------------------
+
 Release v2.4.1 (November 24th, 2025) for VCV Rack v2.
 
 - Metriks: fix a "Warning" during build about vFloor and vCeiling variables, possibly uninitialized.
