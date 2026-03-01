@@ -96,21 +96,21 @@ Feature requests, suggestions, and bug reports are welcome on [GitHub repository
 ------
 ## Thanks to:
 
-- **Andrew Belt** (and development team) for his fantastic VCV Rack software, now in v2!
+- **Andrew Belt** (and development team) for his fantastic VCV Rack 2 software!
 - **Xavier Belmont** for his fantastic work around SVG graphics (silver/gold connectors and buttons).
-- **Marc Boulé** for C++ tips (in particular about C++ code to swap SVG graphics for input & output ports).
+- **Marc Boulé** for C++ tips (in particular about C++ code to swap SVG graphics for input & output jacks).
 - **Dale Johnson** (author of Valley's *Topograph* & *Dexter* modules), for GUI-change on the fly and *framing*.
-- **Michael Struggl** , for similar suggestion (about Audible Instruments' Tidal, using similar feature).
-- **Gerhard Brandt**, about Prime numbers & Fibonacci tables for RKD module.
-- 4ms Company, for their (conditional) permission about their RCD / RCDBO modules conversion.
+- **Michael Struggl** , for similar suggestion (about Audible Instruments' Tidal, who is using similar feature).
+- **Gerhard Brandt**, about Prime numbers & Fibonacci tables suggestion for RKD module.
+- 4ms Company, for (conditional) permission about their RCD / RCDBO modules conversion.
 - **Builders** for MacOS & Linux (particular mention to **Jens Peter Nielsen**, **Clément Foulc**, **Steve Baker** and **Marc Boulé** for MacOS builds, also  to **Zulu Echo Romeo-Oscar** for Linux builds).
 - Many enthusiast users!
 - Generous contributors, coding tips & optimizations, enhancements, and features ideas!
-- The most important: our existing (and growing every day) communities around VCV Rack!
+- The most important: our existing (and growing every day) community around VCV Rack!
 
 ------
 ## Who am I?
 
-My name is Dominique CAMUS, 62-years old French guy, my job is networks and systems admin (but retired). I'm living now in south of France, near Nîmes (Gard - 30). Mine hobbies are mainly C.M. experimentations (as curious guy I am), playing keyboard (live performance at home, in my living room, using Native Instruments KOMPLETE KONTROL S61 MK2 keyboard, and Arturia BeatStep Pro controller), flight simulation (Prepar3D v5, flying mainly airliners such Airbus A319/A320, Boeing 737-800, Boeing 777-200/-300), Kerbal Space Program, Elite: Dangerous Horizons, videogame emulators (for sure, I'm a nostalgic guy) such M.A.M.E, pinball games (Visual Pinball X), infiltration games (HITMAN WoA franchise, Sniper Ghost Warrior), homemade developments, friends, family, swimming pool, my lovely village...
+My name is Dominique CAMUS, 62-years old French guy, my job is networks and systems admin (but near retired). I'm living south-east of France, near Nîmes (Gard - 30). Mine hobbies are mainly C.M. experimentations (as curious guy I am), playing keyboard (live performance at home, in my living room, using Native Instruments KOMPLETE KONTROL S61 MK2 keyboard, and Arturia BeatStep Pro MIDI controller), flight simulation (Prepar3D v5, flying mainly airliners such Airbus A319/A320, Boeing 737-800, Boeing 777-200/-300), Kerbal Space Program, Elite: Dangerous Horizons, videogame emulators (for sure, I'm a nostalgic guy) such M.A.M.E, pinball games (Visual Pinball X), infiltration games (HITMAN WoA franchise, Sniper Ghost Warrior), homemade developments, friends, family, swimming pool, my lovely village...
 
-### Enjoy Ohmer modules!
+### Enjoy Ohmer Modules!
