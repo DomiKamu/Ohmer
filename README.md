@@ -17,7 +17,7 @@ Despite OhmerPrems is a commercial plugin (for some modules), **KlokSpid MkII** 
 
 **BRK** is basically an additional panel (4 HP, must be placed alongside RKD) providing six deported switches. By this way, it's more comfortable to change module's settings "on-the-fly", without need to access PCB to change jumpers. When RKD module was set correctly, you'll can remove its BRK expander.
 
-Please take a look on [RKD / RKD with "Break" User's Manual (PDF)](docs/modules/RKD/User_Manual.pdf).
+Please take a look on [RKD / RKD with "Break" User's Manual (PDF)](docs/modules/RKD/Manual.pdf).
 
 Please notice both RKD and BRK modules support **Use dark panels if available** feature (from **View** menu) since VCV Rack v2.4.0. Depending the setting, the panels are dark or light, automatically.
 
