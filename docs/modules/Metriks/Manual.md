@@ -50,28 +50,28 @@ Now it's time to change some options (for current mode, in this case for voltmet
 
 Voltmeter have two options:
 
-- The **Metering** behavior (choices between **Realtime** for realtime voltage measurements, **Minimum** keep the minimum registered voltage, **Maximum** on the same principle but maximum, and **Median** from max. to min. registered voltages).
-- The number of displayed decimals, may be **Auto** (the module selects how many decimals it can display), and **0** to **3** in case you'll want always decimals (even if they're 0).
+- The **Metering** behavior (choices between **Realtime** for realtime voltage measurements, **Minimum** registers the minimum voltage, **Maximum** registers the maximum voltage, and **Median** a median between max. and min. registered voltages).
+- The number of displayed decimals, may be **Auto** (the module selects how many decimals it can display), and **0** to **3** in case you'll want always a specific number of displayed decimals.
 
 
-In order to change options, simply press the **OPT.** button: now its red LED is blinking, and the first option you'll can edit also is blinking at the bottom of DMD... for voltmeter, the first option is "Metering":
+In order to change options, simply press the **OPT.** button: now the red LED is blinking, and the first option you'll can edit is blinking too at the bottom of the DMD... for voltmeter, the first option is "Metering":
 
 ![](_img/Metriks_05.png)
 
-While red **OPT.** LED (and bottom line on DMD) is blinking, just rotate the continuous encoder...
+While **OPT.** LED (and bottom line on DMD) is blinking, just rotate the continuous encoder:
 
-- Clockwise, to select next possible choice (or to increase the display value) for option.
-- Counter-clockwise to select previous possible choice (or to decrease the displayed value).
+- Clockwise, to select next possible choice for the option.
+- Counter-clockwise to select previous possible choice.
 
-Now, by pressing OPT. button once again, the second option, number of decimals, can be changed.
+Now, by pressing OPT. button once again, the second option, number of decimals, can be changed if you want.
 
 For *Decimals*, you'll can choose either from "0" to "3", or "Auto" (default is "Auto"), by rotating the continous encoder:
 
 ![](_img/Metriks_03.png)
 
-When done, press the OPT. button to exit options and return to production (because it was the last option).
+When done, press the OPT. button to exit options and return to production (because it was the last option). The **OPT** LED is off.
 
-Also, when blinking, if you don't touch either the continuous encoder / button, a 10-seconds timeout will automatically return to production.
+Also, when blinking, if you don't touch either the continuous encoder or **OPT** button, a 10-seconds timeout will automatically return to production.
 
 
 ![](_img/Metriks_04.png)
@@ -79,7 +79,6 @@ Also, when blinking, if you don't touch either the continuous encoder / button, 
 When voltmeter is set for **Min.**, **Max.** or **Medn.** (median), the **RESET** button (and/or its trigger jack) will clear (return to 0) all minimum, maximum (and median) previously registered voltages.
 
 Some modes provides only one option (the future Peak Counter, to choose threshold voltage only), some other modes have two options (for example, the **Voltmeter** and the **CV Pitch**). Future **BPM Meter** mode doesn't provide any option, in this case, the OPT. button remains inoperative.
-
 
 
 #### **THE CV PITCH MODE**
