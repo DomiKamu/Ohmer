@@ -77,7 +77,7 @@ Some modes provides only one option (the future Peak Counter, to choose threshol
 
 #### **THE CV PITCH MODE**
 
-Previously named "CV Tuner" (but replaced by more explicit "CV Pitch") is a mode introduced since Ohmer Modules v1.1.2. It displays a note-equivalent, regardling **constant voltage**, as pitch (based on Volt per octave) applied on **IN** jack. This mode may help you to tweak a CV-based sequencer (as example).
+Previously named "CV Tuner" (but replaced by more explicit "CV Pitch") is a mode introduced since Ohmer Modules v1.1.2. It displays a note-equivalent, regardling **constant voltage**, as pitch (based on Volt per octave) applied on **IN** jack. This mode may help you to tweak a CV-based sequencer (as example - to save possible usage of quantizer module).
 
 From **Voltmeter** mode, just rotate the continous encoder clockwise, in order to select **CV Pitch** (as next mode).
 
