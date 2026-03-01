@@ -4,9 +4,8 @@
 
 ***Metriks*** is a 8 HP *CPU-controlled* metering/visual module, designed for VCV Rack: for now, two features are fully operational: **Voltmeter** and **CV Pitch**.
 
-Please notice other features (aka "modes") such **BPM Meter**, **Peak Counter** and (simple) **Frequency Counter**, are actually disabled, as long as these modes still in development. Thanks for patience!
-
-
+Please notice other features (aka "modes") such **BPM Meter** and **Peak Counter** are actually disabled (must be entirely reworked), as long as these modes still in development. Thanks for patience!
+Also, **Frequency Counter** mode will be abandoned.
 
 #### **MODULE LAYOUT**
 
@@ -30,7 +29,6 @@ At the bottom of module, the **IN** jack is... the input, used for signal to be 
 
 The **OUT** jack is a "replica" of INput jack: it's useful to insert one (or many) module(s) as daisy-chain.
 
-
 #### **QUICK USAGE GUIDE**
 
 When you bring a new instance of Metriks module (from Rack's modules browser), the module is:
@@ -40,7 +38,6 @@ When you bring a new instance of Metriks module (from Rack's modules browser), t
 - Display blinking **? Input ?** as long as **IN** jack remains disconnected:
 
 ![](_img/Metriks_01.png)
-
 
 As soon as you connect **IN** jack to a source voltage, voltage is displayed like this:
 
@@ -52,7 +49,6 @@ Voltmeter have two options:
 
 - The **Metering** behavior (choices between **Realtime** for realtime voltage measurements, **Minimum** registers the minimum voltage, **Maximum** registers the maximum voltage, and **Median** a median between max. and min. registered voltages).
 - The number of displayed decimals, may be **Auto** (the module selects how many decimals it can display), and **0** to **3** in case you'll want always a specific number of displayed decimals.
-
 
 In order to change options, simply press the **OPT.** button: now the red LED is blinking, and the first option you'll can edit is blinking too at the bottom of the DMD... for voltmeter, the first option is "Metering":
 
@@ -73,13 +69,11 @@ When done, press the OPT. button to exit options and return to production (becau
 
 Also, when blinking, if you don't touch either the continuous encoder or **OPT** button, a 10-seconds timeout will automatically return to production.
 
-
 ![](_img/Metriks_04.png)
 
 When voltmeter is set for **Min.**, **Max.** or **Medn.** (median), the **RESET** button (and/or its trigger jack) will clear (return to 0) all minimum, maximum (and median) previously registered voltages.
 
 Some modes provides only one option (the future Peak Counter, to choose threshold voltage only), some other modes have two options (for example, the **Voltmeter** and the **CV Pitch**). Future **BPM Meter** mode doesn't provide any option, in this case, the OPT. button remains inoperative.
-
 
 #### **THE CV PITCH MODE**
 
@@ -88,8 +82,6 @@ Previously named "CV Tuner" (but replaced by more explicit "CV Pitch") is a mode
 From **Voltmeter** mode, just rotate the continous encoder clockwise, in order to select **CV Pitch** (as next mode).
 
 Like any mode, **CV Pitch** must be display on the top of the DMD.
-
-
 
 The CV Pitch is mainly calibrated on **A4** (**La4**) at **440Hz** (often named *A440*), as **reference pitch**.
 
