@@ -1,16 +1,10 @@
-# ![Ohmer Modules logo](doc/images/Logo_Ohmer.png)Ohmer modules for VCV Rack 2
-
-### ***"DEDICATED" MANUALS:***
-
-[RKD / RKD with "Break" User's Manual (PDF)](doc/modules/RKD/User_Manual.pdf).
-
-[Metriks - Quick User's Guide](doc/Metriks.md) (module still in development, thanks - again - for your patience!)
+# ![Ohmer Modules logo](docs/modules/Metriks/_img/Logo_Ohmer.png)Ohmer modules for VCV Rack 2
 
 ------
 ## KlokSpid
 
 This module is removed (it was as *deprecated* status since... two years!), this module is replaced by the more powerful **KlokSpid MkII**, from [OhmerPrems plugin](https://github.com/DomiKamu/OhmerPrems).
-Despite OhmerPrems is a commercial plugin (for certain modules), **KlokSpid MkII** is absolutely free to everyone, it works without any limitation!
+Despite OhmerPrems is a commercial plugin (for some modules), **KlokSpid MkII** is absolutely free to everyone, it works without any limitation!
 
 ------
 ## RKD (Rotate Klok Divider) and BRK (expander)
@@ -19,11 +13,11 @@ Despite OhmerPrems is a commercial plugin (for certain modules), **KlokSpid MkII
 
 **BRK**, inspired by 4ms Company **RCDBO** module (with 4ms Company restrictive permission), as RKD expander.
 
-![RKD and RKD with Break modules](doc/images/RKD-RKDBRK.png)
+![RKD and RKD with Break modules](docs/modules/RKD/_img/RKD-RKDBRK.png)
 
 **BRK** is basically an additional panel (4 HP, must be placed alongside RKD) providing six deported switches. By this way, it's more comfortable to change module's settings "on-the-fly", without need to access PCB to change jumpers. When RKD module was set correctly, you'll can remove its BRK expander.
 
-Please take a look on [RKD / RKD with "Break" User's Manual (PDF)](doc/modules/RKD/User_Manual.pdf).
+Please take a look on [RKD / RKD with "Break" User's Manual (PDF)](docs/modules/RKD/User_Manual.pdf).
 
 Please notice both RKD and BRK modules support **Use dark panels if available** feature (from **View** menu) since VCV Rack v2.4.0. Depending the setting, the panels are dark or light, automatically.
 
@@ -32,13 +26,7 @@ Please notice both RKD and BRK modules support **Use dark panels if available** 
 
 **Metriks**, a 8 HP metering module, for now providing **voltmeter** and **CV tuner** modes only (please notice other modes, such *BPM Meter*, *Frequency Counter* and *Peak Counter* are temporary disabled, like a "scrolling message" says on the dot-matrix display when you select one of these unavailable modes). 
 
-[Metriks - Quick Guide **is here!**](doc/modules/Metriks/Metriks.md) please notice **Metriks module remains in development!**.
-
-![Metriks module](doc/images/Metriks.png)
-
-Since VCV Rack v2.4.0, depending **Use dark panels if available** option (from **View** menu) is enabled or not, the presented model from module browser (and the model added as new module in your rack) may be *Absolute Night* (as default dark panel, when enabled) or *Creamy* (as default light panel). When added on your rack, the model doesn't change (even if you change **Use dark panels if available** setting) until you select another one from ual menu.
-
-As v2.6.11 update, for voltmeter now you'll can select **Auto** for number of displayed decimals (this is now the default factory setting).
+[Metriks - Quick Guide **is here!**](docs/modules/Metriks/Manual.md) please notice **Metriks module remains in development!**.
 
 ------
 ## Polarity Switch
@@ -50,15 +38,15 @@ Voltage applied on **IN** jack may be kept 'as is' (default behavior), or conver
 Like Metriks, this module is also available all six models (**Model**, from contextual menu).
 It supports both monophonic or polyphonic cables.
 
-![](doc/images/PolaritySwitch.png)
+![](docs/modules/PolaritySwitch/_img/PolaritySwitch.png)
 
 Example by using bipolar LFO sine on input (provided by *former* KlokSpid, sine LFO on jack #4):
 
-![](doc/images/PolaritySwitch_LFO_Example.png)
+![](docs/modules/PolaritySwitch/_img/PolaritySwitch_LFO_Example.png)
 
 Polarity Switch against polyphony (using lower part of module only):
 
-![](doc/images/PolaritySwitch_Polyphony.png)
+![](docs/modules/PolaritySwitch/_img/PolaritySwitch_Polyphony.png)
 
 **NOTE:** as upper and lower parts are totally independent (like "two modules in one"), both module parts may have different polyphony settings.
 
@@ -70,27 +58,25 @@ Since VCV Rack v2.4.0, depending **Use dark panels if available** option (from *
 **Splitter 1x9**, a simple "multi" 1-input to 9-outputs. Like Metriks, this module is also available all six models (**Model**, from contextual menu).
 It supports both monophonic or polyphonic cables.
 
-![Splitter 1x9 module](doc/images/Splitter.png)
-
-Since VCV Rack v2.4.0, depending **Use dark panels if available** option (from **View** menu) is enabled or not, the presented model from module browser (and the model added as new module in your rack) may be *Absolute Night* (as default dark panel, when enabled) or *Creamy* (as default light panel). When added on your rack, the model doesn't change (even if you change **Use dark panels if available** setting) until you select another one from contextual menu.
+![Splitter 1x9 module](docs/modules/Splitter_1x9/Manual.md)
 
 ------
 ## Blank panels
 
-**Set of blank panels** (without logo) to fill any holes in your rack: 1 HP, 2 HP, 4 HP, 8 HP, 16 HP and 32 HP. Like Metriks, Polarity Switch, and Splitter 1x9, **these "blank" panels have six models too**!
+**Set of blank panels** (without logo) to fill any holes in your rack: 1 HP, 2 HP, 4 HP, 8 HP, 16 HP and 32 HP. Like Metriks, Polarity Switch, and Splitter 1x9, **these "blank" panels have six "models" too**!
 
 Please notice the 2 HP blank panel have an extra contextual menu, in order to customize **screws disposal**:
 
-![Blank_2HP_Screws_Opt](doc/images/Blank_2HP_Screws_Opts.png)
+![Blank_2HP_Screws_Opt](docs/img/Blank_2HP_Screws_Opts.png)
 
-Since VCV Rack v2.4.0, depending **Use dark panels if available** option (from **View** menu) is enabled or not, the presented model from module browser (and the model added as new module in your rack) may be *Absolute Night* (as default dark panel, when enabled) or *Creamy* (as default light panel). When added on your rack, the model doesn't change (even if you change **Use dark panels if available** setting) until you select another one from contextual menu.
+Depending **Use dark panels if available** option (from **View** menu) is enabled or not, the presented model from module browser (and the model added as new module in your rack) may be *Absolute Night* (as default dark panel, when enabled) or *Creamy* (as default light panel). When added on your rack, the model doesn't change (even if you change **Use dark panels if available** setting, later), until you'll select another one from contextual menu.
 
 ------
 ## Releases
 
 Releases for Windows, MacOS (Intel), MacOS (ARM64) and Linux platforms are available either from VCV Rack 2 [Plugin Library](https://vcvrack.com/plugins.html), and from [my GitHub "releases" page](https://github.com/DomiKamu/Ohmer/releases) (each platform have its .vcvplugin file).
 
-**Current release**: v2.6.11 (February 28th, 2026), compatible vs. SDK v2.6.6:
+**Current release**: v2.6.11 (February 28th, 2026), compatible vs. Rack SDK v2.6.6:
 
 ------
 ## License Clauses
