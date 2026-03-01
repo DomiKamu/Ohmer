@@ -28,7 +28,7 @@ Please notice both RKD and BRK modules support **Use dark panels if available** 
 
 ![Metriks module](docs/modules/Metriks/_img/Metriks.png)
 
-[Manual](docs/modules/Metriks/Manual.md)
+[Metriks User's Manual](docs/modules/Metriks/Manual.md)
 
 Please consider Metriks module **remains in development!**
 
