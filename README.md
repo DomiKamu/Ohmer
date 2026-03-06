@@ -1,4 +1,4 @@
-# ![Ohmer Modules logo](docs/modules/Metriks/_img/Logo_Ohmer.png)Ohmer modules for VCV Rack 2 (free, Open Source)
+# ![Ohmer Modules logo](docs/modules/Metriks/_img/Logo_Ohmer.png) Ohmer modules for VCV Rack 2
 
 ------
 ## KlokSpid
