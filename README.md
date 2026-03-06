@@ -40,15 +40,7 @@ Voltage applied on **IN** jack may be kept 'as is' (default behavior), or conver
 
 The module supports either monophonic or polyphonic cables. As upper and lower parts are totally independent (like "two modules in one"), both module parts may use different polyphony settings.
 
-![](docs/modules/PolaritySwitch/_img/PolaritySwitch.png)
-
-Example by using bipolar LFO sine on input (provided by KlokSpid, sine LFO on jack #4):
-
-![](docs/modules/PolaritySwitch/_img/PolaritySwitch_LFO_Example.png)
-
-Polarity Switch against polyphony (using lower part of module only):
-
-![](docs/modules/PolaritySwitch/_img/PolaritySwitch_Polyphony.png)
+![](docs/modules/Polarity_Switch/_img/Polarity_Switch.png)
 
 Depending **Use dark panels if available** option (from **View** menu) is enabled or not, the presented model from module browser (and the model added as new module in your rack) may be *Absolute Night* (as default dark panel, when enabled) or *Creamy* (as default light panel). When added on your rack, the model doesn't change (even if you change **Use dark panels if available** setting, later) until you select another one from contextual menu.
 
