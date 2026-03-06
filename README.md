@@ -12,7 +12,7 @@ As *deprecated* status since two years, this module can't be instanciated as new
 
 **BRK**, inspired by 4ms Company **RCDBO** module (with conditional permission), as RKD expander.
 
-![RKD and RKD with Break modules](docs/modules/Metriks/_img/RKD-RKDBRK.png)
+![RKD and RKD with Break modules](docs/modules/RKD/_img/RKD-RKDBRK.png)
 
 **BRK** is basically an additional panel (4 HP, must be placed alongside RKD) providing six deported switches. By this way, it's more comfortable to change module's settings "on-the-fly", without need to access PCB to change jumpers. When RKD module was set correctly, you'll can remove its BRK expander.
 
