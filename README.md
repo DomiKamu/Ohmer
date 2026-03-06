@@ -1,9 +1,9 @@
-# ![Ohmer Modules logo](docs/modules/Metriks/_img/Logo_Ohmer.png)Ohmer modules for VCV Rack 2
+# ![Ohmer Modules logo](docs/modules/Metriks/_img/Logo_Ohmer.png)Ohmer modules for VCV Rack 2 (free, Open Source)
 
 ------
 ## KlokSpid
 
-As *deprecated* status since two years, this module can't be instanciated as new module in your rack. Please replace this module by its successor, the more powerful **KlokSpid MkII**, part of [OhmerPrems plugin](https://github.com/DomiKamu/OhmerPrems). Despite OhmerPrems is a commercial plugin (for certain modules), **KlokSpid MkII** is free to everyone, working without any limitation, and doesn't require a license keyfile. No maintenance over this module since November 2023.
+As *deprecated* status since two years, this module can't be instanciated as new module in your rack. For patches who are using it, please replace KlokSpid instances by its successor, the more powerful **KlokSpid MkII**, part of [OhmerPrems plugin](https://github.com/DomiKamu/OhmerPrems). Despite OhmerPrems is a commercial plugin (for certain modules), **KlokSpid MkII** is free to everyone, working without any limitation, and doesn't require a license keyfile. No maintenance over this module since November 2023.
 
 ------
 ## RKD (Rotate Klok Divider) and BRK (expander)
