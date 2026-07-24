@@ -21,23 +21,23 @@ extern Model *modelKlokSpid; // DEPRECATED MODULE!
 //// COLOR TABLE USED FOR DOT-MATRIX DISPLAY (REGARDLING SELECTED MODEL) - METRIKS MODULES.
 
 static const NVGcolor tblDMDtextColor[6] = {
-	nvgRGB(0x08, 0x08, 0x08), // LCD-like for Classic.
+	nvgRGB(0x08, 0x08, 0x08), // LCD-like for Creamy.
 	nvgRGB(0x08, 0x08, 0x08), // LCD-like for Stage Repro.
 	nvgRGB(0x08, 0x08, 0x08), // LCD-like for Absolute Night.
 	nvgRGB(0xe0, 0xe0, 0xff), // Blue plasma-like for Dark "Signature".
 	nvgRGB(0xff, 0x8a, 0x00), // Orange plasma-like for Deepblue "Signature".
-	nvgRGB(0xb0, 0xff, 0xff) // Light cyan plasma-like for Carbon "Signature".
+	nvgRGB(0xb0, 0xff, 0xff) // Light cyan plasma-like for Titanium "Signature".
 };
 
 //// BACKGROUND COLOR TABLES USED FOR BLANK PANELS.
 
 static const NVGcolor tblpanelBgColor[6] = {
-	nvgRGB(0xd2, 0xd2, 0xcd), // Classic blank panel.
+	nvgRGB(0xd2, 0xd2, 0xcd), // Creamy blank panel.
 	nvgRGB(0x70, 0x00, 0x00), // Stage Repro blank panel.
 	nvgRGB(0x00, 0x00, 0x00), // Absolute Night blank panel.
 	nvgRGB(0x0a, 0x0a, 0x1e), // Dark "Signature" blank panel.
 	nvgRGB(0x1a, 0x1a, 0x57), // Deepblue "Signature" blank panels
-	nvgRGB(0x30, 0x30, 0x30) // Carbon "Signature" blank panel.
+	nvgRGB(0x30, 0x30, 0x30) // Titanium "Signature" blank panel.
 };
 
 //// CUSTOM COMPONENTS (SCREWS, JACKS, KNOBS, ENCODERS, BUTTONS, LEDS).

@@ -102,8 +102,8 @@ struct KlokSpidModule : Module {
 
 	//// SAMPLE RATE / SAMPLE TIME.
 
-	float sampleRate = 44100.0f;
-	float sampleTime = 1.0f / 44100.0f ;
+	float sampleRate = 48000.f; // Would be redefined by onSampleRateChange() event. Defined as default @ 48kHz.
+	float sampleTime = 1.f / 48000.f; // Would be redefined by onSampleRateChange() event. Based on default 48kHz.
 
 	// Optional LFO for jack #4.
 	LFO LFOjack4;
@@ -114,7 +114,7 @@ struct KlokSpidModule : Module {
 	//// CLOCK MODULATOR RATIOS.
 
 	// Real clock ratios (global) list/array. Preset ratios while KlokSpid module runs as clock modulator (can be selected via encoder exclusively).
-	float list_fRatio[31] = {64.0f, 32.0f, 24.0f, 16.0f, 15.0f, 12.0f, 10.0f, 9.0f, 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f, 0.5f, 1.0f/3.0f, 0.25f, 0.2f, 1.0f/6.0f, 1.0f/7.0f, 0.125f, 1.0f/9.0f, 0.1f, 1.0f/12.0f, 1.0f/15.0f, 0.0625f, 1.0f/24.0f, 0.03125f, 0.015625f};
+	float list_fRatio[31] = {64.f, 32.f, 24.f, 16.f, 15.f, 12.f, 10.f, 9.f, 8.f, 7.f, 6.f, 5.f, 4.f, 3.f, 2.f, 1.f, .5f, 1.f/3.f, .25f, .2f, 1.f/6.f, 1.f/7.f, .125f, 1.f/9.f, .1f, 1.f/12.f, 1.f/15.f, .0625f, 1.f/24.f, .03125f, .015625f};
 
 	//// MODEL (GUI THEME).
 
@@ -204,9 +204,10 @@ struct KlokSpidModule : Module {
 	int previousBPM = 120;
 
 	// Custom jacks ratios (per output jack). By default false, all are X1 (original setting for KlokSpid). True means each jack can receive an optional ratio.
+	// Default custom ratios are /4, x1, x2, and x32. Please notice x32 on output jack #4 is due to OhmerPrems PPQN32-based modules (such FroeZe and Franke sequencers).
 	bool defOutRatios = false;
-	int outputRatio[4] = {9, 12, 13, 15};
-	int outputRatioInUse[4] = {9, 12, 13, 15};
+	int outputRatio[4] = {9, 12, 13, 23};
+	int outputRatioInUse[4] = {9, 12, 13, 23};
 	float list_outRatiof[25] = {64.0f, 32.0f, 24.0f, 16.0f, 12.0f, 9.0f, 8.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f, 0.5f, 1.0f/3.0f, 0.25f, 0.2f, 1.0f/6.0f, 0.125f, 1.0f/9.0f, 1.0f/12.0f, 0.0625f, 1.0f/24.0f, 0.03125f, 0.015625f};
 
 	// Indicates if "CV-RATIO/TRIG." input port (used as trigger, standalone BPM-clock mode only) is a transport trigger.
@@ -336,14 +337,22 @@ struct KlokSpidModule : Module {
 		configBypass(INPUT_CLOCK, OUTPUT_3);
 		configBypass(INPUT_CLOCK, OUTPUT_4);
 		//
-		sampleRate = APP->engine->getSampleRate();
-		sampleTime = APP->engine->getSampleTime();
+		setSampleRateTime();
 	}
 
+	// This method is invoked when engine's sample rate is changed.
 	void onSampleRateChange(const SampleRateChangeEvent& e) override {
+		setSampleRateTime();
+	}
+
+	void setSampleRateTime() {
 		sampleRate = APP->engine->getSampleRate();
-		sampleTime = APP->engine->getSampleTime();
-	}		
+		if (sampleRate == 0.f) {
+			sampleRate = 48000.f; // Forced to 48kHz.
+			sampleTime = 1.f / 48000.f;
+		}
+		else sampleTime = 1.f / sampleRate;
+	}
 
 	//////////////////////////////////////
 	//// FUNCTIONS & METHODS (VOIDS). ////
@@ -1541,9 +1550,10 @@ struct KlokSpidModule : Module {
 	void dataFromJson(json_t *rootJ) override {
 		// Retrieving module theme/variation (when loading .vcv and cloning module).
 		json_t *ThemeJ = json_object_get(rootJ, "Model");
-		if (ThemeJ)
+		if (ThemeJ) {
 			Theme = json_integer_value(ThemeJ);
-		portMetal = (Theme > 2) ? 1 : 0; // first three use silver (0), last three as "Signature" use golden (1).
+			portMetal = (Theme > 2) ? 1 : 0; // first three use silver (0), last three as "Signature" use golden (1).
+		}
 		// Retrieving bipolar or unipolar mode (for CV when running as clock multiplier/divider).
 		json_t *bipolarCVJ = json_object_get(rootJ, "bipolarCV");
 		if (bipolarCVJ)
@@ -1903,7 +1913,7 @@ struct KlokSpidWidget : ModuleWidget {
 	void step() override {
 		KlokSpidModule *module = dynamic_cast<KlokSpidModule*>(this->module);
 		if (!module) {
-			// !module - probably from module browser.
+			// Probably from module browser...
 			// Default model is always "Creamy" or "Absolute Night" (depending "Use dark panels if available" option, from "View" menu).
 			// Other panels are, of course, hidden.
 			panelKlokSpidCreamy->visible = !rack::settings::preferDarkPanels;
@@ -1955,6 +1965,9 @@ struct KlokSpidWidget : ModuleWidget {
 
 	void appendContextMenu(Menu *menu) override {
 		KlokSpidModule *module = dynamic_cast<KlokSpidModule*>(this->module);
+
+		if (!module)
+			return;
 
 		menu->addChild(new MenuSeparator);
 

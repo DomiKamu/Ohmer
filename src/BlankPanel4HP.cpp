@@ -118,7 +118,7 @@ struct OhmerBlank4Widget : ModuleWidget {
 	void step() override {
 		OhmerBlank4 *module = dynamic_cast<OhmerBlank4*>(this->module);
 		if (!module) {
-			// !module: the module isn't instanciated (probably as preview from module browser).
+			// Probably from module browser...
 			// By default, silver screws are visible for default Creamy or Absolute Night...
 			// ...and, of course, golden screws are hidden.
 			topLeftScrewGold->visible = false;
@@ -245,6 +245,8 @@ struct OhmerBlank4Widget : ModuleWidget {
 
 	void appendContextMenu(Menu *menu) override {
 		OhmerBlank4 *module = dynamic_cast<OhmerBlank4*>(this->module);
+		if (!module)
+			return;
 		menu->addChild(new MenuSeparator);
 		OB4ThemeMenuItems *ob4thememenuitems = new OB4ThemeMenuItems;
 		ob4thememenuitems->text = "Model";

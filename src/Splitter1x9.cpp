@@ -39,9 +39,6 @@ struct SplitterModule : Module {
 	int Theme = 0; // 0 = Creamy, 1 = Stage Repro, 2 = Absolute Night, 3 = Dark Signature, 4 = Deepblue Signature, 5 = Titanium Signature.
 	int portMetal = 0; // Used to select silver or golden jacks.
 
-	// Sample rate (from Rack engine).
-	float sampleRate = 48000.f;
-
 	SplitterModule() {
 		// Module constructor.
 		Theme = rack::settings::preferDarkPanels ? 2 : 0; // Assuming default is "Creamy" or "Absolute Night" (depending "Use dark panels if available" option, from "View" menu).
@@ -57,13 +54,6 @@ struct SplitterModule : Module {
 		configOutput(OUTPUT_7, "7th");
 		configOutput(OUTPUT_8, "8th");
 		configOutput(OUTPUT_9, "8th");
-		// Get engine sample rate.
-		sampleRate = APP->engine->getSampleRate();
-	}
-
-	// Invoked (as event) when Engine's Sample rate is changed from VCV Rack menu.
-	void onSampleRateChange(const SampleRateChangeEvent& e) override {
-		sampleRate = APP->engine->getSampleRate();
 	}
 
 	void process(const ProcessArgs &args) override {
@@ -74,7 +64,7 @@ struct SplitterModule : Module {
 				for (int c = 0;  c < nChannels; c++) {
 				// then per polyphonic channel (1 channel if monophonic cable on input).
 					float raw_input_voltage = inputs[MAIN_INPUT].getVoltage(c);
-					float splitted_out_voltage = clamp(raw_input_voltage, -11.7f, 11.7f); // These -11.7 V / +11.7 V limits are max. possible voltage on Eurorack.
+					float splitted_out_voltage = clamp(raw_input_voltage, -10.f, 10.f); // -10V/+10V range voltage on Eurorack.
 					outputs[i].setVoltage(splitted_out_voltage, c);
 				}
 				outputs[i].setChannels(nChannels);
@@ -83,7 +73,7 @@ struct SplitterModule : Module {
 		else {
 			// If input jack isn't connected, assuming it's a monophonic module instead. Also, no voltage to output jacks, and unlit LED.
 			for (int i = OUTPUT_1; i < NUM_OUTPUTS; i++) {
-				outputs[i].setVoltage(0.0f);
+				outputs[i].setVoltage(0.f);
 				outputs[i].setChannels(1);
 			}
 		}
@@ -201,7 +191,7 @@ struct SplitterWidget : ModuleWidget {
 	void step() override {
 		SplitterModule *module = dynamic_cast<SplitterModule*>(this->module);
 		if (!module) {
-			// !module: the module is not instanciated (probably from module browser).
+			// Probably from module browser...
 			// Default model is always "Creamy" or "Absolute Night" (depending the "Use dark panels if available" option, from "View" menu).
 			// Other panels are, of course, hidden.
 			panelSplitterCreamy->visible = !rack::settings::preferDarkPanels;
@@ -342,6 +332,9 @@ struct SplitterWidget : ModuleWidget {
 
 	void appendContextMenu(Menu *menu) override {
 		SplitterModule *module = dynamic_cast<SplitterModule*>(this->module);
+
+		if (!module)
+			return;
 
 		menu->addChild(new MenuSeparator);
 

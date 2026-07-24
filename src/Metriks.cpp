@@ -2,7 +2,6 @@
 //// Metriks is a 8 HP measuring/visual module:                    /////
 //// - Voltmeter.                                                  /////
 //// - CV Pitch.                                                   /////
-//// - Frequency Counter.                                          /////
 //// - BPM Meter.                                                  /////
 //// - Peak Counter (aka pulse counter).                           /////
 ////////////////////////////////////////////////////////////////////////
@@ -38,7 +37,7 @@ struct MetriksModule : Module {
 	};
 
 	// SAMPLE RATE / SAMPLE TIME.
-	float sampleRate = 48000.f;
+	float sampleRate = 48000.f; // Would be redefined by onSampleRateChange() event. Defined as default @ 48kHz.
 
 	bool b_dspProcessing = false; // Will be set true as soon as DSP is processing.
 
@@ -46,7 +45,7 @@ struct MetriksModule : Module {
 	int Theme = 0; // 0 = Creamy, 1 = Stage Repro, 2 = Absolute Night, 3 = Dark Signature, 4 = Deepblue Signature, 5 = Titanium Signature.
 	int portMetal = 0; // Used to select silver or golden jacks.
 
-	// Mode (0: voltmeter, 1: CV Pitch, 2: frequency counter, 2: BPM meter, 4: peak counter).
+	// Mode (0: voltmeter, 1: CV Pitch, 2: BPM meter, 3: peak counter).
 	bool b_ChangingMode = false; // true during mode transition, false otherwise.
 	int Mode = 0; // Current mode.
 	int _Mode = 0; // Its old/previous state (required for Preset management).
@@ -918,7 +917,7 @@ struct MetriksModule : Module {
 		// RESET button and/or input jack:
 		// - Voltmeter mode: reset Min, Max and Med voltages.
 		// - Peak Counter: reset the counter. 
-		if (resetButton.process(params[BUTTON_RESET].getValue())) {
+		if (resetButton.process(params[BUTTON_RESET].getValue()) || resetPort.process(rescale(inputs[INPUT_RESET].getVoltage(), 0.2f, 1.f, 0.0f, 1.0f))) {
 			switch (Mode) {
 				case METRIKS_VOLTMETER:
 					// Reset Min, Max and median registered voltages.
@@ -1212,9 +1211,10 @@ struct MetriksModule : Module {
 	void dataFromJson(json_t *rootJ) override {
 		// Retrieving saved theme (Model).
 		json_t *ThemeJ = json_object_get(rootJ, "Model");
-		if (ThemeJ)
+		if (ThemeJ) {
 			Theme = json_integer_value(ThemeJ);
-		portMetal = (Theme > 2) ? 1 : 0; // first three models are using silver connectors (0), last three as "Signature" are using golden connectors (1), instead.
+			portMetal = (Theme > 2) ? 1 : 0; // first three models are using silver connectors (0), last three as "Signature" are using golden connectors (1), instead.
+		}
 		// Retrieving saved measuring mode.
 		json_t *ModeJ = json_object_get(rootJ, "Mode");
 		if (ModeJ) {
@@ -1470,7 +1470,7 @@ struct MetriksWidget : ModuleWidget {
 	void step() override {
 		MetriksModule *module = dynamic_cast<MetriksModule*>(this->module);
 		if (!module) {
-			// !module: the module isn't instanciated (probably as preview from module browser).
+			// Probably from module browser...
 			// Default model is always "Creamy" or "Absolute Night" (depending "Use dark panels if available" option, from "View" menu).
 			// Other panels are, of course, hidden.
 			panelMetriksCreamy->visible = !rack::settings::preferDarkPanels;
@@ -1891,6 +1891,9 @@ struct MetriksWidget : ModuleWidget {
 
 	void appendContextMenu(Menu *menu) override {
 		MetriksModule *module = dynamic_cast<MetriksModule*>(this->module);
+
+		if (!module)
+			return;
 
 		menu->addChild(new MenuSeparator);
 

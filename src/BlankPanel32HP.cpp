@@ -119,7 +119,7 @@ struct OhmerBlank32Widget : ModuleWidget {
 	void step() override {
 		OhmerBlank32 *module = dynamic_cast<OhmerBlank32*>(this->module);
 		if (!module) {
-			// !module: the module isn't instanciated (probably as preview from module browser).
+			// Probably from module browser...
 			// By default, silver screws are visible for default Creamy or Absolute Night...
 			// ...and, of course, golden screws are hidden.
 			topLeftScrewGold->visible = false;
@@ -246,6 +246,8 @@ struct OhmerBlank32Widget : ModuleWidget {
 
 	void appendContextMenu(Menu *menu) override {
 		OhmerBlank32 *module = dynamic_cast<OhmerBlank32*>(this->module);
+		if (!module)
+			return;
 		menu->addChild(new MenuSeparator);
 		OB32ThemeMenuItems *ob32thememenuitems = new OB32ThemeMenuItems;
 		ob32thememenuitems->text = "Model";

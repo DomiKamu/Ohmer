@@ -39,9 +39,6 @@ struct PolaritySwitchModule : Module {
 	int UpperVoltage = 0; // 0 means unaltered IN voltage, 1 means output voltage(s) is/are forced to +5V, 2 means output voltage(s) is/are forced to +10V.
 	int LowerVoltage = 0; // 0 means unaltered IN voltage, 1 means output voltage(s) is/are forced to +5V, 2 means output voltage(s) is/are forced to +10V.
 
-	// SAMPLE RATE / SAMPLE TIME.
-	float sampleRate = 48000.f;
-
 	PolaritySwitchModule() {
 		// Module constructor.
 		Theme = rack::settings::preferDarkPanels ? 2 : 0; // Assuming default is "Creamy" or "Absolute Night" (depending "Use dark panels if available" option, from "View" menu).
@@ -55,13 +52,6 @@ struct PolaritySwitchModule : Module {
 		configOutput(OUTPUT_N2, "IN2 < 0: sent (absolute) to this N2");
 		UpperVoltage = 0;
 		LowerVoltage = 0;
-		// Get engine sample rate.
-		sampleRate = APP->engine->getSampleRate();
-	}
-
-	// Invoked (as event) when Engine's Sample rate is changed from VCV Rack menu.
-	void onSampleRateChange(const SampleRateChangeEvent& e) override {
-		sampleRate = APP->engine->getSampleRate();
 	}
 
 	void process(const ProcessArgs &args) override {
@@ -284,7 +274,7 @@ struct PolaritySwitchWidget : ModuleWidget {
 	void step() override {
 		PolaritySwitchModule *module = dynamic_cast<PolaritySwitchModule*>(this->module);
 		if (!module) {
-			// !module: the module isn't instanciated (probably as preview from module browser).
+			// Probably from module browser...
 			// Default model is always "Creamy" or "Absolute Night" (depending "Use dark panels if available" option, from "View" menu).
 			// Other panels are, of course, hidden.
 			panelPolaritySwitchCreamy->visible = !rack::settings::preferDarkPanels;
@@ -472,6 +462,9 @@ struct PolaritySwitchWidget : ModuleWidget {
 
 	void appendContextMenu(Menu *menu) override {
 		PolaritySwitchModule *module = dynamic_cast<PolaritySwitchModule*>(this->module);
+
+		if (!module)
+			return;
 
 		menu->addChild(new MenuSeparator);
 

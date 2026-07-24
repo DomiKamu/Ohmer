@@ -56,7 +56,7 @@ struct RKD : Module {
 	bool rightMessages[2][NUM_PARAMS] = {}; // Messages from right-side BRK expander (default).
 	bool leftMessages[2][NUM_PARAMS] = {}; // Messages from left-side BRK expander (default).
 	// Sample rate.
-	float sampleRate = 44100.f; // Default 44100 Hz for sample rate.
+	float sampleRate = 48000.f; // Default 48000 Hz for sample rate.
 	// This flag indicates if jumpers (PCB) is visible, or not (only RKD module).
 	bool bViewPCB = false;
 	// This flag is set when module is running (CLK jack is wired).
@@ -260,7 +260,7 @@ struct RKD : Module {
 
 	// Pulse manager.
 	void pulseOutputJack(int givenOutputJack, bool bJackPulseState) {
-		outputs[givenOutputJack].setVoltage((bJackPulseState ? 5.0f : 0.f));
+		outputs[givenOutputJack].setVoltage((bJackPulseState ? 5.f : 0.f));
 		if (bJackPulseState)
 			lightOutAfterglow[givenOutputJack] = sampleRate * .02f; // 0.02s afterglow, to be visible @ 60FPS!
 		lights[givenOutputJack].setBrightness((lightOutAfterglow[givenOutputJack] > 0) ? 1.f : 0.f);
@@ -419,7 +419,7 @@ struct RKD : Module {
 		// CV ROTATE analysis: is module receive ROTATE voltage?
 		if (inputs[ROTATE_INPUT].isConnected()) {
 			// CV ROTATE voltage must be between 0V to +5V (inclusive) - otherwise, voltage is clipped.
-			cvRotate = clamp(inputs[ROTATE_INPUT].getVoltage(), 0.f, 5.0f);
+			cvRotate = clamp(inputs[ROTATE_INPUT].getVoltage(), 0.f, 5.f);
 		}
 		else cvRotate = 0.f; // Assuming 0V while ROTATE input port isn't wired.
 
@@ -427,26 +427,26 @@ struct RKD : Module {
 		switch (tableSet) {
 			case 0:
 				// Manufacturer table is also based on "Max-Div" amount (jumpers J3-J4, or Max Div switches setting on BRK panel).
-				cvRotateTblIndex = int(cvRotate / 5.0f * (float)(maxDivAmount));
+				cvRotateTblIndex = int(cvRotate / 5.f * (float)(maxDivAmount));
 				if (cvRotateTblIndex >= maxDivAmount)
 					cvRotateTblIndex = maxDivAmount - 1; // Possible number of table rotations is based on Max Div amount!
 				break;
 			case 1:
 				// Prime is based on 18 possible values, meaning 11 possible "sliding windows" to get access to 8 (consecutive) prime numbers (one per output jack).
-				cvRotateTblIndex = int(cvRotate / 5.0f * 11.f);
+				cvRotateTblIndex = int(cvRotate / 5.f * 11.f);
 				if (cvRotateTblIndex >= 11)
 					cvRotateTblIndex = 10;
 				break;
 			case 2:
 			case 4:
 				// "Perfect squares" and "Triplet & 16ths" are based on 8 possible values (one per output jack).
-				cvRotateTblIndex = int(cvRotate / 5.0f * 8.0f);
+				cvRotateTblIndex = int(cvRotate / 5.f * 8.f);
 				if (cvRotateTblIndex >= 8)
 					cvRotateTblIndex = 7;
 				break;
 			case 3:
 				// Fibonacci sequence is based on 8 possible values, 1 possible rotation (first), then 10 possible translations.
-				cvRotateTblIndex = int(cvRotate / 5.0f * 11.f);
+				cvRotateTblIndex = int(cvRotate / 5.f * 11.f);
 				if (cvRotateTblIndex >= 11)
 					cvRotateTblIndex = 10;
 				break;
@@ -642,7 +642,7 @@ struct RKD : Module {
 			else {
 				// At this point it's not a rising edge (maybe incoming signal is already at high state, or low, or a falling edge).
 				// Is it a falling edge?
-				if (bCLKisHigh && (clamp(inputs[CLK_INPUT].getVoltage(), 0.f, 15.0f) < 0.2f)) {
+				if (bCLKisHigh && (clamp(inputs[CLK_INPUT].getVoltage(), 0.f, 15.f) < 0.2f)) {
 					// At previous step it was high, but now is low, meaning this step is a falling edge.
 					bCLKisHigh = false; // Below 2V, disarm the flag to stop counting.
 					// It's a falling edge.
@@ -1126,7 +1126,7 @@ struct RKDWidget : ModuleWidget {
 	void step() override {
 		RKD *module = dynamic_cast<RKD*>(this->module);
 		if (!module) {
-			// !module: the module isn't instanciated (probably as preview from module browser).
+			// Probably from module browser...
 			// Silver screws.
 			topScrewSilver->visible = !rack::settings::preferDarkPanels; // Light panel.
 			bottomScrewSilver->visible = !rack::settings::preferDarkPanels; // Light panel.
@@ -1170,6 +1170,9 @@ struct RKDWidget : ModuleWidget {
 
 	void appendContextMenu(Menu *menu) override {
 		RKD *module = dynamic_cast<RKD*>(this->module);
+
+		if (!module)
+			return;
 
 		menu->addChild(new MenuSeparator);
 

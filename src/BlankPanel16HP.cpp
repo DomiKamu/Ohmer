@@ -118,7 +118,7 @@ struct OhmerBlank16Widget : ModuleWidget {
 	void step() override {
 		OhmerBlank16 *module = dynamic_cast<OhmerBlank16*>(this->module);
 		if (!module) {
-			// !module: the module isn't instanciated (probably as preview from module browser).
+			// Probably from module browser...
 			// By default, silver screws are visible for default Creamy or Absolute Night...
 			// ...and, of course, golden screws are hidden.
 			topLeftScrewGold->visible = false;
@@ -245,6 +245,8 @@ struct OhmerBlank16Widget : ModuleWidget {
 
 	void appendContextMenu(Menu *menu) override {
 		OhmerBlank16 *module = dynamic_cast<OhmerBlank16*>(this->module);
+		if (!module)
+			return;
 		menu->addChild(new MenuSeparator);
 		OB16ThemeMenuItems *ob16thememenuitems = new OB16ThemeMenuItems;
 		ob16thememenuitems->text = "Model";

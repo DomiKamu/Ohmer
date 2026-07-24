@@ -135,6 +135,8 @@ struct BRKWidget : ModuleWidget {
 	};
 
 	void step() override {
+		if (!module)
+			return; // Probably from module browser...
 		// Silver screws.
 		topScrewSilver->visible = !rack::settings::preferDarkPanels; // Light panel.
 		bottomScrewSilver->visible = !rack::settings::preferDarkPanels; // Light panel.
@@ -144,8 +146,6 @@ struct BRKWidget : ModuleWidget {
 		// Depending "Use dark panels if available" option (from "View" menu), use the light or dark panel.
 		panelBRKlight->visible = !rack::settings::preferDarkPanels;
 		panelBRKdark->visible = rack::settings::preferDarkPanels;
-		if (!module)
-			return;
 		ModuleWidget::step();
 	}
 
