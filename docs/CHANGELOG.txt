@@ -2,14 +2,27 @@
 TODO LIST / PLANNED:
 ================================================================================================================================
 
+- All modules except blank panels: rework all panels handling (use on demand load, instead of SvgPanel pointers).
+- All modules except blank panels: rework all panels handling (use on demand load, instead of SvgPanel pointers).
 - RKD (PDF manual): many images must be updated (due to LED changes since VCV Rack 2).
 - UNDER CONSIDERATION for RKD module: YouTube video tutorial.
 - Metriks: other modes (BPM Meter, and Peak Counter).
-- Metriks: PDF manual is under consideration, or possibly YouTube tutorial video.
+- Metriks: user's manual.
 
 ================================================================================================================================
 CHANGELOG
 ================================================================================================================================
+
+Release v2.6.13 (July 24th, 2026) for VCV Rack v2.
+
+- Packages built against VCV Rack SDK v2.6.6.
+- KlokSpid: default custom ratio for output jack #4 now is x32 (instead of x4), due to numerous modules using PPQN 32 as clock.
+- Metriks: fixed RESET input jack (C++ code was removed in previous v2.6.11, by error).
+- Metriks, KlokSpid: reworked LCD background for Creamy and Stage Repro models.
+- All modules (except blank panels): reworked sampling rate handling.
+- All modules (except blank panels): reworked safeguards (void step() override) to avoid crash if module isn't instantiated.
+
+--------------------------------------------------------------------------------------------------------------------------------
 
 Release v2.6.12 (March 6th, 2026) for VCV Rack v2.
 
