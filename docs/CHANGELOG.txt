@@ -1,17 +1,12 @@
 ================================================================================================================================
-TODO LIST / PLANNED:
-================================================================================================================================
-
-- All modules except blank panels: rework all panels handling (use on demand load, instead of SvgPanel pointers).
-- All modules except blank panels: rework all panels handling (use on demand load, instead of SvgPanel pointers).
-- RKD (PDF manual): many images must be updated (due to LED changes since VCV Rack 2).
-- UNDER CONSIDERATION for RKD module: YouTube video tutorial.
-- Metriks: other modes (BPM Meter, and Peak Counter).
-- Metriks: user's manual.
-
-================================================================================================================================
 CHANGELOG
 ================================================================================================================================
+
+W.I.P. Release v2.6.14 (Work in Progress update) for VCV Rack v2.
+
+- All modules: fully reworked panel C++ code (now using load on demand, instead of preallocated/preloaded SvgPanel pointers).
+
+--------------------------------------------------------------------------------------------------------------------------------
 
 Release v2.6.13 (July 24th, 2026) for VCV Rack v2.
 
