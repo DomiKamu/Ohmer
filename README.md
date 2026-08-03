@@ -70,11 +70,11 @@ Depending **Use dark panels if available** option (from **View** menu) is enable
 ------
 ## Releases
 
-Releases for Linux, MacOS X (ARM / Apple Silicon), MacOS (Intel-based) and Windows platforms are available either from VCV Rack 2 [Plugin Library](https://vcvrack.com/plugins.html), and from [my GitHub "releases" section](https://github.com/DomiKamu/Ohmer/releases).
+Releases for Linux, MacOS X (ARM / Apple Silicon), MacOS (Intel-based) and Windows platforms are available either from VCV Rack 2 [Plugin Library](https://library.vcvrack.com/Ohmer), and from [GitHub "releases" section](https://github.com/DomiKamu/Ohmer/releases).
 
-**Current release**: v2.6.13 (July 24th, 2026), build against Rack-SDK-2 v2.6.6 (using VCV Rack Plugin Toolchain).
+**Current stable release**: v2.6.13 (July 24th, 2026), build against Rack-SDK-2 v2.6.6 (using VCV Rack Plugin Toolchain).
 
-All bug-fixes, new features/modules and enhancements are described in details into [CHANGELOG.TXT](docs/CHANGELOG.txt) file.
+All bug-fixes, new features/modules and enhancements are described in details into [**CHANGELOG.TXT**](docs/CHANGELOG.txt) file.
 
 ------
 ## License Clauses
