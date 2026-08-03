@@ -3,7 +3,9 @@
 ------
 ## KlokSpid
 
-As *deprecated* status since two years, this module can't be instantiated as new module in your rack. For patches who are using it, please replace all KlokSpid instances by its successor, **KlokSpid MkII**, as part of [OhmerPrems plugin](https://github.com/DomiKamu/OhmerPrems). Despite OhmerPrems is a commercial plugin (for certain modules), **KlokSpid MkII** is free to everyone (working without any limitation, and doesn't require a license keyfile). **No more signifiant maintenance over this module, since November 2023!**
+As *deprecated* status since two years, this module can't be instantiated as new module in your rack. For patches who are using it, please replace all KlokSpid instances by its successor, **KlokSpid MkII**, as part of [OhmerPrems plugin](https://github.com/DomiKamu/OhmerPrems). Despite OhmerPrems is a commercial plugin (for certain modules), **KlokSpid MkII** is free to everyone (working without any limitation, and doesn't require a license keyfile).
+
+:warning: **No more signifiant maintenance over this module since November 2023, assumed as deprecated!**
 
 ------
 ## RKD (Rotate Klok Divider) and BRK (expander)
