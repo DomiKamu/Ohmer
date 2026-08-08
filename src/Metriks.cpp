@@ -1499,49 +1499,28 @@ struct MetriksWidget : ModuleWidget {
 					setPanel(createPanel(asset::plugin(pluginInstance, "res/Metriks_Titanium_Signature.svg")));
 			}
 			// Screws and momentary buttons metal texture.
-			if (module->portMetal == 1) {
-				// "Signature"-line panels.
-				// Screws: golden are visible...
-				topLeftScrewGold->visible = true;
-				topRightScrewGold->visible = true;
-				bottomLeftScrewGold->visible = true;
-				bottomRightScrewGold->visible = true;
-				// ...silver are hidden.
-				topLeftScrewSilver->visible = false;
-				topRightScrewSilver->visible = false;
-				bottomLeftScrewSilver->visible = false;
-				bottomRightScrewSilver->visible = false;
-				// Momentary buttons: golden are visible...
-				buttonOptionsGold->visible = true;
-				buttonPlayPauseGold->visible = true;
-				buttonResetGold->visible = true;
-				// ...silver are hidden.
-				buttonOptionsSilver->visible = false;
-				buttonPlayPauseSilver->visible = false;
-				buttonResetSilver->visible = false;
-			}
-			else {
-				// Non-"Signature" panels.
-				// Screws: silver are visible...
-				topLeftScrewSilver->visible = true;
-				topRightScrewSilver->visible = true;
-				bottomLeftScrewSilver->visible = true;
-				bottomRightScrewSilver->visible = true;
-				// ...golden are hidden.
-				topLeftScrewGold->visible = false;
-				topRightScrewGold->visible = false;
-				bottomLeftScrewGold->visible = false;
-				bottomRightScrewGold->visible = false;
-				// Momentary buttons: silver are visible...
-				buttonOptionsSilver->visible = true;
-				buttonPlayPauseSilver->visible = true;
-				buttonResetSilver->visible = true;
-				// ...golden are hidden.
-				buttonOptionsGold->visible = false;
-				buttonPlayPauseGold->visible = false;
-				buttonResetGold->visible = false;
-			}
-			// Align prevTheme variable along new theme.
+			bool b_MetalIsGold = (module->portMetal == 1);
+			// Metal for screws.
+			// Golden screws.
+			topLeftScrewGold->visible = b_MetalIsGold;
+			topRightScrewGold->visible = b_MetalIsGold;
+			bottomLeftScrewGold->visible = b_MetalIsGold;
+			bottomRightScrewGold->visible = b_MetalIsGold;
+			// Silver screws.
+			topLeftScrewSilver->visible = !b_MetalIsGold;
+			topRightScrewSilver->visible = !b_MetalIsGold;
+			bottomLeftScrewSilver->visible = !b_MetalIsGold;
+			bottomRightScrewSilver->visible = !b_MetalIsGold;
+			// Metal for momentary buttons.
+			// Golden momentary buttons.
+			buttonOptionsGold->visible = b_MetalIsGold;
+			buttonPlayPauseGold->visible = b_MetalIsGold;
+			buttonResetGold->visible = b_MetalIsGold;
+			// Silver momentary buttons.
+			buttonOptionsSilver->visible = !b_MetalIsGold;
+			buttonPlayPauseSilver->visible = !b_MetalIsGold;
+			buttonResetSilver->visible = !b_MetalIsGold;
+			// Align "prevTheme" variable along new selected theme.
 			module->prevTheme = module->Theme;
 		}
 		//

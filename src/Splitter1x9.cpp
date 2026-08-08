@@ -213,33 +213,19 @@ struct SplitterWidget : ModuleWidget {
 					setPanel(createPanel(asset::plugin(pluginInstance, "res/Splitter1x9_Titanium_Signature.svg")));
 			}
 			// Screws metal texture.
-			if (module->portMetal == 1) {
-				// "Signature"-line panels.
-				// Screws: golden are visible...
-				topLeftScrewGold->visible = true;
-				topRightScrewGold->visible = true;
-				bottomLeftScrewGold->visible = true;
-				bottomRightScrewGold->visible = true;
-				// ...silver are hidden.
-				topLeftScrewSilver->visible = false;
-				topRightScrewSilver->visible = false;
-				bottomLeftScrewSilver->visible = false;
-				bottomRightScrewSilver->visible = false;
-			}
-			else {
-				// Non-"Signature" panels.
-				// Screws: silver are visible...
-				topLeftScrewSilver->visible = true;
-				topRightScrewSilver->visible = true;
-				bottomLeftScrewSilver->visible = true;
-				bottomRightScrewSilver->visible = true;
-				// ...golden are hidden.
-				topLeftScrewGold->visible = false;
-				topRightScrewGold->visible = false;
-				bottomLeftScrewGold->visible = false;
-				bottomRightScrewGold->visible = false;
-			}
-			// Align prevTheme variable along new theme.
+			bool b_MetalIsGold = (module->portMetal == 1);
+			// Metal for screws.
+			// Golden screws.
+			topLeftScrewGold->visible = b_MetalIsGold;
+			topRightScrewGold->visible = b_MetalIsGold;
+			bottomLeftScrewGold->visible = b_MetalIsGold;
+			bottomRightScrewGold->visible = b_MetalIsGold;
+			// Silver screws.
+			topLeftScrewSilver->visible = !b_MetalIsGold;
+			topRightScrewSilver->visible = !b_MetalIsGold;
+			bottomLeftScrewSilver->visible = !b_MetalIsGold;
+			bottomRightScrewSilver->visible = !b_MetalIsGold;
+			// Align "prevTheme" variable along new selected theme.
 			module->prevTheme = module->Theme;
 		}
 		//

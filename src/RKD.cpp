@@ -57,6 +57,10 @@ struct RKD : Module {
 	bool leftMessages[2][NUM_PARAMS] = {}; // Messages from left-side BRK expander (default).
 	// Sample rate.
 	float sampleRate = 48000.f; // Default 48000 Hz for sample rate.
+	// This flag indicates the panel must be updated.
+	bool b_PanelUpdate = true;
+	// This flag indicates if the panel is dark, or not.
+	bool b_DarkPanel = false;
 	// This flag indicates if jumpers (PCB) is visible, or not (only RKD module).
 	bool bViewPCB = false;
 	// This flag is set when module is running (CLK jack is wired).
@@ -157,8 +161,9 @@ struct RKD : Module {
 	// Afterglow for output LEDs.
 	int lightOutAfterglow[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
+	// MODULE CONSTRUCTOR.
+
 	RKD() {
-		// Constructor...
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 		configParam(JUMPER_COUNTINGDOWN, 0.0, 1.0, 0.0, "Counting Up/Dn"); // Off by default;
 		configParam(JUMPER_GATE, 0.0, 1.0, 0.0, "Trig./Gate"); // Off by default;
@@ -203,10 +208,12 @@ struct RKD : Module {
 			tblDividersR0[i] = i + 1; // Default dividers for all output ports (manufacturer table).
 		}
 		maxDivAmount = 8; // Default factory maximum divide amount is 8.
+		b_PanelUpdate = true; // Be sure the panel will be updated!
+		b_DarkPanel = rack::settings::preferDarkPanels;
 		ModuleTimeOut(); // Set module in timeout (sleeping) mode, to reset some variables/flags/counters...
 	}
 
-	// Methods (void functions).
+	// Methods of module's class.
 
 	void onSampleRateChange(const SampleRateChangeEvent& e) override {
 		sampleRate = APP->engine->getSampleRate();
@@ -265,6 +272,17 @@ struct RKD : Module {
 			lightOutAfterglow[givenOutputJack] = sampleRate * .02f; // 0.02s afterglow, to be visible @ 60FPS!
 		lights[givenOutputJack].setBrightness((lightOutAfterglow[givenOutputJack] > 0) ? 1.f : 0.f);
 		bJackIsFired[givenOutputJack] = bJackPulseState;
+	}
+
+	void processBypass(const ProcessArgs &args) override {
+		// DSP processing while the module is bypassed...
+
+		// Panel change detection.
+		if (b_DarkPanel != rack::settings::preferDarkPanels) {
+			b_PanelUpdate = true; // Be sure the panel will be updated!
+			b_DarkPanel = rack::settings::preferDarkPanels;
+		}
+
 	}
 
 	void process(const ProcessArgs &args) override {
@@ -821,6 +839,12 @@ struct RKD : Module {
 		// Update current rotation index to become "previous". This will be useful to detect possible "table rotation" on next step.
 		cvRotateTblIndexPrevious = cvRotateTblIndex;
 
+		// Panel change detection.
+		if (b_DarkPanel != rack::settings::preferDarkPanels) {
+			b_PanelUpdate = true; // Be sure the panel will be updated!
+			b_DarkPanel = rack::settings::preferDarkPanels;
+		}
+
 	} // end of "process"...
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -847,8 +871,10 @@ struct RKD : Module {
 
 	void dataFromJson(json_t *rootJ) override {
 		json_t *bViewPCBJ = json_object_get(rootJ, "visiblePCB");
-		if (bViewPCBJ)
+		if (bViewPCBJ) {
 			bViewPCB = json_is_true(bViewPCBJ);
+			b_PanelUpdate = true; // Be sure the panel will be updated!
+		}
 		json_t *jmprCountingDownJ = json_object_get(rootJ, "jmprCountingDown");
 		if (jmprCountingDownJ)
 			jmprCountingDown = json_is_true(jmprCountingDownJ);
@@ -1003,6 +1029,7 @@ struct RKDViewPCBItem : MenuItem {
 	RKD *module;
 	void onAction(const ActionEvent& e) override {
 		module->bViewPCB = !module->bViewPCB; // Show/hide PCB (access to jumpers).
+		module->b_PanelUpdate = true; // Be sure the panel will be updated!
 	}
 };
 
@@ -1145,24 +1172,28 @@ struct RKDWidget : ModuleWidget {
 			return;
 		}
 		// Current panel.
-		if (module->bViewPCB)
-			setPanel(createPanel(asset::plugin(pluginInstance, "res/RKD_PCB.svg"))); // Showing the module's PCB.
-			else if (rack::settings::preferDarkPanels)
-				setPanel(createPanel(asset::plugin(pluginInstance, "res/RKD_dark.svg"))); // Showing the dark panel.
-				else setPanel(createPanel(asset::plugin(pluginInstance, "res/RKD_light.svg"))); // Showing the light panel.
-		//
-		// Please notice screws are hidden while PCB is visible.
-		topScrewSilver->visible = !module->bViewPCB && !rack::settings::preferDarkPanels;
-		bottomScrewSilver->visible = !module->bViewPCB && !rack::settings::preferDarkPanels;
-		topScrewGold->visible = !module->bViewPCB && rack::settings::preferDarkPanels;
-		bottomScrewGold->visible = !module->bViewPCB && rack::settings::preferDarkPanels;
-		// Jumper shunts are visible while PCB is visible.
-		jumperCountingDown->visible = module->bViewPCB;
-		jumperGate->visible = module->bViewPCB;
-		jumperMaxDivRange16->visible = module->bViewPCB;
-		jumperMaxDivRange32->visible = module->bViewPCB;
-		jumperSpread->visible = module->bViewPCB;
-		jumperAutoReset->visible = module->bViewPCB;
+		if (module->b_PanelUpdate) {
+			if (module->bViewPCB)
+				setPanel(createPanel(asset::plugin(pluginInstance, "res/RKD_PCB.svg"))); // Showing the module's PCB.
+				else if (rack::settings::preferDarkPanels)
+					setPanel(createPanel(asset::plugin(pluginInstance, "res/RKD_dark.svg"))); // Showing the dark panel.
+					else setPanel(createPanel(asset::plugin(pluginInstance, "res/RKD_light.svg"))); // Showing the light panel.
+			//
+			// Please notice screws are hidden while PCB is visible.
+			topScrewSilver->visible = !module->bViewPCB && !rack::settings::preferDarkPanels;
+			bottomScrewSilver->visible = !module->bViewPCB && !rack::settings::preferDarkPanels;
+			topScrewGold->visible = !module->bViewPCB && rack::settings::preferDarkPanels;
+			bottomScrewGold->visible = !module->bViewPCB && rack::settings::preferDarkPanels;
+			// Jumper shunts are visible while PCB is visible.
+			jumperCountingDown->visible = module->bViewPCB;
+			jumperGate->visible = module->bViewPCB;
+			jumperMaxDivRange16->visible = module->bViewPCB;
+			jumperMaxDivRange32->visible = module->bViewPCB;
+			jumperSpread->visible = module->bViewPCB;
+			jumperAutoReset->visible = module->bViewPCB;
+			// Reset the panel update flag.
+			module->b_PanelUpdate = false;
+		}
 		//
 		ModuleWidget::step();
 	}
